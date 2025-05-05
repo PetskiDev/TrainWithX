@@ -17,13 +17,13 @@
 - **Backend**: Node.js, Express, MongoDB (Mongoose)
 - **Frontend**: React, Tailwind CSS
 - **Auth**: JWT
-- **Payments**: Stripe
+- **Payments**: Paddle
 - **Subdomains**: Wildcard DNS + Express middleware
 
 ## MVP
 
 - Creator onboarding + plan uploads
-- Stripe checkout integration
+- Paddle checkout integration
 - Dashboard views (creator and user)
 - Plan listing + detail pages
 
