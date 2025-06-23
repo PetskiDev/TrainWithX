@@ -1,15 +1,13 @@
-import { Container } from '@mui/material';
-import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './pages/LandingPage/LandingPage';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <Container >
-        <h1>Hello TrainWithX</h1>
-      </Container>
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+      </Routes>
+    </Router>
   );
 }
 
