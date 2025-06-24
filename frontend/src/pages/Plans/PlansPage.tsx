@@ -1,11 +1,11 @@
-import NavBar from "../../components/NavBar";
+import NavBar from '../../components/NavBar';
 
 function PlansPage() {
-
-  return <>
-    <NavBar />
-    <PlanSearch></PlanSearch>
-  </>;
+  return (
+    <>
+      <NavBar />
+    </>
+  );
 }
 
 export default PlansPage;
