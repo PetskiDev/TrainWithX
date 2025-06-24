@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -12,4 +6,52 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique @db.VarChar(255)
+  username  String    @unique @db.VarChar(30)
+  password  String
+  createdAt DateTime  @default(now())
+  creator   Creator?
+  purchases Purchase[]
+}
+
+model Creator {
+  id         Int     @id
+  bio        String?
+  avatarUrl  String?
+  subdomain  String  @unique @db.VarChar(50)
+  coverUrl   String?
+  user       User    @relation(fields: [id], references: [id], onDelete: Cascade)
+  plans      Plan[]
+}
+
+model Plan {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique @db.VarChar(50)
+  description String
+  price       Decimal   @db.Decimal(10, 2)
+  preview     String?
+  markdown    String?
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  creatorId   Int
+  creator     Creator   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  purchases   Purchase[]
+}
+
+model Purchase {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  planId    Int
+  price     Decimal  @db.Decimal(10, 2)
+  timestamp DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan      Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, planId])
 }
