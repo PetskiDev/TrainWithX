@@ -1,235 +1,25 @@
-/* index.css (global styles) */
-
-/* 1. Modern CSS Reset */
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
+/* index.css or reset.css */
+* {
   margin: 0;
   padding: 0;
-  border: 0;
-  font-size: 100%;
-  vertical-align: baseline;
   box-sizing: border-box;
 }
 
-/* 2. Body and global font */
+html,
 body {
-  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-  background: #f8fafc;
-  color: #222;
-  min-height: 100vh;
-  line-height: 1.6;
+  height: 100%;
+  font-family: system-ui, sans-serif;
+  background-color: #f9f9f9;
   -webkit-font-smoothing: antialiased;
-  scroll-behavior: smooth;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* 3. Links */
 a {
-  color: #3b82f6;
   text-decoration: none;
-  transition: color 0.2s;
-}
-a:hover {
-  color: #2563eb;
-  text-decoration: underline;
+  color: inherit;
 }
 
-/* 4. Headings */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: inherit;
-  font-weight: 600;
-  color: #18181b;
-  letter-spacing: -0.5px;
-  margin-bottom: 0.5em;
-}
-h1 {
-  font-size: 2.3rem;
-}
-h2 {
-  font-size: 1.7rem;
-}
-h3 {
-  font-size: 1.3rem;
-}
-
-/* 5. Buttons */
-button,
-input[type='submit'],
-input[type='button'] {
-  background: #3b82f6;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.6em 1.4em;
-  font-size: 1em;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background 0.18s;
-  box-shadow: 0 2px 6px 0 #3b82f62a;
-}
-button:hover,
-input[type='submit']:hover,
-input[type='button']:hover {
-  background: #2563eb;
-}
-
-/* 6. Inputs */
-input,
-textarea,
-select {
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 0.5em 1em;
-  font-family: inherit;
-  font-size: 1em;
-  margin-bottom: 0.8em;
-  outline: none;
-  transition: border 0.18s;
-}
-input:focus,
-textarea:focus,
-select:focus {
-  border-color: #3b82f6;
-  background: #fff;
-}
-
-/* 7. Containers and cards */
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-.card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px 0 #18181b15;
-  padding: 2em;
-  margin-bottom: 2em;
-  transition: box-shadow 0.2s;
-}
-.card:hover {
-  box-shadow: 0 8px 32px 0 #18181b22;
-}
-
-/* 8. Utility classes */
-.mt-2 {
-  margin-top: 0.5em;
-}
-.mt-4 {
-  margin-top: 1em;
-}
-.mb-2 {
-  margin-bottom: 0.5em;
-}
-.mb-4 {
-  margin-bottom: 1em;
-}
-.text-center {
-  text-align: center;
-}
-
-/* 9. Scrollbar (optional) */
-::-webkit-scrollbar {
-  width: 8px;
-  background: #f3f4f6;
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 8px;
-}
-
-/* 10. Selection color */
-::selection {
-  background: #3b82f6;
-  color: #fff;
-}
-
-/* 11. Images */
 img {
   max-width: 100%;
   display: block;
-  border-radius: 6px;
 }

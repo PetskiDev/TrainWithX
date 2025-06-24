@@ -10,11 +10,11 @@ function NavBar() {
         </Link>
         <div className="nav-links">
           <Link to="/plans">Plans</Link>
-          <Link to="/creators">Creators</Link>
-          <Link to="/login" className="login-btn">
-            Login
-          </Link>
+          <Link to="/">Creators</Link>
         </div>
+        <Link to="/" className="login-btn">
+          Login
+        </Link>
       </nav>
 
       <div style={{ height: '72px' }} />
