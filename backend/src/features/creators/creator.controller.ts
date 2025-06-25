@@ -9,20 +9,6 @@ export async function getAllCreators(req: Request, res: Response) {
   res.json(previews);
 }
 
-export async function upgradeToCreator(req: Request, res: Response) {
-  const { userId, subdomain } = req.body;
-
-  if (!userId || !subdomain) {
-    throw new AppError('userId and subdomain are required', 400);
-  }
-  const intId = Number(userId);
-
-  const creator = await creatorService.upgradeUser(intId, subdomain);
-
-  const preview = transformCreatorToPreview(creator);
-
-  res.status(201).json(preview);
-}
 
 // export async function getCreatorPlans(req: Request, res: Response) {
 //   const { username } = req.params;
