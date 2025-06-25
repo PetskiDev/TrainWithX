@@ -10,7 +10,7 @@ export async function register(
   email: string,
   username: string,
   password: string
-) {
+): Promise<LoginResponse> {
   // 1. Check if user exists
   let existing = await prisma.user.findUnique({ where: { email } });
   if (existing) throw new AppError('Email already in use.', 409);
@@ -28,7 +28,7 @@ export async function register(
   // 4. Issue JWT
   const token = generateToken(user.id);
 
-  return { token, userId: user.id };
+  return { token, userId: user.id, username: user.username };
 }
 
 export async function login(

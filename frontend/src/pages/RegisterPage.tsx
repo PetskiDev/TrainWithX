@@ -4,8 +4,8 @@ import type { LoginResponse } from '@shared/types/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@frontend/context/AuthContext';
 
-function LoginPage() {
-  const [form, setForm] = useState({ email: '', password: '' });
+function RegisterPage() {
+  const [form, setForm] = useState({ email: '', username: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { username, login } = useAuth();
@@ -22,7 +22,7 @@ function LoginPage() {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:4000/api/v1/auth/login', {
+      const res = await fetch('http://localhost:4000/api/v1/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -30,7 +30,7 @@ function LoginPage() {
 
       if (!res.ok) {
         const { error } = await res.json();
-        throw new Error(error || 'Login failed');
+        throw new Error(error || 'Register failed');
       }
 
       const data: LoginResponse = await res.json();
@@ -47,8 +47,16 @@ function LoginPage() {
   return (
     <div className="auth-page">
       <form className="auth-form" onSubmit={handleSubmit}>
-        <h2>Login</h2>
+        <h2>Register</h2>
 
+        <input
+          type="username"
+          name="username"
+          placeholder="Username"
+          value={form.username}
+          onChange={handleChange}
+          required
+        />
         <input
           type="email"
           name="email"
@@ -69,10 +77,10 @@ function LoginPage() {
 
         {error && <p className="error-msg">{error}</p>}
 
-        <button type="submit">Login</button>
+        <button type="submit">Register</button>
       </form>
     </div>
   );
 }
 
-export default LoginPage;
+export default RegisterPage;

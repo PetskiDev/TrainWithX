@@ -1,4 +1,4 @@
-.login-page {
+.auth-page {
   height: calc(100vh - 72px);
   display: flex;
   align-items: center;
@@ -6,7 +6,7 @@
   background: #f4f4f4;
 }
 
-.login-form {
+.auth-form {
   background: white;
   padding: 2rem;
   border-radius: 8px;
@@ -15,12 +15,12 @@
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
 }
 
-.login-form h2 {
+.auth-form h2 {
   margin-bottom: 1.5rem;
   text-align: center;
 }
 
-.login-form input {
+.auth-form input {
   width: 100%;
   padding: 0.75rem 1rem;
   margin-bottom: 1rem;
@@ -29,7 +29,7 @@
   font-size: 1rem;
 }
 
-.login-form button {
+.auth-form button {
   width: 100%;
   padding: 0.75rem;
   background-color: #007bff;
@@ -41,6 +41,6 @@
   font-size: 1rem;
 }
 
-.login-form button:hover {
+.auth-form button:hover {
   background-color: #0056b3;
 }

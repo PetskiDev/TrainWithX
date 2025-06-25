@@ -1,10 +1,8 @@
-import { useAuth } from '@frontend/context/AuthContext';
 import { Link } from 'react-router-dom';
 import './NavBar.css';
+import AccountMenu from '@frontend/components/AccountMenu';
 
 function NavBar() {
-  const { username, logout } = useAuth();      // include logout if you have it
-
   return (
     <>
       <nav className="navbar">
@@ -17,15 +15,7 @@ function NavBar() {
           <Link to="/">Creators</Link>
         </div>
 
-        {!username ? (
-          <Link to="/login" className="login-btn">
-            Login
-          </Link>
-        ) : (
-          <button className="user-btn" onClick={logout}>
-            {username}
-          </button>
-        )}
+        <AccountMenu />
       </nav>
 
       <div style={{ height: '72px' }} />
