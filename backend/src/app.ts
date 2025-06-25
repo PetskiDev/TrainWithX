@@ -16,7 +16,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: 'http://localhost:5173', // Vite Dev Server
+    origin: '*', // change with the url in prod *****
     credentials: true, // if you're sending cookies/auth headers
   })
 );

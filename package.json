@@ -1,0 +1,11 @@
+{
+  "name": "trainwithx-monorepo",
+  "private": true,
+  "description": "**TrainWithX** is a creator-first platform for selling and managing fitness programs. Each trainer gets a unique subdomain (e.g. `mike.trainwithx.com`) where they can list plans, track sales, and manage their content.",
+  "scripts": {
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0"
+  }
+}
