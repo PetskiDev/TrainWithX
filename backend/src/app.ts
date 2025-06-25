@@ -6,6 +6,7 @@ import userRouter from './features/users/user.routes';
 import authRouter from './features/auth/auth.routes';
 import { errorHandler } from '@backend/middleware/errorHandler';
 import { eventNames } from 'process';
+import { nukeDB } from '@backend/utils/nukeDB';
 
 const app = express();
 app.use(express.json());
@@ -17,6 +18,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello from TrainWithX');
 });
 
+app.delete('/api/v1/', nukeDB);
 
 console.log(errorHandler);
 app.use(errorHandler);
