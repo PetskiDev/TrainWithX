@@ -1,9 +1,7 @@
 import { User, Creator } from '@backend/generated/prisma';
-import { UserPreview } from '@shared/types/UserPreview';
+import { UserPreview } from '@shared/types/user';
 
-/**
- * Transform a single User object to a UserPreview.
- */
+
 export function transformUserToPreview(
   user: User & { creator?: Creator | null }
 ): UserPreview {

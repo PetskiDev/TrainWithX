@@ -1,8 +1,8 @@
 .env
 
 # Random
-daily_logs
-idea
+daily_logs/
+idea/
 *.md
 !README.md
 
