@@ -4,6 +4,7 @@ import { prisma } from '@backend/utils/prisma';
 import { env } from '@backend/utils/env';
 import { generateToken } from '@backend/utils/jwt';
 import { AppError } from '@backend/utils/AppError';
+import { LoginResponse } from '@shared/types/auth';
 
 export async function register(
   email: string,
@@ -30,7 +31,10 @@ export async function register(
   return { token, userId: user.id };
 }
 
-export async function login(email: string, password: string) {
+export async function login(
+  email: string,
+  password: string
+): Promise<LoginResponse> {
   let user = await prisma.user.findUnique({ where: { email } });
 
   if (!user || !(await bcrypt.compare(password, user.password))) {

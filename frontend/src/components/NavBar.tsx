@@ -12,7 +12,7 @@ function NavBar() {
           <Link to="/plans">Plans</Link>
           <Link to="/">Creators</Link>
         </div>
-        <Link to="/" className="login-btn">
+        <Link to="/login" className="login-btn">
           Login
         </Link>
       </nav>
