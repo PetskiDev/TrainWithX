@@ -1,17 +1,26 @@
 import { Request, Response } from 'express';
-import * as UserService from './user.service';
 import { upgradeUser } from '@backend/features/creators/creator.service';
 import { AppError } from '@backend/utils/AppError';
 import { transformCreatorToPreview } from '@backend/features/creators/creator.transformer';
+import { fetchAllUsers, fetchUser } from '@backend/features/users/user.service';
 
 export const getUsers = async (req: Request, res: Response) => {
-  const users = await UserService.fetchAllUsers();
+  const users = await fetchAllUsers();
   res.json(users);
 };
 
 export const getUser = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
-  const user = await UserService.fetchUser(id);
+  if (!id) {
+    throw new AppError('ID not found', 404);
+  }
+  const user = await fetchUser(id);
+  res.json(user);
+};
+
+export const getAuthUser = async (req: Request, res: Response) => {
+  const id = Number(req.user?.id);
+  const user = await fetchUser(id);
   res.json(user);
 };
 

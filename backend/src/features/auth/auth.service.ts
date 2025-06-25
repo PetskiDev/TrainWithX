@@ -26,7 +26,7 @@ export async function register(
   });
 
   // 4. Issue JWT
-  const token = generateToken(user.id);
+  const token = generateToken(user.id, user.isAdmin);
 
   return { token, userId: user.id, username: user.username };
 }
@@ -41,7 +41,7 @@ export async function login(
     throw new AppError('Invalid credentials.', 401);
   }
 
-  const token = generateToken(user.id);
+  const token = generateToken(user.id, user.isAdmin);
 
   return { token, userId: user.id, username: user.username };
 }
