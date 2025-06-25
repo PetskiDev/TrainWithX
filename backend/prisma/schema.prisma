@@ -30,18 +30,20 @@ model Creator {
 }
 
 model Plan {
-  id          Int       @id @default(autoincrement())
-  title       String
-  slug        String    @unique @db.VarChar(50)
-  description String
-  price       Decimal   @db.Decimal(10, 2)
-  preview     String?
-  markdown    String?
-  metadata    Json?
-  createdAt   DateTime  @default(now())
-  creatorId   Int
-  creator     Creator   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  purchases   Purchase[]
+  id                    Int       @id @default(autoincrement())
+  title                 String
+  slug                  String    @unique @db.VarChar(50)
+  description           String
+  price                 Decimal   @db.Decimal(10, 2)
+  originalPrice         Decimal?   @db.Decimal(10, 2)
+  image                 String?
+  preview               String?
+  markdown              String?
+  metadata              Json?
+  createdAt             DateTime  @default(now())
+  creatorId             Int
+  creator               Creator   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  purchases             Purchase[]
 }
 
 model Purchase {

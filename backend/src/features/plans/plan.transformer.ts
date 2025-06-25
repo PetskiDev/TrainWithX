@@ -12,6 +12,9 @@ export function toPlanPreview(
     price: Number(plan.price),
     creatorUsername: plan.creator.user.username,
     creatorSubdomain: plan.creator.subdomain,
+    //image: plan.image ?? undefined,
+    originalPrice:
+      plan.originalPrice !== null ? Number(plan.originalPrice) : undefined,
   };
 }
 

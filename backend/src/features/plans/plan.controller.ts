@@ -41,7 +41,8 @@ export async function getPlanWithSlug(req: Request, res: Response) {
 
 /** POST /api/v1/admin/plans */
 export async function createPlanAsAdmin(req: Request, res: Response) {
-  const { title, description, slug, price, creatorId } = req.body;
+  const { title, description, slug, price, creatorId, originalPrice } =
+    req.body;
 
   if (!title || !description || !slug || price === undefined || !creatorId) {
     throw new AppError(
@@ -55,6 +56,7 @@ export async function createPlanAsAdmin(req: Request, res: Response) {
     description,
     slug,
     price: Number(price),
+    originalPrice,
   });
 
   res.status(201).json(toPlanPreview(plan));

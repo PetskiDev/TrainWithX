@@ -7,6 +7,7 @@ export interface CreatePlanDto {
   description: string;
   slug: string; // must be unique per platform
   price: number; // Decimal(10,2) in Prisma schema
+  originalPrice?: number; // optional
 }
 
 export async function fetchAllPlans() {
@@ -54,6 +55,7 @@ export async function createPlanSvc(creatorId: number, dto: CreatePlanDto) {
         description: dto.description,
         slug: dto.slug,
         price: dto.price,
+        originalPrice: dto.originalPrice, // may be undefined
         creatorId,
       },
       include: {

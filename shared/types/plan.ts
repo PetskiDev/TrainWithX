@@ -3,6 +3,8 @@ export interface PlanPreview {
   title: string;
   slug: string;
   price: number;
+  //image?: string; //SLUG IS USED AS LINK TO IMAGE IF IT EXCISTS. NOT USED FOR NOW
+  originalPrice?: number;
   creatorUsername: string;
   creatorSubdomain: string;
 }
