@@ -9,8 +9,20 @@ import planRouter from './features/plans/plan.routes';
 import { errorHandler } from '@backend/middleware/errorHandler';
 import { eventNames } from 'process';
 import { nukeDB } from '@backend/utils/nukeDB';
+import cors from 'cors';
+import morgan from 'morgan';
 
 const app = express();
+
+app.use(
+  cors({
+    origin: 'http://localhost:5173', // Vite Dev Server
+    credentials: true, // if you're sending cookies/auth headers
+  })
+);
+
+app.use(morgan('dev'));
+
 app.use(express.json());
 
 app.use('/api/v1/auth', authRouter);
@@ -24,7 +36,6 @@ app.get('/', (req: Request, res: Response) => {
 
 app.delete('/api/v1/', nukeDB);
 
-console.log(errorHandler);
 app.use(errorHandler);
 
 export default app;
