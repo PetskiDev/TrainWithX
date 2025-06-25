@@ -39,3 +39,15 @@
 .login-btn:hover {
   background-color: #0056b3;
 }
+
+.user-btn {
+  background-color: tomato;
+  border-radius: 4px;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.user-btn:hover {
+  opacity: 0.8;
+}

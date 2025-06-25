@@ -2,12 +2,13 @@ import { useState } from 'react';
 import './LoginPage.css';
 import type { LoginResponse } from '@shared/types/auth';
 import { useNavigate } from 'react-router-dom';
-import NavBar from '@frontend/components/NavBar';
+import { useAuth } from '@frontend/context/AuthContext';
 
 function LoginPage() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -31,8 +32,7 @@ function LoginPage() {
 
       const data: LoginResponse = await res.json();
 
-      localStorage.setItem('token', data.token);
-
+      login(data.token, data.username);
       console.log('Logged in! User ID:', data.userId);
 
       navigate('/me');
@@ -42,36 +42,33 @@ function LoginPage() {
   };
 
   return (
-    <>
-      <NavBar />
-      <div className="login-page">
-        <form className="login-form" onSubmit={handleSubmit}>
-          <h2>Login</h2>
+    <div className="login-page">
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2>Login</h2>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
+        />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          required
+        />
 
-          {error && <p className="error-msg">{error}</p>}
+        {error && <p className="error-msg">{error}</p>}
 
-          <button type="submit">Login</button>
-        </form>
-      </div>
-    </>
+        <button type="submit">Login</button>
+      </form>
+    </div>
   );
 }
 

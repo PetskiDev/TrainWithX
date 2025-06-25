@@ -43,5 +43,5 @@ export async function login(
 
   const token = generateToken(user.id);
 
-  return { token, userId: user.id };
+  return { token, userId: user.id, username: user.username };
 }

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import NavBar from '../../components/NavBar';
 import type { PlanPreview } from '@shared/types/plan';
 import PlanList from '@frontend/pages/Plans/PlanList';
 
@@ -27,7 +26,6 @@ function PlansPage() {
 
   return (
     <>
-      <NavBar />
       <main style={{ padding: '2rem' }}>
         {loading ? <p>Loading...</p> : <PlanList plans={plans} />}
       </main>
