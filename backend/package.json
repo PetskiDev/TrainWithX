@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --project tsconfig.json --require tsconfig-paths/register src/index.ts",
-    "build": "tsc && npx tsc-alias --copy-files",
-    "start": "NODE_ENV=production node dist/backend/src/index.js",
+    "build": "tsc && npx tsc-alias",
     "prisma": "prisma"
   },
   "keywords": [],

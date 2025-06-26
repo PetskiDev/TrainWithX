@@ -1,6 +1,5 @@
-import { User, Creator } from '../../generated/prisma';
+import { User, Creator } from '@prisma/client';
 import { UserPreview } from '@shared/types/user';
-
 
 export function transformUserToPreview(
   user: User & { creator?: Creator | null }

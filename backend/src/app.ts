@@ -24,6 +24,10 @@ app.use('/api/v1', apiRouter);
 app.use(express.json());
 
 if (process.env.NODE_ENV === 'production') {
+  app.get('/', (req: Request, res: Response) => {
+    res.send('PROD BROKEN, FIXING PATHS');
+  });
+
   const dist = path.join(__dirname, '../frontend/dist');
   app.use(express.static(dist));
   app.get('*', (_, res) => res.sendFile(path.join(dist, 'index.html')));

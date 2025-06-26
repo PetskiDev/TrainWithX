@@ -1,6 +1,6 @@
 import { prisma } from '@backend/utils/prisma';
 import { AppError } from '@backend/utils/AppError';
-import { PrismaClientKnownRequestError } from '../../generated/prisma/runtime/library';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 export async function fetchAllCreators() {
   return prisma.creator.findMany({
