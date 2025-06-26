@@ -14,8 +14,8 @@
 
 ## Tech Stack
 
-- **Backend**: Node.js, Express, MongoDB (Mongoose)
-- **Frontend**: React, Tailwind CSS
+- **Backend**: Node.js, Express, Prisma (PostgreSQL)
+- **Frontend**: React
 - **Auth**: JWT
 - **Payments**: Paddle
 - **Subdomains**: Wildcard DNS + Express middleware
