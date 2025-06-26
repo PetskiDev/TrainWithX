@@ -9,7 +9,6 @@ export async function getAllCreators(req: Request, res: Response) {
   res.json(previews);
 }
 
-
 // export async function getCreatorPlans(req: Request, res: Response) {
 //   const { username } = req.params;
 //   const plans = await creatorService.getCreatorPlans(username);

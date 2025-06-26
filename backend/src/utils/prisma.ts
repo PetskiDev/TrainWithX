@@ -1,4 +1,4 @@
-import { PrismaClient } from '@backend/generated/prisma';
+import { PrismaClient } from '../generated/prisma';
 
 /**
  * A single PrismaClient instance for the entire backend.

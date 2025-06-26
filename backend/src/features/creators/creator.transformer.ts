@@ -1,5 +1,5 @@
 // backend/src/features/creators/creator.transformer.ts
-import { Creator, User } from '@backend/generated/prisma';
+import { Creator, User } from '../../generated/prisma';
 import { CreatorPreview } from '@shared/types/creator';
 
 export function transformCreatorToPreview(

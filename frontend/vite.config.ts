@@ -13,5 +13,12 @@ export default defineConfig({
   server: {
     allowedHosts: true,
     port: 5173,
+    proxy: {
+      //VITE ONLY PROXIES IN npm run dev. in prod there is no vite and express serves the dist files. It is all backend.
+      '/api': {
+        target: 'http://localhost:4000',
+        changeOrigin: true,
+      },
+    },
   },
 });

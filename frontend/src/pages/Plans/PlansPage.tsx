@@ -11,7 +11,7 @@ function PlansPage() {
 
     const fetchPlans = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/v1/plans');
+        const res = await fetch('/api/v1/plans');
         const data = await res.json();
         setPlans(data);
       } catch (err) {

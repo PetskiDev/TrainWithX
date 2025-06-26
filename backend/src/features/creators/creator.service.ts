@@ -1,6 +1,6 @@
 import { prisma } from '@backend/utils/prisma';
 import { AppError } from '@backend/utils/AppError';
-import { PrismaClientKnownRequestError } from '@backend/generated/prisma/runtime/library';
+import { PrismaClientKnownRequestError } from '../../generated/prisma/runtime/library';
 
 export async function fetchAllCreators() {
   return prisma.creator.findMany({
@@ -29,7 +29,6 @@ export async function upgradeUser(userId: number, subdomain: string) {
     throw err;
   }
 }
-
 
 // export async function fetchCreatorPlans(username: string) {
 //   const creator = await prisma.creator.findFirst({

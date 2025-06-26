@@ -1,5 +1,5 @@
 // backend/src/features/plans/plan.transformer.ts
-import { Plan, Creator, User } from '@backend/generated/prisma';
+import { Plan, Creator, User } from '../../generated/prisma';
 import { PlanPreview, PlanDetail } from '@shared/types/plan';
 
 export function toPlanPreview(

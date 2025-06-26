@@ -1,4 +1,4 @@
-import { User, Creator } from '@backend/generated/prisma';
+import { User, Creator } from '../../generated/prisma';
 import { UserPreview } from '@shared/types/user';
 
 
