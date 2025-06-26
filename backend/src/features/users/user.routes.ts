@@ -4,8 +4,8 @@ import {
   getUserPlans,
   getUsers,
   promoteToCreator,
-} from '@backend/features/users/user.controller';
-import { doAuth } from '@backend/middleware/auth';
+} from '@src/features/users/user.controller';
+import { doAuth } from '@src/middleware/auth';
 import { Router } from 'express';
 
 const router = Router();

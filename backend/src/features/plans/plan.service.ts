@@ -1,6 +1,6 @@
 // backend/src/features/plans/plan.service.ts
-import { prisma } from '@backend/utils/prisma';
-import { AppError } from '@backend/utils/AppError';
+import { prisma } from '@src/utils/prisma';
+import { AppError } from '@src/utils/AppError';
 
 export interface CreatePlanDto {
   title: string;

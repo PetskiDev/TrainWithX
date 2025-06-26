@@ -1,5 +1,5 @@
 // scripts/wipe.ts
-import { prisma } from '@backend/utils/prisma';
+import { prisma } from '@src/utils/prisma';
 import { Request, Response } from 'express';
 export const nukeDB = async function (req: Request, res: Response) {
   await prisma.$executeRawUnsafe(`

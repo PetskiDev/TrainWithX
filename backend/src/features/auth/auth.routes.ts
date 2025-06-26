@@ -1,5 +1,7 @@
-
-import { loginController, registerController } from '@backend/features/auth/auth.controller';
+import {
+  loginController,
+  registerController,
+} from '@src/features/auth/auth.controller';
 import { Router } from 'express';
 
 const router = Router();

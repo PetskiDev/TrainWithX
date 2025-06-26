@@ -1,8 +1,8 @@
 import {
   transformUsersToPreview,
   transformUserToPreview,
-} from '@backend/features/users/user.transformer';
-import { prisma } from '@backend/utils/prisma';
+} from '@src/features/users/user.transformer';
+import { prisma } from '@src/utils/prisma';
 import { UserPreview } from '@shared/types/user';
 
 export async function fetchAllUsers(): Promise<UserPreview[]> {

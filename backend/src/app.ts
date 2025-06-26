@@ -2,7 +2,7 @@ import 'express-async-errors';
 
 import express from 'express';
 import { Request, Response } from 'express';
-import { errorHandler } from '@backend/middleware/errorHandler';
+import { errorHandler } from '@src/middleware/errorHandler';
 import cors from 'cors';
 import morgan from 'morgan';
 import apiRouter from './api.router';

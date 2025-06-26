@@ -7,4 +7,3 @@ export interface CreatorPreview {
   coverUrl: string | null;
   bio: string | null;
 }
-

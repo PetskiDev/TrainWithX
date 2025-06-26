@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
-import { prisma } from '@backend/utils/prisma';
-import { generateToken } from '@backend/utils/jwt';
-import { AppError } from '@backend/utils/AppError';
+import { prisma } from '@src/utils/prisma';
+import { generateToken } from '@src/utils/jwt';
+import { AppError } from '@src/utils/AppError';
 import { LoginResponse } from '@shared/types/auth';
 
 export async function register(

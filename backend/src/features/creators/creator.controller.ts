@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import * as creatorService from './creator.service';
 import { transformCreatorToPreview } from './creator.transformer';
-import { AppError } from '@backend/utils/AppError';
+import { AppError } from '@src/utils/AppError';
 
 export async function getAllCreators(req: Request, res: Response) {
   const creators = await creatorService.fetchAllCreators();

@@ -3,7 +3,7 @@ import authRouter from './features/auth/auth.routes';
 import creatorRouter from './features/creators/creator.routes';
 import planRouter from './features/plans/plan.routes';
 import { Router } from 'express';
-import { nukeDB } from '@backend/utils/nukeDB';
+import { nukeDB } from '@src/utils/nukeDB';
 
 const router = Router();
 

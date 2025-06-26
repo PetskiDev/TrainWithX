@@ -1,5 +1,5 @@
-import { prisma } from '@backend/utils/prisma';
-import { AppError } from '@backend/utils/AppError';
+import { prisma } from '@src/utils/prisma';
+import { AppError } from '@src/utils/AppError';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 export async function fetchAllCreators() {

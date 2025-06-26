@@ -6,7 +6,7 @@ import {
   fetchPlanBySlug,
   createPlanSvc,
 } from './plan.service';
-import { AppError } from '@backend/utils/AppError';
+import { AppError } from '@src/utils/AppError';
 import { toPlanDetail, toPlanPreview } from './plan.transformer';
 
 /** GET /api/v1/plans */

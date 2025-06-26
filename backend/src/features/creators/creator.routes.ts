@@ -1,10 +1,8 @@
-import {
-  getAllCreators,
-} from '@backend/features/creators/creator.controller';
+import { getAllCreators } from '@src/features/creators/creator.controller';
 import {
   getCreatorPlans,
   getPlansOfCreatorWithSlug,
-} from '@backend/features/plans/plan.controller';
+} from '@src/features/plans/plan.controller';
 import { Router } from 'express';
 
 const router = Router();

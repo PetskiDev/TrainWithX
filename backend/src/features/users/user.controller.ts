@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { upgradeUser } from '@backend/features/creators/creator.service';
-import { AppError } from '@backend/utils/AppError';
-import { transformCreatorToPreview } from '@backend/features/creators/creator.transformer';
-import { fetchAllUsers, fetchUser } from '@backend/features/users/user.service';
+import { upgradeUser } from '@src/features/creators/creator.service';
+import { AppError } from '@src/utils/AppError';
+import { transformCreatorToPreview } from '@src/features/creators/creator.transformer';
+import { fetchAllUsers, fetchUser } from '@src/features/users/user.service';
 
 export const getUsers = async (req: Request, res: Response) => {
   const users = await fetchAllUsers();
