@@ -23,17 +23,15 @@ app.use('/api/v1', apiRouter);
 
 app.use(express.json());
 
+//this part only runs when vite does not run
+//in dev vite handles this responses and only proxies /api calls
 if (process.env.NODE_ENV === 'production') {
-  app.get('/', (req: Request, res: Response) => {
-    res.send('PROD BROKEN, FIXING PATHS');
-  });
-
-  const dist = path.join(__dirname, '../frontend/dist');
-  app.use(express.static(dist));
-  app.get('*', (_, res) => res.sendFile(path.join(dist, 'index.html')));
+  const dist = path.join(__dirname, '../../frontend/dist');
+  app.use(express.static(dist)); //mounts the static files
+  app.get('*', (_, res) => res.sendFile(path.join(dist, 'index.html'))); //mounts indexjs that is the whole react
 } else {
   app.get('/', (req: Request, res: Response) => {
-    res.send('DEV ONLY API WORKS');
+    res.send('DEV ENV - ONLY API');
   });
 }
 
