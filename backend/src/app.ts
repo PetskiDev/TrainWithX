@@ -19,9 +19,9 @@ app.use(
 );
 
 app.use(morgan('dev'));
-app.use('/api/v1', apiRouter);
-
 app.use(express.json());
+
+app.use('/api/v1', apiRouter);
 
 //this part only runs when vite does not run
 //in dev vite handles this responses and only proxies /api calls
