@@ -3,12 +3,7 @@ import jwt from 'jsonwebtoken';
 import { env } from '@src/utils/env';
 import { AppError } from '@src/utils/AppError';
 
-interface JwtPayload {
-  sub: number;
-  isAdmin: boolean;
-  iat: number;
-  exp: number;
-}
+import type { JwtPayload } from '@src/utils/jwt';
 
 declare global {
   namespace Express {
@@ -19,13 +14,9 @@ declare global {
 }
 
 export function doAuth(req: Request, _res: Response, next: NextFunction) {
-  console.log('AUUUUU');
-  const header = req.headers.authorization;
-  if (!header || !header.startsWith('Bearer ')) {
-    throw new AppError('Unauthorized', 401);
-  }
-
-  const token = header.split(' ')[1];
+  const token = req.cookies?.access; // ← only cookie
+  console.log('AUUUTHH');
+  if (!token) throw new AppError('Unauthorized', 401);
 
   try {
     const payload = jwt.verify(token, env.JWT_SECRET) as unknown as JwtPayload;

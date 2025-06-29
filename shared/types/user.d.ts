@@ -1,5 +1,6 @@
-export interface UserPreview {
+export interface UserDto {
   id: number;
   email: string;
   username: string;
+  isAdmin: boolean;
 }

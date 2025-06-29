@@ -1,18 +1,19 @@
 import { User, Creator } from '@prisma/client';
-import { UserPreview } from '@shared/types/user';
+import { UserDto } from '@shared/types/user';
 
 export function transformUserToPreview(
   user: User & { creator?: Creator | null }
-): UserPreview {
+): UserDto {
   return {
     id: user.id,
     username: user.username,
     email: user.email,
+    isAdmin: user.isAdmin
   };
 }
 
 export function transformUsersToPreview(
   users: (User & { creator?: Creator | null })[]
-): UserPreview[] {
+): UserDto[] {
   return users.map(transformUserToPreview);
 }

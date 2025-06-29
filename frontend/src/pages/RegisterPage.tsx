@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './LoginPage.css';
-import type { LoginResponse } from '@shared/types/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@frontend/context/AuthContext';
 
@@ -8,10 +7,13 @@ function RegisterPage() {
   const [form, setForm] = useState({ email: '', username: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { username, login } = useAuth();
-  if (username) {
-    navigate('/me'); //cannot access login page while logged in.
-  }
+  const { user, loading, register } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/me');
+    }
+  }, [loading, user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,22 +24,7 @@ function RegisterPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/v1/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        const { error } = await res.json();
-        throw new Error(error || 'Register failed');
-      }
-
-      const data: LoginResponse = await res.json();
-
-      login(data.token, data.username);
-      console.log('Logged in! User ID:', data.userId);
-
+      await register(form.email, form.username, form.password);
       navigate('/me');
     } catch (err: any) {
       setError(err.message);
@@ -50,7 +37,7 @@ function RegisterPage() {
         <h2>Register</h2>
 
         <input
-          type="username"
+          type="text"
           name="username"
           placeholder="Username"
           value={form.username}

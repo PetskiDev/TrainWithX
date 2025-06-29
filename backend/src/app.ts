@@ -7,6 +7,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import apiRouter from './api.router';
 import path from 'path';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(
     credentials: true,
   })
 );
+app.use(cookieParser());
 
 app.use(morgan('dev'));
 app.use(express.json());

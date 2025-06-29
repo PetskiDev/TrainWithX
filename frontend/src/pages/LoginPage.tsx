@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './LoginPage.css';
-import type { LoginResponse } from '@shared/types/auth';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@frontend/context/AuthContext';
 
@@ -8,10 +7,15 @@ function LoginPage() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { username, login } = useAuth();
-  if (username) {
-    navigate('/me'); //cannot access login page while logged in.
-  }
+  const { user, loading, login } = useAuth();
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/me');
+    }
+  }, [loading, user, navigate]);
+
+  if (loading || user) return <p>Loading...</p>;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,22 +26,7 @@ function LoginPage() {
     setError('');
 
     try {
-      const res = await fetch('/api/v1/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        const { error } = await res.json();
-        throw new Error(error || 'Login failed');
-      }
-
-      const data: LoginResponse = await res.json();
-
-      login(data.token, data.username);
-      console.log('Logged in! User ID:', data.userId);
-
+      await login(form.email, form.password);
       navigate('/me');
     } catch (err: any) {
       setError(err.message);

@@ -4,7 +4,7 @@ import { useAuth } from '@frontend/context/AuthContext';
 import './AccountMenu.css';
 
 function AccountMenu() {
-  const { username, logout } = useAuth();
+  const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const navigator = useNavigate();
@@ -19,12 +19,12 @@ function AccountMenu() {
   return (
     <div className="account-menu" ref={ref}>
       <button className="account-trigger" onClick={() => setOpen((o) => !o)}>
-        {username ? username : 'Account'} ▾
+        {user ? user.username : 'Account'} ▾
       </button>
 
       {open && (
         <div className="account-dropdown">
-          {!username ? (
+          {!user ? (
             <>
               <Link to="/login" onClick={() => setOpen(false)}>
                 Login
@@ -42,7 +42,7 @@ function AccountMenu() {
                   setOpen(false);
                 }}
               >
-                {username}
+                {user.username}
               </button>
               <button onClick={logout}>Logout</button>
             </>
