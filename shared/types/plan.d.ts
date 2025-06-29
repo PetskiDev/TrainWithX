@@ -9,6 +9,15 @@ export interface PlanPreview {
   creatorSubdomain: string;
 }
 
+export interface CreatePlanDto {
+  creatorId: number;
+  title: string;
+  description: string;
+  slug: string; // must be unique per platform
+  price: number; // Decimal(10,2) in Prisma schema
+  originalPrice?: number; // optional
+}
+
 export interface PlanDetail extends PlanPreview {
   description: string;
   markdown: string | null;

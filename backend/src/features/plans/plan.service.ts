@@ -1,14 +1,7 @@
 // backend/src/features/plans/plan.service.ts
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
-
-export interface CreatePlanDto {
-  title: string;
-  description: string;
-  slug: string; // must be unique per platform
-  price: number; // Decimal(10,2) in Prisma schema
-  originalPrice?: number; // optional
-}
+import { CreatePlanDto } from '@shared/types/plan';
 
 export async function fetchAllPlans() {
   return prisma.plan.findMany({
@@ -47,16 +40,16 @@ export async function fetchPlanBySlug(slug: string) {
   return plan;
 }
 
-export async function createPlanSvc(creatorId: number, dto: CreatePlanDto) {
+export async function createPlanSvc(dto: CreatePlanDto) {
   try {
     return await prisma.plan.create({
       data: {
+        creatorId: dto.creatorId,
         title: dto.title,
         description: dto.description,
         slug: dto.slug,
         price: dto.price,
         originalPrice: dto.originalPrice, // may be undefined
-        creatorId,
       },
       include: {
         creator: {

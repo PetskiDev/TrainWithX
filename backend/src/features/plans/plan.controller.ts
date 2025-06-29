@@ -51,7 +51,8 @@ export async function createPlanAsAdmin(req: Request, res: Response) {
     );
   }
 
-  const plan = await createPlanSvc(Number(creatorId), {
+  const plan = await createPlanSvc({
+    creatorId,
     title,
     description,
     slug,
