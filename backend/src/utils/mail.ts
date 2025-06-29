@@ -27,6 +27,7 @@ export async function sendMail({
   subject: string;
   html: string;
 }) {
+  console.log(env.EMAIL_ENABLED);
   if (!env.EMAIL_ENABLED) {
     console.log(`[DEV] Skipping email to ${to}: ${subject}`);
     return;

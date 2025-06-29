@@ -12,10 +12,12 @@ model User {
   email     String    @unique @db.VarChar(255)
   username  String    @unique @db.VarChar(30)
   password  String
+  isVerified Boolean  @default(false)
   isAdmin   Boolean   @default(false)
   createdAt DateTime  @default(now())
   creator   Creator?
   purchases Purchase[]
+  emailVerificationToken EmailVerificationToken[]
 }
 
 model Creator {
@@ -56,4 +58,14 @@ model Purchase {
   plan      Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
 
   @@unique([userId, planId])
+}
+
+model EmailVerificationToken {
+  token     String   @id
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }

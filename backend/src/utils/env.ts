@@ -11,10 +11,11 @@ function getEnvVariable(key: string, required = true): string {
 }
 
 export const env = {
+  HOST: getEnvVariable('HOST'),
   DATABASE_URL: getEnvVariable('DATABASE_URL'),
   JWT_SECRET: getEnvVariable('JWT_SECRET'),
   PORT: parseInt(getEnvVariable('PORT', false) || '4000', 10),
   ZOHO_USER: getEnvVariable('ZOHO_USER'),
   ZOHO_PASS: getEnvVariable('ZOHO_PASS'),
-  EMAIL_ENABLED: getEnvVariable('EMAIL_ENABLED'),
+  EMAIL_ENABLED: getEnvVariable('EMAIL_ENABLED') === 'true',
 };

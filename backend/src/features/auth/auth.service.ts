@@ -4,6 +4,9 @@ import { generateToken } from '@src/utils/jwt';
 import { AppError } from '@src/utils/AppError';
 import { AuthResult } from '@src/features/auth/auth.types';
 import { transformUserToPreview } from '@src/features/users/user.transformer';
+import { env } from '@src/utils/env';
+import { sendMailFromFile } from '@src/utils/mail';
+import { addMinutes } from 'date-fns';
 
 export async function register(
   email: string,
@@ -25,10 +28,30 @@ export async function register(
   });
 
   // 4. Issue JWT
-  const token = generateToken(user.id, user.isAdmin);
 
+  const rawToken = crypto.randomUUID();
+  const hashedToken = await bcrypt.hash(rawToken, 10);
+
+  const expires = addMinutes(new Date(), 10); // valid for 10 minutes
+
+  await prisma.emailVerificationToken.deleteMany({
+    where: { expiresAt: { lt: new Date() } },
+  });
+
+  await prisma.emailVerificationToken.create({
+    data: {
+      token: hashedToken,
+      userId: user.id,
+      expiresAt: expires,
+    },
+  });
+
+  await sendMailFromFile(email, 'Confirm your email', 'verify-email', {
+    name: user.username,
+    link: `${env.HOST}/verify-email?token=${rawToken}`,
+  });
   return {
-    token,
+    token: generateToken(user.id, user.isAdmin),
     user: transformUserToPreview(user),
   };
 }
