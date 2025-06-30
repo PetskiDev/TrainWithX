@@ -1,7 +1,15 @@
 import { Request, Response } from 'express';
-import { login, register, verifyEmail } from './auth.service';
+import {
+  askGoogle,
+  login,
+  register,
+  getOrCreateGoogleUser,
+  verifyEmail,
+} from './auth.service';
 import { AppError } from '@src/utils/AppError';
 import { clearCookieOpts, cookieOpts } from '@src/utils/cookies';
+import querystring from 'node:querystring';
+import { env } from '@src/utils/env';
 
 export const registerController = async (req: Request, res: Response) => {
   const { email, username, password } = req.body;
@@ -41,4 +49,35 @@ export const verifyController = async (req: Request, res: Response) => {
     ok: true,
     message: 'Email successfully verified.',
   });
+};
+
+export const googleController = async (req: Request, res: Response) => {
+  const qs = querystring.stringify({
+    client_id: env.GOOGLE_CLIENT_ID,
+    redirect_uri: `${env.API_URL}/auth/google/callback`,
+    response_type: 'code',
+    scope: 'openid email profile',
+    prompt: 'select_account',
+  });
+  res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${qs}`);
+};
+
+export const googleCallbackController = async (req: Request, res: Response) => {
+  //get the auth code
+  const code = req.query.code as string | undefined;
+  if (!code) throw new AppError('Missing OAuth code', 400);
+
+  //use the code to ask google for the user
+  const { googleId, email, name } = await askGoogle(code);
+
+  const result = await getOrCreateGoogleUser({
+    googleId,
+    email,
+    name,
+  });
+
+  //google redirects to me, with cookie it hydrates.
+  res
+    .cookie('access', result.token, cookieOpts)
+    .redirect(`${env.FRONTEND_URL}/me`);
 };

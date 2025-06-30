@@ -11,11 +11,14 @@ function getEnvVariable(key: string, required = true): string {
 }
 
 export const env = {
-  HOST: getEnvVariable('HOST'),
+  FRONTEND_URL: getEnvVariable('FRONTEND_URL'),
+  API_URL: getEnvVariable('API_URL'),
   DATABASE_URL: getEnvVariable('DATABASE_URL'),
   JWT_SECRET: getEnvVariable('JWT_SECRET'),
   PORT: parseInt(getEnvVariable('PORT', false) || '4000', 10),
   ZOHO_USER: getEnvVariable('ZOHO_USER'),
   ZOHO_PASS: getEnvVariable('ZOHO_PASS'),
   EMAIL_ENABLED: getEnvVariable('EMAIL_ENABLED') === 'true',
+  GOOGLE_CLIENT_ID: getEnvVariable('GOOGLE_CLIENT_ID'),
+  GOOGLE_CLIENT_SECRET: getEnvVariable('GOOGLE_CLIENT_SECRET'),
 };

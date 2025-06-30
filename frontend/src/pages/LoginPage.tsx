@@ -10,21 +10,17 @@ function LoginPage() {
   const { user, loading, login } = useAuth();
 
   useEffect(() => {
-    if (!loading && user) {
-      navigate('/me');
-    }
+    if (!loading && user) navigate('/me');
   }, [loading, user, navigate]);
 
-  if (loading || user) return <p>Loading...</p>;
+  if (loading || user) return <p>Loading…</p>;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
     try {
       await login(form.email, form.password);
       navigate('/me');
@@ -58,7 +54,26 @@ function LoginPage() {
 
         {error && <p className="error-msg">{error}</p>}
 
-        <button type="submit">Login</button>
+        <button className="submit-btn" type="submit">
+          Login
+        </button>
+
+        <div className="divider">or</div>
+
+        <button
+          type="button"
+          className="google-btn"
+          onClick={() =>
+            (window.location.href = 'http://localhost:4000/api/v1/auth/google')
+          }
+        >
+          <img
+            src="/google-icon.png"
+            alt="Google Icon"
+            className="google-icon"
+          />
+          Continue with Google
+        </button>
       </form>
     </div>
   );

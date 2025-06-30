@@ -64,7 +64,26 @@ function RegisterPage() {
 
         {error && <p className="error-msg">{error}</p>}
 
-        <button type="submit">Register</button>
+        <button className="submit-btn" type="submit">
+          Register
+        </button>
+
+        <div className="divider">or</div>
+
+        <button
+          type="button"
+          className="google-btn"
+          onClick={() =>
+            (window.location.href = 'http://localhost:4000/api/v1/auth/google')
+          }
+        >
+          <img
+            src="/google-icon.png"
+            alt="Google Icon"
+            className="google-icon"
+          />
+          Continue with Google
+        </button>
       </form>
     </div>
   );

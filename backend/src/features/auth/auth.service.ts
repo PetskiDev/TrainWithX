@@ -7,6 +7,7 @@ import { transformUserToPreview } from '@src/features/users/user.transformer';
 import { env } from '@src/utils/env';
 import { sendMailFromFile } from '@src/utils/mail';
 import { addMinutes } from 'date-fns';
+import crypto from 'node:crypto';
 
 export async function register(
   email: string,
@@ -31,7 +32,7 @@ export async function register(
 
   const rawToken = crypto.randomUUID();
 
-  const expires = addMinutes(new Date(), 10); // valid for 10 minutes
+  const expires = addMinutes(new Date(), 30); // valid for 30 minutes
 
   await prisma.emailVerificationToken.deleteMany({
     where: { expiresAt: { lt: new Date() } },
@@ -47,7 +48,7 @@ export async function register(
 
   await sendMailFromFile(email, 'Confirm your email', 'verify-email', {
     name: user.username,
-    link: `${env.HOST}/verify-email?token=${rawToken}`,
+    link: `${env.FRONTEND_URL}/verify-email?token=${rawToken}`,
   });
   return {
     token: generateToken(user.id, user.isAdmin),
@@ -61,7 +62,14 @@ export async function login(
 ): Promise<AuthResult> {
   let user = await prisma.user.findUnique({ where: { email } });
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
+  //user excists but doesn't have password -> google auth
+  if (user && !user.password) {
+    throw new AppError('Use Google sign-in for this account.', 400);
+  }
+
+  
+  //eather doesn't excist or wrong password.
+  if (!user || !(await bcrypt.compare(password, user.password as string))) {
     throw new AppError('Invalid credentials.', 401);
   }
 
@@ -91,4 +99,98 @@ export async function verifyEmail(token: string) {
       where: { token: record.token },
     }),
   ]);
+}
+
+export async function askGoogle(code: string) {
+  const body = new URLSearchParams({
+    code,
+    client_id: env.GOOGLE_CLIENT_ID,
+    client_secret: env.GOOGLE_CLIENT_SECRET,
+    redirect_uri: `${env.API_URL}/auth/google/callback`,
+    grant_type: 'authorization_code',
+  }).toString();
+
+  const tokenResp = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body,
+  });
+
+  if (!tokenResp.ok) throw new AppError('Google token exchange failed', 502);
+  const { id_token } = (await tokenResp.json()) as { id_token: string };
+  const infoResp = await fetch(
+    `https://oauth2.googleapis.com/tokeninfo?id_token=${id_token}`
+  );
+  if (!infoResp.ok) throw new AppError('Invalid Google ID token', 502);
+  const {
+    sub: googleId,
+    email,
+    name,
+  } = (await infoResp.json()) as {
+    sub: string;
+    email: string;
+    name: string;
+  };
+  if (!email) throw new AppError('Google did not return e-mail', 400);
+  return { googleId, email, name };
+}
+
+export async function generateUniqueUsername(
+  base: string,
+  retries = 5
+): Promise<string> {
+  let attempt = 0;
+  let username = base;
+  while (await prisma.user.findUnique({ where: { username } })) {
+    if (++attempt > retries)
+      throw new AppError('Could not generate unique username', 500);
+    const suffix = Math.floor(1000 + Math.random() * 9000);
+    username = `${base}${suffix}`;
+  }
+  return username;
+}
+
+//IF user exicsts get the json for that
+//else creates a new user with random user.
+export async function getOrCreateGoogleUser({
+  email,
+  name,
+  googleId,
+}: {
+  email: string;
+  name: string;
+  googleId: string;
+}): Promise<AuthResult> {
+  let user = await prisma.user.findUnique({ where: { email } });
+  if (user) {
+    // email already exists
+    if (!user.googleId) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { googleId },
+      });
+    }
+    return {
+      token: generateToken(user.id, user.isAdmin),
+      user: transformUserToPreview(user),
+    };
+  }
+
+  let base = name.replace(/\s+/g, '').toLowerCase();
+  let username = await generateUniqueUsername(base);
+
+  user = await prisma.user.create({
+    data: {
+      email,
+      username,
+      password: null, // no password
+      googleId: googleId, // new column if you want to track it
+      isVerified: true, // Google already verified this email
+    },
+  });
+
+  return {
+    token: generateToken(user.id, user.isAdmin),
+    user: transformUserToPreview(user),
+  };
 }
