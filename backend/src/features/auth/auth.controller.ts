@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { login, register } from './auth.service';
+import { login, register, verifyEmail } from './auth.service';
 import { AppError } from '@src/utils/AppError';
 import { clearCookieOpts, cookieOpts } from '@src/utils/cookies';
 
@@ -29,4 +29,15 @@ export const loginController = async (req: Request, res: Response) => {
 export const logoutController = (req: Request, res: Response) => {
   res.clearCookie('access', clearCookieOpts);
   res.status(200).json({ message: 'Logged out' });
+};
+
+export const verifyController = (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  if (!token) throw new AppError('Token required', 400);
+
+  verifyEmail(token);
+
+  res.json({
+    message: 'Email successfully verified. You may now log in.',
+  });
 };

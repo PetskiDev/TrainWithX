@@ -30,7 +30,6 @@ export async function register(
   // 4. Issue JWT
 
   const rawToken = crypto.randomUUID();
-  const hashedToken = await bcrypt.hash(rawToken, 10);
 
   const expires = addMinutes(new Date(), 10); // valid for 10 minutes
 
@@ -40,7 +39,7 @@ export async function register(
 
   await prisma.emailVerificationToken.create({
     data: {
-      token: hashedToken,
+      token: rawToken,
       userId: user.id,
       expiresAt: expires,
     },
@@ -72,4 +71,25 @@ export async function login(
     token,
     user: transformUserToPreview(user),
   };
+}
+
+export async function verifyEmail(token: string) {
+  const record = await prisma.emailVerificationToken.findUnique({
+    where: { token },
+  });
+
+  if (!record || record.expiresAt < new Date()) {
+    throw new AppError('Invalid or expired token', 400);
+  }
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: record.userId },
+      data: { isVerified: true },
+    }),
+    prisma.emailVerificationToken.delete({
+      where: { token: record.token },
+    }),
+  ]);
+
 }
