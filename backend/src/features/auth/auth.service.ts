@@ -91,5 +91,4 @@ export async function verifyEmail(token: string) {
       where: { token: record.token },
     }),
   ]);
-
 }

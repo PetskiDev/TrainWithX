@@ -26,18 +26,19 @@ export const loginController = async (req: Request, res: Response) => {
   res.cookie('access', result.token, cookieOpts).status(200).json(result.user);
 };
 
-export const logoutController = (req: Request, res: Response) => {
+export const logoutController = async (req: Request, res: Response) => {
   res.clearCookie('access', clearCookieOpts);
   res.status(200).json({ message: 'Logged out' });
 };
 
-export const verifyController = (req: Request, res: Response) => {
-  const token = req.query.token as string;
+export const verifyController = async (req: Request, res: Response) => {
+  const { token } = req.body;
   if (!token) throw new AppError('Token required', 400);
 
-  verifyEmail(token);
+  await verifyEmail(token);
 
   res.json({
-    message: 'Email successfully verified. You may now log in.',
+    ok: true,
+    message: 'Email successfully verified.',
   });
 };

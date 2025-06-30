@@ -11,6 +11,6 @@ const router = Router();
 router.post('/login', loginController);
 router.post('/register', registerController);
 router.post('/logout', logoutController);
-router.get('/verify-email', verifyController);
+router.post('/verify-email', verifyController);
 
 export default router;
