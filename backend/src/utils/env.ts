@@ -21,4 +21,10 @@ export const env = {
   EMAIL_ENABLED: getEnvVariable('EMAIL_ENABLED') === 'true',
   GOOGLE_CLIENT_ID: getEnvVariable('GOOGLE_CLIENT_ID'),
   GOOGLE_CLIENT_SECRET: getEnvVariable('GOOGLE_CLIENT_SECRET'),
+
+  PADDLE_VENDOR_ID: getEnvVariable('PADDLE_VENDOR_ID'),
+  PADDLE_API_KEY: getEnvVariable('PADDLE_API_KEY'),
+  PADDLE_PUBLIC_KEY: getEnvVariable('PADDLE_PUBLIC_KEY'),
+  PADDLE_SANDBOX: getEnvVariable('PADDLE_SANDBOX'),
+  PADDLE_WEBHOOK_KEY: getEnvVariable('PADDLE_WEBHOOK_KEY'),
 };

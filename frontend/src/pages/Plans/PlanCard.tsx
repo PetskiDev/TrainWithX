@@ -1,3 +1,4 @@
+import { BuyButton } from '@frontend/components/BuyButton';
 import './PlanCard.css';
 import type { PlanPreview } from '@shared/types/plan';
 
@@ -30,6 +31,7 @@ function PlanCard({ plan }: Props) {
             <span className="original-price">MKD {plan.originalPrice}</span>
           )}
         </div>
+        <BuyButton planId={plan.id}></BuyButton>
       </div>
     </div>
   );

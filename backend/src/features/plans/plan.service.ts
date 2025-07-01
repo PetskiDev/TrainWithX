@@ -2,6 +2,7 @@
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
 import { CreatePlanDto } from '@shared/types/plan';
+import { createProductWithPrice } from '@src/utils/paddle';
 
 export async function fetchAllPlans() {
   return prisma.plan.findMany({
@@ -40,11 +41,19 @@ export async function fetchPlanBySlug(slug: string) {
   return plan;
 }
 
-export async function createPlanSvc(dto: CreatePlanDto) {
+export async function createPlanPaddleDb(dto: CreatePlanDto) {
+  const { product, price } = await createProductWithPrice({
+    name: dto.title,
+    description: dto.description,
+    inputPrice: dto.price,
+  });
+
   try {
     return await prisma.plan.create({
       data: {
         creatorId: dto.creatorId,
+        paddleProductId: product.id, //TEMP, FIRST MUST CREATE PADDLE PRODUCT.
+        paddlePriceId: price.id,
         title: dto.title,
         description: dto.description,
         slug: dto.slug,

@@ -33,10 +33,13 @@ model Creator {
 
 model Plan {
   id                    Int       @id @default(autoincrement())
+  paddleProductId       String       @unique
+  paddlePriceId         String       @unique
   title                 String
   slug                  String    @unique @db.VarChar(50)
   description           String
   price                 Decimal   @db.Decimal(10, 2)
+  currency              String    @default("USD")
   originalPrice         Decimal?   @db.Decimal(10, 2)
   image                 String?
   preview               String?
@@ -52,9 +55,9 @@ model Purchase {
   id        Int      @id @default(autoincrement())
   userId    Int
   planId    Int
-  price     Decimal  @db.Decimal(10, 2)
+  amount    Decimal  @db.Decimal(10, 2)
+  paddleOrderId Int  @unique
   timestamp DateTime @default(now())
-
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   plan      Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
 

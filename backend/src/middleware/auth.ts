@@ -15,7 +15,6 @@ declare global {
 
 export function doAuth(req: Request, _res: Response, next: NextFunction) {
   const token = req.cookies?.access; // ← only cookie
-  console.log('AUUUTHH');
   if (!token) throw new AppError('Unauthorized', 401);
 
   try {

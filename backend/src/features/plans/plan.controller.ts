@@ -4,7 +4,7 @@ import {
   fetchAllPlans,
   fetchCreatorPlans,
   fetchPlanBySlug,
-  createPlanSvc,
+  createPlanPaddleDb,
 } from './plan.service';
 import { AppError } from '@src/utils/AppError';
 import { toPlanDetail, toPlanPreview } from './plan.transformer';
@@ -51,7 +51,7 @@ export async function createPlanAsAdmin(req: Request, res: Response) {
     );
   }
 
-  const plan = await createPlanSvc({
+  const plan = await createPlanPaddleDb({
     creatorId,
     title,
     description,

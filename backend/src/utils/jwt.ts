@@ -11,7 +11,7 @@ export interface JwtPayload {
 
 export function generateToken(userId: number, isAdmin: boolean) {
   return jwt.sign({ sub: userId, isAdmin }, env.JWT_SECRET, {
-    expiresIn: '5m',
+    expiresIn: '1h',
   });
 }
 
