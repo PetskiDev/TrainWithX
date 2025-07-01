@@ -1,24 +1,28 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path'; // built-in Node module
+import { resolve } from 'path';
 
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      '@frontend': resolve(__dirname, './src'),
-      '@shared': resolve(__dirname, '../shared'),
-    },
-  },
-  server: {
-    allowedHosts: true,
-    port: 5173,
-    proxy: {
-      //VITE ONLY PROXIES IN npm run dev. in prod there is no vite and express serves the dist files. It is all backend.
-      '/api': {
-        target: 'http://localhost:4000',
-        changeOrigin: true,
+export default defineConfig(({ mode }) => {
+  // Pull in env vars for the current mode (development / production)
+  const env = loadEnv(mode, process.cwd(), '');
+
+  return {
+    plugins: [react()],
+    resolve: {
+      alias: {
+        '@frontend': resolve(__dirname, './src'),
+        '@shared': resolve(__dirname, '../shared'),
       },
     },
-  },
+    server: {
+      allowedHosts: true,
+      port: 5173,
+      proxy: {
+        '/api': {
+          target: env.API_URL,
+          changeOrigin: true,
+        },
+      },
+    },
+  };
 });

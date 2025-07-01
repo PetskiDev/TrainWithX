@@ -63,9 +63,7 @@ function LoginPage() {
         <button
           type="button"
           className="google-btn"
-          onClick={() =>
-            (window.location.href = 'http://localhost:4000/api/v1/auth/google')
-          }
+          onClick={() => (window.location.href = '/api/v1/auth/google')}
         >
           <img
             src="/google-icon.png"
