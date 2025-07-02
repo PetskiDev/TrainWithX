@@ -9,6 +9,7 @@ export async function checkoutService(planId: number, userId: number) {
   }
   const payLink = await generateTransaction({
     priceId: plan.paddlePriceId,
+    quantity: 1,
     userId,
   });
   return payLink;

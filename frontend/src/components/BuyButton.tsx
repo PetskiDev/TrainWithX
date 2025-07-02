@@ -1,11 +1,12 @@
 // components/BuyButton.tsx
+import { useAuth } from '@frontend/context/AuthContext';
 import { usePaddle } from '../context/PaddleContext';
 import { useState } from 'react';
 
 export function BuyButton({ planId }: { planId: number }) {
   const { paddle, loading } = usePaddle();
   const [busy, setBusy] = useState(false);
-
+  const { user } = useAuth();
   const openCheckout = async () => {
     if (!paddle) return;
 
@@ -22,7 +23,15 @@ export function BuyButton({ planId }: { planId: number }) {
       if (error || !token) throw new Error(error || 'No token');
 
       // 2️⃣ open Paddle modal
-      paddle.Checkout.open({ transactionId: token });
+      paddle.Checkout.open({
+        transactionId: token,
+        customer: {
+          email: user!.email,
+          address: {
+            countryCode: 'US',
+          },
+        },
+      });
     } catch (e: any) {
       alert(e.message);
     } finally {

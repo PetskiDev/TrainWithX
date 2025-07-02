@@ -53,6 +53,10 @@ export async function createProductWithPrice(
       amount: minorUnit,
       currencyCode: 'USD',
     },
+    quantity: {
+      minimum: 1,
+      maximum: 1,
+    },
     taxMode: 'account_setting',
     billingCycle: null, // Explicitly null to mark it as one-time
   };
