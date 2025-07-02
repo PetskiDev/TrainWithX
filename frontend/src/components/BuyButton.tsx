@@ -2,6 +2,7 @@
 import { useAuth } from '@frontend/context/AuthContext';
 import { usePaddle } from '../context/PaddleContext';
 import { useState } from 'react';
+import './BuyButton.css';
 
 export function BuyButton({ planId }: { planId: number }) {
   const { paddle, loading } = usePaddle();
@@ -40,7 +41,12 @@ export function BuyButton({ planId }: { planId: number }) {
   };
 
   return (
-    <button onClick={openCheckout} disabled={loading || busy}>
+    <button
+      className="buy-btn"
+      aria-busy={busy || loading}
+      onClick={openCheckout}
+      disabled={loading || busy}
+    >
       {busy ? 'Loading…' : 'Buy now'}
     </button>
   );

@@ -26,9 +26,9 @@ function PlanCard({ plan }: Props) {
         <p className="plan-creator">by {plan.creatorUsername}</p>
 
         <div className="plan-price">
-          <span className="price">MKD {plan.price}</span>
+          <span className="price">${plan.price}</span>
           {plan.originalPrice && (
-            <span className="original-price">MKD {plan.originalPrice}</span>
+            <span className="original-price">${plan.originalPrice}</span>
           )}
         </div>
         <BuyButton planId={plan.id}></BuyButton>
