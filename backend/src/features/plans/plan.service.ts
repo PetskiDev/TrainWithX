@@ -2,7 +2,7 @@
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
 import { CreatePlanDto } from '@shared/types/plan';
-import { createProductWithPrice } from '@src/utils/paddle';
+import { createDiscountFor, createProductWithPrice } from '@src/utils/paddle';
 
 export async function fetchAllPlans() {
   return prisma.plan.findMany({
@@ -45,8 +45,10 @@ export async function createPlanPaddleDb(dto: CreatePlanDto) {
   const { product, price } = await createProductWithPrice({
     name: dto.title,
     description: dto.description,
-    inputPrice: dto.price,
+    inputPrice: dto.originalPrice ? dto.originalPrice : dto.price,
   });
+
+  let discountId = await createDiscountFor(dto);
 
   try {
     return await prisma.plan.create({
@@ -59,6 +61,7 @@ export async function createPlanPaddleDb(dto: CreatePlanDto) {
         slug: dto.slug,
         price: dto.price,
         originalPrice: dto.originalPrice, // may be undefined
+        paddleDiscountId: discountId,
       },
       include: {
         creator: {

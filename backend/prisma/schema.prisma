@@ -41,6 +41,7 @@ model Plan {
   price                 Decimal   @db.Decimal(10, 2)
   currency              String    @default("USD")
   originalPrice         Decimal?   @db.Decimal(10, 2)
+  paddleDiscountId            String?
   image                 String?
   preview               String?
   markdown              String?

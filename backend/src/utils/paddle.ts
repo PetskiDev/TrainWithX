@@ -1,7 +1,9 @@
 import {
+  CreateDiscountRequestBody,
   CreatePriceRequestBody,
   CreateProductRequestBody,
   CreateTransactionRequestBody,
+  Discount,
   Environment,
   LogLevel,
   Paddle,
@@ -11,6 +13,7 @@ import {
   WebhooksValidator,
 } from '@paddle/paddle-node-sdk';
 import { Plan } from '@prisma/client';
+import { CreatePlanDto } from '@shared/types/plan';
 import { AppError } from '@src/utils/AppError';
 import { env } from '@src/utils/env';
 
@@ -20,8 +23,6 @@ interface CreatePaddleInput {
   description: string;
 }
 
-export const webhooksValidator = new WebhooksValidator();
-
 export const paddle = new Paddle(env.PADDLE_API_KEY, {
   environment:
     env.PADDLE_SANDBOX === 'true'
@@ -29,6 +30,31 @@ export const paddle = new Paddle(env.PADDLE_API_KEY, {
       : Environment.production,
   logLevel: LogLevel.error,
 });
+
+async function createDiscount(
+  requestBody: CreateDiscountRequestBody
+): Promise<Discount | undefined> {
+  try {
+    const discount = await paddle.discounts.create(requestBody);
+    return discount;
+  } catch (e) {
+    console.error('Error creating discount:', e);
+  }
+}
+
+export async function createDiscountFor(dto: CreatePlanDto) {
+  if (!dto.originalPrice || dto.originalPrice <= dto.price) return undefined;
+  const discountAmount = Math.round(
+    (dto.originalPrice - dto.price) * 100
+  ).toString();
+  let discount = await createDiscount({
+    amount: discountAmount,
+    type: 'flat',
+    description: `Discount for ${dto.slug}`,
+    currencyCode: 'USD',
+  });
+  return discount?.id;
+}
 
 export async function createProductWithPrice(
   input: CreatePaddleInput
@@ -81,6 +107,7 @@ export async function generateTransaction(opts: {
         quantity: opts.quantity ?? 1,
       },
     ],
+    discountId: opts.plan.paddleDiscountId,
     customData: { userId: opts.userId, planId: opts.plan.id }, // comes back in webhook
   };
 
@@ -92,29 +119,3 @@ export async function generateTransaction(opts: {
 
   return tx.id;
 }
-
-//API WAY
-// /** Generate a one-off pay link for a Paddle product or plan */
-// export async function generatePayLink(opts: {
-//   productId: number;
-//   userId: number;
-// }): Promise<string> {
-//   const body = qs.stringify({
-//     vendor_id: env.PADDLE_VENDOR_ID,
-//     vendor_auth_code: env.PADDLE_API_KEY,
-//     product_id: opts.productId,
-//     // metadata that comes back in webhooks:
-//     passthrough: JSON.stringify({ userId: opts.userId }),
-//   });
-
-//   const res = await fetch(`${BASE_URL}/product/generate_pay_link`, {
-//     method: 'POST',
-//     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-//     body,
-//   });
-
-//   const json = await res.json();
-//   if (!json.success) throw new Error('Paddle error: ' + JSON.stringify(json));
-
-//   return json.response.url as string; // e.g. https://pay.paddle.com/checkout/xyz
-// }
