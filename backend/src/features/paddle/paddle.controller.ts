@@ -1,11 +1,17 @@
 import {
   checkoutService,
+  paymentComplete,
 } from '@src/features/paddle/paddle.service';
 import { AppError } from '@src/utils/AppError';
 import { Request, Response } from 'express';
 import { env } from '@src/utils/env';
-import { WebhooksValidator } from '@paddle/paddle-node-sdk';
-import { webhooksValidator } from '@src/utils/paddle';
+import {
+  EventEntity,
+  EventName,
+  TransactionNotification,
+  WebhooksValidator,
+} from '@paddle/paddle-node-sdk';
+import { paddle } from '@src/utils/paddle';
 
 const verifier = new WebhooksValidator();
 
@@ -22,33 +28,42 @@ export async function planCheckoutController(req: Request, res: Response) {
   res.json({ token }); // front-end will redirect/open this
 }
 
-// export async function paddleWebhookController(req: Request, res: Response) {
-//   const signatureHeader = req.headers['paddle-signature'] as string;
+// raw body
 
-//   const valid = await webhooksValidator.isValidSignature(
-//     req.body,
-//     env.PADDLE_WEBHOOK_KEY,
-//     signatureHeader
-//   );
+interface TransactionCustomData {
+  userId: number;
+  planId: number;
+}
+export async function paddleWebhookController(req: Request, res: Response) {
+  const signature = (req.headers['paddle-signature'] as string) || '';
+  const rawRequestBody: string = req.body.toString();
+  const secretKey = env.PADDLE_WEBHOOK_KEY;
+  let eventData: EventEntity;
+  try {
+    eventData = await paddle.webhooks.unmarshal(
+      rawRequestBody,
+      secretKey,
+      signature
+    );
+  } catch (e) {
+    throw new AppError('Invalid Signature', 400);
+  }
 
-//   if (!valid) {
-//     throw new AppError('Invalid Signature', 401);
-//   }
-//   const event = req.body.event;
-//   const { userId, planId } = event.custom_data;
+  switch (eventData.eventType) {
+    case EventName.TransactionPaid:
+      const data = eventData.data as TransactionNotification;
+      const customData = data.customData as TransactionCustomData;
+      console.log('Transaction paid: ', `id:${data.id} Info:${customData}`);
+      await paymentComplete({
+        userId: customData.userId,
+        planId: customData.planId,
+        amount: Number(data.details?.totals?.total) / 100.0,
+        transactionId: data.id,
+      });
+      break;
+    default:
+      console.log('Unhandled Paddle event: ', eventData.eventType);
+  }
 
-//   switch (event.eventType) {
-//     case 'transaction.paid':
-//       console.log('Transaction paid:', event.data);
-//       await paymentComplete(userId, planId, event);
-
-//       break;
-//     case 'subscription.updated':
-//       console.log('Subscription updated:', event.data);
-//       break;
-//     default:
-//       console.log('Unhandled Paddle event:', event.eventType);
-//   }
-
-//   res.status(200).json({ success: true });
-// }
+  res.status(200).json({ success: true });
+}

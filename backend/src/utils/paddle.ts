@@ -10,6 +10,7 @@ import {
   Transaction,
   WebhooksValidator,
 } from '@paddle/paddle-node-sdk';
+import { Plan } from '@prisma/client';
 import { AppError } from '@src/utils/AppError';
 import { env } from '@src/utils/env';
 
@@ -67,7 +68,7 @@ export async function createProductWithPrice(
 }
 
 export async function generateTransaction(opts: {
-  priceId: string; // "pri_01..." (one-time price)
+  plan: Plan;
   userId: number; // your internal user to embed in passthrough
   quantity?: number; // default 1
   successUrl?: string; // optional thank-you redirect
@@ -76,11 +77,11 @@ export async function generateTransaction(opts: {
   const body: CreateTransactionRequestBody = {
     items: [
       {
-        priceId: opts.priceId,
+        priceId: opts.plan.paddlePriceId,
         quantity: opts.quantity ?? 1,
       },
     ],
-    customData: { userId: opts.userId }, // comes back in webhook
+    customData: { userId: opts.userId, planId: opts.plan.id }, // comes back in webhook
   };
 
   const tx: Transaction = await paddle.transactions.create(body);

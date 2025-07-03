@@ -8,24 +8,30 @@ export async function checkoutService(planId: number, userId: number) {
     throw new AppError('Plan not found', 404);
   }
   const payLink = await generateTransaction({
-    priceId: plan.paddlePriceId,
+    plan,
     quantity: 1,
     userId,
   });
   return payLink;
 }
 
-// export async function paymentComplete(
-//   planId: number,
-//   userId: number,
-//   event: any
-// ) {
-//   await prisma.purchase.create({
-//     data: {
-//       userId,
-//       planId,
-//       paddleOrderId: event.data.order_id,
-//       amount: event.data.amount,
-//     },
-//   });
-// }
+export async function paymentComplete({
+  userId,
+  planId,
+  amount,
+  transactionId,
+}: {
+  userId: number;
+  planId: number;
+  amount: number;
+  transactionId: string;
+}) {
+  await prisma.purchase.create({
+    data: {
+      userId,
+      planId,
+      amount,
+      paddleOrderId: transactionId,
+    },
+  });
+}
