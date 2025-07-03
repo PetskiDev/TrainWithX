@@ -2,7 +2,13 @@ import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
 import { generateTransaction } from '@src/utils/paddle';
 
-export async function checkoutService(planId: number, userId: number) {
+export async function checkoutService({
+  planId,
+  userId,
+}: {
+  planId: number;
+  userId: number;
+}) {
   const plan = await prisma.plan.findUnique({ where: { id: planId } });
   if (!plan) {
     throw new AppError('Plan not found', 404);
@@ -34,4 +40,19 @@ export async function paymentComplete({
       paddleOrderId: transactionId,
     },
   });
+}
+
+export async function checkAlreadyPurchased({
+  planId,
+  userId,
+}: {
+  planId: number;
+  userId: number;
+}) {
+  const purchase = await prisma.purchase.findUnique({
+    where: { userId_planId: { userId, planId } },
+  });
+  if (purchase) {
+    throw new AppError('Plan Already Purchased', 400);
+  }
 }

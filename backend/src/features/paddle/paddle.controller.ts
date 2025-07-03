@@ -1,4 +1,5 @@
 import {
+  checkAlreadyPurchased,
   checkoutService,
   paymentComplete,
 } from '@src/features/paddle/paddle.service';
@@ -23,7 +24,9 @@ export async function planCheckoutController(req: Request, res: Response) {
     throw new AppError('PlanId is required', 400);
   }
 
-  const token = await checkoutService(planId, userId);
+  await checkAlreadyPurchased({ userId, planId }); //throws if already purchased
+
+  const token = await checkoutService({ planId, userId });
 
   res.json({ token }); // front-end will redirect/open this
 }
@@ -46,14 +49,17 @@ export async function paddleWebhookController(req: Request, res: Response) {
       signature
     );
   } catch (e) {
-    throw new AppError('Invalid Signature', 400);
+    throw new AppError('[PADDLE] Invalid Signature', 400);
   }
 
   switch (eventData.eventType) {
     case EventName.TransactionPaid:
       const data = eventData.data as TransactionNotification;
       const customData = data.customData as TransactionCustomData;
-      console.log('Transaction paid: ', `id:${data.id} Info:${customData}`);
+      console.log(
+        '[PADDLE] Transaction paid: ',
+        `id:${data.id} Info:${customData}`
+      );
       await paymentComplete({
         userId: customData.userId,
         planId: customData.planId,
@@ -62,7 +68,7 @@ export async function paddleWebhookController(req: Request, res: Response) {
       });
       break;
     default:
-      console.log('Unhandled Paddle event: ', eventData.eventType);
+      console.log('[PADDLE] Unhandled Paddle event: ', eventData.eventType);
   }
 
   res.status(200).json({ success: true });
