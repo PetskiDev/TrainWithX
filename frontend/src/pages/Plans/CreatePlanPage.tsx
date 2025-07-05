@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../LoginPage.css';
 import type { CreatePlanDto } from '@shared/types/plan';
 
 import type { CreatorPreview } from '@shared/types/creator';
