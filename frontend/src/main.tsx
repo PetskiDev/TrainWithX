@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
-import './main.css';
+import './index.css';
 import { AuthProvider } from '@frontend/context/AuthContext.tsx';
 import { BrowserRouter } from 'react-router-dom';
 import { PaddleProvider } from '@frontend/context/PaddleContext.tsx';

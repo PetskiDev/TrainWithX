@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@frontend': resolve(__dirname, './src'),
         '@shared': resolve(__dirname, '../shared'),
+        '@': resolve(__dirname, './src'),
       },
     },
     server: {
