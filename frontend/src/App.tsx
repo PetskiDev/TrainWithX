@@ -1,11 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage/LandingPage';
-import PlansPage from './pages/Plans/PlansPage';
+import PlansPage from './pages/PlansPage';
 import LoginPage from '@frontend/pages/LoginPage';
 import NavBar from '@frontend/components/NavBar';
 import RegisterPage from '@frontend/pages/RegisterPage';
 import NotFoundPage from '@frontend/pages/NotFoundPage';
-import CreatePlanPage from '@frontend/pages/Plans/CreatePlanPage';
+import CreatePlanPage from '@frontend/pages/CreatePlanPage';
 import VerifyEmail from '@frontend/pages/VerifyEmail';
 
 function App() {
