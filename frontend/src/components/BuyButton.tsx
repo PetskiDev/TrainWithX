@@ -71,7 +71,7 @@ export const BuyButton = ({ planId, className }: BuyButtonProps) => {
           Processing…
         </>
       ) : (
-        'Buy now'
+        'Preview Plan'
       )}
     </Button>
   );

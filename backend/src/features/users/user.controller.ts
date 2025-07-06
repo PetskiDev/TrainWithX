@@ -2,7 +2,12 @@ import { Request, Response } from 'express';
 import { upgradeUser } from '@src/features/creators/creator.service';
 import { AppError } from '@src/utils/AppError';
 import { transformCreatorToPreview } from '@src/features/creators/creator.transformer';
-import { fetchAllUsers, fetchUser } from '@src/features/users/user.service';
+import {
+  fetchAllUsers,
+  fetchUser,
+  getPlansOwnedByUser,
+} from '@src/features/users/user.service';
+import { toPlanPreview } from '@src/features/plans/plan.transformer';
 
 export const getUsers = async (req: Request, res: Response) => {
   const users = await fetchAllUsers();
@@ -41,5 +46,7 @@ export const promoteToCreator = async (req: Request, res: Response) => {
 };
 
 export const getUserPlans = async (req: Request, res: Response) => {
-  res.send('Constucton');
+  const id = Number(req.user?.id);
+  const plans = await getPlansOwnedByUser(id);
+  res.status(200).json(plans);
 };
