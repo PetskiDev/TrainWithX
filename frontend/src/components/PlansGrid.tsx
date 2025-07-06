@@ -6,7 +6,7 @@ interface Props {
   onPlanClick?: (id: string) => void;
 }
 
-function PlansGrid({ plans, onPlanClick }: Props) {
+function PlansGrid({ plans }: Props) {
   if (!plans.length) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
