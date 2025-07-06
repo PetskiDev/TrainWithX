@@ -38,7 +38,8 @@ const PlansPage = () => {
       (plan) =>
         plan.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         plan.slug.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        plan.creatorUsername.toLowerCase().includes(searchTerm.toLowerCase())
+        plan.creatorUsername.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        plan.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredPlans(filtered);
   }, [searchTerm, plans]);

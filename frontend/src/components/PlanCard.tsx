@@ -36,8 +36,8 @@ export const PlanCard = ({ plan, onPlanClick }: Props) => {
 
   return (
     <Card
-      className="group cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg"
       onClick={handleClick}
+      className="group flex h-full flex-col cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg"
     >
       {/* ---------- image ---------- */}
       <div className="relative overflow-hidden">
@@ -63,18 +63,21 @@ export const PlanCard = ({ plan, onPlanClick }: Props) => {
         <h3 className="text-lg font-semibold line-clamp-2 group-hover:text-primary transition-colors">
           {title}
         </h3>
-        <p className="text-sm text-muted-foreground"> @{creatorUsername}</p>
+        <p className="text-sm text-muted-foreground">@{creatorUsername}</p>
       </CardHeader>
 
       {/* ---------- content ---------- */}
-      <CardContent className="pt-0">
+      <CardContent className="flex-grow pt-0">
         {description && (
-          <p className="mb-4 text-sm text-muted-foreground line-clamp-3">
+          <p className="text-sm text-muted-foreground line-clamp-3">
             {description}
           </p>
         )}
+      </CardContent>
 
-        <div className="flex items-center gap-2">
+      {/* ---------- price + button at bottom ---------- */}
+      <div className="px-6 pb-4">
+        <div className="mb-2 flex items-center gap-2">
           <span className="text-2xl font-bold text-primary">${price}</span>
           {hasDiscount && (
             <span className="text-lg line-through text-muted-foreground">
@@ -82,16 +85,12 @@ export const PlanCard = ({ plan, onPlanClick }: Props) => {
             </span>
           )}
         </div>
-      </CardContent>
-
-      {/* ---------- footer ---------- */}
-      <CardFooter className="pt-0">
-        <div onClick={(e) => e.stopPropagation()} className="w-full">
-          <BuyButton planId={id} />
-          {/* Or use this if you'd rather link to a detail view: */}
-          {/* <Button className="w-full">View Plan</Button> */}
-        </div>
-      </CardFooter>
+        <CardFooter className="pt-0 p-0">
+          <div onClick={(e) => e.stopPropagation()} className="w-full">
+            <BuyButton planId={id} />
+          </div>
+        </CardFooter>
+      </div>
     </Card>
   );
 };
