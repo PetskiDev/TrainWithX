@@ -115,3 +115,6 @@ All colors MUST be HSL.
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+html {
+  overflow-y: scroll;
+}

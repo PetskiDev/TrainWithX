@@ -38,42 +38,46 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          {/* --------- logo --------- */}
-          <Link to="/" className="flex items-center">
-            <TrainWithXLogo size="sm" />
-          </Link>
-
-          {/* --------- primary nav --------- */}
-          <div className="hidden md:flex items-center space-x-2">
-            <Link to="/plans">
-              <Button
-                variant={isActive('/plans') ? 'default' : 'ghost'}
-                className={`${
-                  isActive('/plans')
-                    ? 'gradient-bg text-white'
-                    : 'hover:gradient-bg hover:text-white'
-                } transition-all duration-200`}
-              >
-                Plans
-              </Button>
-            </Link>
-            <Link to="/creators">
-              <Button
-                variant={isActive('/creators') ? 'default' : 'ghost'}
-                className={`${
-                  isActive('/creators')
-                    ? 'gradient-bg text-white'
-                    : 'hover:gradient-bg hover:text-white'
-                } transition-all duration-200`}
-              >
-                Creators
-              </Button>
+        <div className="flex h-16 items-center">
+          {/* Logo - Fixed width to prevent movement */}
+          <div className="flex-shrink-0 w-48">
+            <Link to="/" className="flex items-center">
+              <TrainWithXLogo size="sm" />
             </Link>
           </div>
 
-          {/* --------- auth / profile --------- */}
-          <div className="flex items-center">
+          {/* Navigation Links - Centered */}
+          <div className="flex-1 flex justify-center">
+            <div className="flex items-center space-x-2">
+              <Link to="/plans">
+                <Button
+                  variant={isActive('/plans') ? 'default' : 'ghost'}
+                  className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+                    isActive('/plans')
+                      ? 'gradient-bg text-white shadow-lg scale-105'
+                      : 'hover:gradient-bg hover:text-white hover:scale-105 hover:shadow-md bg-white/80 backdrop-blur-sm border border-purple-200'
+                  }`}
+                >
+                  Plans
+                </Button>
+              </Link>
+              <Link to="/creators">
+                <Button
+                  variant={isActive('/creators') ? 'default' : 'ghost'}
+                  className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+                    isActive('/creators')
+                      ? 'gradient-bg text-white shadow-lg scale-105'
+                      : 'hover:gradient-bg hover:text-white hover:scale-105 hover:shadow-md bg-white/80 backdrop-blur-sm border border-purple-200'
+                  }`}
+                >
+                  Creators
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {/* Auth Section - Fixed width to prevent movement */}
+          <div className="flex-shrink-0 w-48 flex justify-end">
             {user ? (
               /* Signed-in dropdown */
               <DropdownMenu>
