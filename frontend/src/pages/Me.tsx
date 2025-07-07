@@ -5,15 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PlanCard } from '@/components/PlanCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Calendar,
-  TrendingUp,
-  Award,
-  Edit2,
-  Check,
-  X,
-  EditIcon,
-} from 'lucide-react';
+import { Calendar, TrendingUp, Award, Edit2, Check, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext'; // 👉 adjust the import path if different
 import type { PlanPreview } from '@shared/types/plan';
 
@@ -137,7 +129,7 @@ const Me = () => {
   })}`;
   // Stats (replace with real values from backend when available)
   const totalPlans = plans.length;
-  const currentStreak = 0; // TODO: Fetch streak from backend
+  //const currentStreak = 0; // TODO: Fetch streak from backend
 
   // ──────────────────────────────────────────────────────────────────────────────
   // Render

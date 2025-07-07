@@ -10,7 +10,7 @@ export function transformCreatorToPreview(
     username: creator.user.username,
     email: creator.user.email,
     subdomain: creator.subdomain,
-    avatarUrl: creator.avatarUrl,
+    avatarUrl: creator.user.avatarUrl,
     coverUrl: creator.coverUrl,
     bio: creator.bio,
   };

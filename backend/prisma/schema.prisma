@@ -9,13 +9,14 @@ datasource db {
 
 model User {
   id        Int       @id @default(autoincrement())
+  googleId String? @unique
   email     String    @unique @db.VarChar(255)
   username  String    @unique @db.VarChar(30)
   password  String?
   isVerified Boolean  @default(false)
   isAdmin   Boolean   @default(false)
+  avatarUrl  String?
   createdAt DateTime  @default(now())
-  googleId String? @unique
   creator   Creator?
   purchases Purchase[]
   emailVerificationToken EmailVerificationToken[]
@@ -24,7 +25,6 @@ model User {
 model Creator {
   id         Int     @id
   bio        String?
-  avatarUrl  String?
   subdomain  String  @unique @db.VarChar(50)
   coverUrl   String?
   user       User    @relation(fields: [id], references: [id], onDelete: Cascade)
