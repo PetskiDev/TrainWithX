@@ -10,6 +10,7 @@ export function transformUserToPreview(
     email: user.email,
     isAdmin: user.isAdmin,
     createdAt: user.createdAt,
+    avatarUrl: user.avatarUrl ?? undefined,
   };
 }
 

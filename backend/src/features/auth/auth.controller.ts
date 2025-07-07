@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import {
-  askGoogle,
+  fetchUserInfoFromGoogle,
   login,
   register,
   getOrCreateGoogleUser,
@@ -51,7 +51,7 @@ export const verifyController = async (req: Request, res: Response) => {
   });
 };
 
-export const googleController = async (req: Request, res: Response) => {
+export const redirectToGoogle = async (req: Request, res: Response) => {
   const qs = querystring.stringify({
     client_id: env.GOOGLE_CLIENT_ID,
     redirect_uri: `${env.API_URL}/auth/google/callback`,
@@ -68,12 +68,15 @@ export const googleCallbackController = async (req: Request, res: Response) => {
   if (!code) throw new AppError('Missing OAuth code', 400);
 
   //use the code to ask google for the user
-  const { googleId, email, name } = await askGoogle(code);
+  const { googleId, email, name, picture } = await fetchUserInfoFromGoogle(
+    code
+  );
 
   const result = await getOrCreateGoogleUser({
     googleId,
     email,
     name,
+    picture,
   });
 
   //google redirects to me, with cookie it hydrates.

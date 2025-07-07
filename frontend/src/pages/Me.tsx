@@ -134,6 +134,7 @@ const Me = () => {
   // ──────────────────────────────────────────────────────────────────────────────
   // Render
   // ──────────────────────────────────────────────────────────────────────────────
+  console.log(user);
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
@@ -141,7 +142,12 @@ const Me = () => {
         <div className="mb-8">
           <div className="flex items-center gap-6 mb-6">
             <Avatar className="w-20 h-20">
-              <AvatarImage src="" alt={displayName} />
+              <AvatarImage
+                src={user.avatarUrl}
+                alt={displayName}
+                referrerPolicy="no-referrer" // blocks referer header
+                onError={(e) => (e.currentTarget.style.display = 'none')}
+              />
               <AvatarFallback>
                 {displayName
                   .split(' ')

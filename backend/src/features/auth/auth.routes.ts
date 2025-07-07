@@ -1,6 +1,6 @@
 import {
   googleCallbackController,
-  googleController,
+  redirectToGoogle,
   loginController,
   logoutController,
   registerController,
@@ -15,7 +15,7 @@ router.post('/register', registerController);
 router.post('/logout', logoutController);
 router.post('/verify-email', verifyController);
 
-router.get('/google', googleController);
+router.get('/google', redirectToGoogle);
 router.get('/google/callback', googleCallbackController);
 
 export default router;

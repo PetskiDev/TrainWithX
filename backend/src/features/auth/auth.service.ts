@@ -67,7 +67,6 @@ export async function login(
     throw new AppError('Use Google sign-in for this account.', 400);
   }
 
-  
   //eather doesn't excist or wrong password.
   if (!user || !(await bcrypt.compare(password, user.password as string))) {
     throw new AppError('Invalid credentials.', 401);
@@ -101,7 +100,7 @@ export async function verifyEmail(token: string) {
   ]);
 }
 
-export async function askGoogle(code: string) {
+export async function fetchUserInfoFromGoogle(code: string) {
   const body = new URLSearchParams({
     code,
     client_id: env.GOOGLE_CLIENT_ID,
@@ -126,13 +125,16 @@ export async function askGoogle(code: string) {
     sub: googleId,
     email,
     name,
+    picture,
   } = (await infoResp.json()) as {
     sub: string;
     email: string;
     name: string;
+    picture?: string;
   };
   if (!email) throw new AppError('Google did not return e-mail', 400);
-  return { googleId, email, name };
+  console.log('EVERYTHING FINE');
+  return { googleId, email, name, picture };
 }
 
 export async function generateUniqueUsername(
@@ -156,18 +158,28 @@ export async function getOrCreateGoogleUser({
   email,
   name,
   googleId,
+  picture,
 }: {
   email: string;
   name: string;
   googleId: string;
+  picture?: string;
 }): Promise<AuthResult> {
+  console.log('PIC ' + picture);
   let user = await prisma.user.findUnique({ where: { email } });
   if (user) {
     // email already exists
     if (!user.googleId) {
       await prisma.user.update({
         where: { id: user.id },
-        data: { googleId },
+        data: { googleId, avatarUrl: picture },
+      });
+    }
+    //if doesn't have a picture and google has.
+    if (!user.avatarUrl && picture) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { avatarUrl: picture },
       });
     }
     return {
@@ -186,6 +198,7 @@ export async function getOrCreateGoogleUser({
       password: null, // no password
       googleId: googleId, // new column if you want to track it
       isVerified: true, // Google already verified this email
+      avatarUrl: picture,
     },
   });
 
