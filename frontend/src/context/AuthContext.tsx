@@ -17,7 +17,7 @@ interface AuthState {
     username: string,
     password: string
   ) => Promise<void>;
-
+  refreshUser: () => void;
   logout: () => Promise<void>;
 }
 
@@ -72,7 +72,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const data: UserDto = await res.json();
     setUser(data);
   };
-
+  const refreshUser = async () => {
+    const res = await fetch('/api/v1/users/me', { credentials: 'include' });
+    const updatedUser = await res.json();
+    setUser(updatedUser);
+  };
   const logout = async () => {
     await fetch('api/v1/auth/logout', {
       method: 'POST',
@@ -82,7 +86,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, register, refreshUser, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

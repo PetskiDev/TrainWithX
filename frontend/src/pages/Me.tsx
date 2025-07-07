@@ -5,7 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PlanCard } from '@/components/PlanCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, TrendingUp, Award, Edit2, Check, X } from 'lucide-react';
+import {
+  Calendar,
+  TrendingUp,
+  Award,
+  Edit2,
+  Check,
+  X,
+  EditIcon,
+} from 'lucide-react';
 import { useAuth } from '@/context/AuthContext'; // 👉 adjust the import path if different
 import type { PlanPreview } from '@shared/types/plan';
 
@@ -13,7 +21,7 @@ import type { PlanPreview } from '@shared/types/plan';
 // Component
 // ────────────────────────────────────────────────────────────────────────────────
 const Me = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, refreshUser } = useAuth();
 
   // UI state
   const [activeTab, setActiveTab] = useState<string>('plans');
@@ -68,10 +76,30 @@ const Me = () => {
     setEditedName(user.username);
   };
 
-  const handleSaveName = () => {
-    // Optional: implement update username logic with your backend here
-    console.log('Saving name:', editedName);
-    setIsEditingName(false);
+  const handleSaveName = async () => {
+    const newUsername = editedName;
+    try {
+      const res = await fetch('/api/v1/users/me', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ newUsername }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert(errorData.error || 'Failed to update username');
+        return;
+      }
+      await refreshUser();
+
+      alert('Username updated successfully!');
+      setIsEditingName(false);
+    } catch (err: any) {
+      console.error('Error saving name:', err.message);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -132,10 +160,20 @@ const Me = () => {
                     <Input
                       value={editedName}
                       onChange={(e) => setEditedName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleSaveName();
+                        if (e.key === 'Escape') handleCancelEdit();
+                      }}
                       className="text-2xl font-bold h-10"
                       autoFocus
                     />
-                    <Button size="sm" onClick={handleSaveName}>
+                    <Button
+                      size="sm"
+                      onClick={handleSaveName}
+                      disabled={
+                        !editedName || editedName.trim() === user?.username
+                      }
+                    >
                       <Check className="h-4 w-4" />
                     </Button>
                     <Button

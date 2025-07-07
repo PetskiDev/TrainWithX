@@ -3,6 +3,7 @@ import { upgradeUser } from '@src/features/creators/creator.service';
 import { AppError } from '@src/utils/AppError';
 import { transformCreatorToPreview } from '@src/features/creators/creator.transformer';
 import {
+  editUsername,
   fetchAllUsers,
   fetchUser,
   getPlansOwnedByUser,
@@ -49,4 +50,14 @@ export const getUserPlans = async (req: Request, res: Response) => {
   const id = Number(req.user?.id);
   const plans = await getPlansOwnedByUser(id);
   res.status(200).json(plans);
+};
+
+export const editUsernameController = async (req: Request, res: Response) => {
+  const id = Number(req.user?.id);
+  const newUsername = req.body.newUsername;
+  if (!newUsername) {
+    throw new AppError('You must supply a username', 400);
+  }
+  await editUsername(id, newUsername);
+  res.sendStatus(200);
 };
