@@ -99,6 +99,7 @@ export default {
       addComponents({
         '.container': {
           width: '90%',
+          'min-width': '430px',
         },
       });
     }),

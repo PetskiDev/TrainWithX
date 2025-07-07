@@ -21,22 +21,19 @@ import {
 } from '@/components/ui/sheet';
 import { User, Settings, LogOut, Menu } from 'lucide-react';
 
-/* ★  Inject your real auth hook / context here ---------------------------- */
 import { useAuth } from '@/context/AuthContext';
-/* ------------------------------------------------------------------------ */
 
 const Navbar = () => {
-  const { user, logout } = useAuth(); // user is null | { … }
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  /* ---------- helpers --------------------------------------------------- */
   const isActive = (path: string) => location.pathname === path;
 
   const handleNavClick = (path: string) => {
     navigate(path);
-    setIsSheetOpen(false); // close sheet on navigation (mobile)
+    setIsSheetOpen(false);
   };
 
   const handleLogout = () => {
@@ -44,7 +41,6 @@ const Navbar = () => {
     navigate('/');
   };
 
-  /* ---------- NavButton ------------------------------------------------- */
   const NavButton = ({
     path,
     children,
@@ -54,10 +50,10 @@ const Navbar = () => {
   }) => (
     <Button
       variant={isActive(path) ? 'default' : 'ghost'}
-      className={`px-6 py-2 rounded-full font-medium transition-all duration-300 ${
+      className={`px-5 py-0 rounded-full transition-all duration-300 ${
         isActive(path)
-          ? 'gradient-bg text-white shadow-lg scale-105'
-          : 'hover:gradient-bg hover:text-white hover:scale-105 hover:shadow-md bg-white/80 backdrop-blur-sm border border-purple-200'
+          ? 'gradient-bg text-white shadow-lg scale-101'
+          : 'hover:gradient-bg hover:scale-101 hover:shadow-md bg-white/80 backdrop-blur-sm border border-purple-200'
       }`}
       onClick={() => handleNavClick(path)}
     >
@@ -65,19 +61,19 @@ const Navbar = () => {
     </Button>
   );
 
-  /* ---------- render ---------------------------------------------------- */
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
+        {/* relative here gives the hamburger a positioning context */}
+        <div className="flex h-16 items-center justify-between relative">
+          {/* Logo (left) */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
               <TrainWithXLogo size="sm" />
             </Link>
           </div>
 
-          {/* Desktop Navigation Links - Hidden on mobile */}
+          {/* Desktop nav (center, md+) */}
           <div className="hidden md:flex flex-1 justify-center">
             <div className="flex items-center space-x-2">
               <NavButton path="/plans">Plans</NavButton>
@@ -85,11 +81,15 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Mobile Hamburger Menu - Centered */}
-          <div className="flex md:hidden justify-center absolute left-1/2 transform -translate-x-1/2">
+          {/* Absolute wrapper keeps the hamburger PERFECTLY centered */}
+          <div className="md:hidden pointer-events-none absolute inset-0 flex justify-center items-center">
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-10 w-10 pointer-events-auto"
+                >
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
@@ -105,7 +105,7 @@ const Navbar = () => {
             </Sheet>
           </div>
 
-          {/* Auth Section */}
+          {/* Auth / Sign-in (right) */}
           <div className="flex-shrink-0 w-[118px] flex justify-end">
             {user ? (
               <DropdownMenu>
