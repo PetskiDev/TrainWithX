@@ -8,7 +8,8 @@ export function transformUserToPreview(
     id: user.id,
     username: user.username,
     email: user.email,
-    isAdmin: user.isAdmin
+    isAdmin: user.isAdmin,
+    createdAt: user.createdAt,
   };
 }
 

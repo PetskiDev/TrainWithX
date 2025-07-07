@@ -128,8 +128,13 @@ const Me = () => {
 
   const displayName =
     editedName ?? user.username ?? user.email?.split('@')[0] ?? 'User';
-  const joinDateLabel = 'Member since N/A'; // Adjust once you have this data
-
+  const joinDateLabel = `Member since ${new Date(
+    user.createdAt
+  ).toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })}`;
   // Stats (replace with real values from backend when available)
   const totalPlans = plans.length;
   const currentStreak = 0; // TODO: Fetch streak from backend
@@ -240,7 +245,7 @@ const Me = () => {
                     <p className="text-sm text-muted-foreground">
                       Current Streak
                     </p>
-                    <p className="text-2xl font-bold">{currentStreak} days</p>
+                    <p className="text-2xl font-bold"> Work in Progress...</p>
                   </div>
                 </div>
               </CardContent>
