@@ -5,7 +5,7 @@ import { AppError } from '@src/utils/AppError';
 
 export async function getAllCreators(req: Request, res: Response) {
   const creators = await creatorService.fetchAllCreators();
-  const previews = creators.map(transformCreatorToPreview);
+  const previews = await Promise.all(creators.map(transformCreatorToPreview));
   res.json(previews);
 }
 

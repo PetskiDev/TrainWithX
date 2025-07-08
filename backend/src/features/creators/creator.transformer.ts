@@ -1,16 +1,27 @@
 // backend/src/features/creators/creator.transformer.ts
 import type { Creator, User } from '@prisma/client';
-import { CreatorPreview } from '@shared/types/creator';
+import { CreatorPreviewDTO } from '@shared/types/creator';
+import {
+  getNoBuys,
+  getNoPlansOwnded,
+} from '@src/features/creators/creator.service';
 
-export function transformCreatorToPreview(
+export async function transformCreatorToPreview(
   creator: Creator & { user: User }
-): CreatorPreview {
+): Promise<CreatorPreviewDTO> {
+  const [noBuys, plansCount] = await Promise.all([
+    getNoBuys(creator.id),
+    getNoPlansOwnded(creator.id),
+  ]);
   return {
     id: creator.id,
     username: creator.user.username,
-    email: creator.user.email,
     subdomain: creator.subdomain,
-    coverUrl: creator.coverUrl,
-    bio: creator.bio,
+    coverUrl: creator.coverUrl ?? undefined,
+    bio: creator.bio ?? undefined,
+    avatarUrl: creator.user.avatarUrl ?? undefined,
+    noBuys: noBuys,
+    plansCount: plansCount,
+    rating: 5,
   };
 }

@@ -1,8 +1,11 @@
-export interface CreatorPreview {
+export interface CreatorPreviewDTO {
   id: number;
   username: string;
-  email: string;
   subdomain: string;
-  coverUrl: string | null;
-  bio: string | null;
+  plansCount: number;
+  rating: number;
+  noBuys: number;
+  bio?: string;
+  coverUrl?: string;
+  avatarUrl?: string;
 }

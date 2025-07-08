@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { CreatePlanDto } from '@shared/types/plan';
-import type { CreatorPreview } from '@shared/types/creator';
+import type { CreatorPreviewDTO } from '@shared/types/creator';
 
 import {
   Card,
@@ -26,7 +26,7 @@ function CreatePlanPage() {
     creatorId: 0,
   });
 
-  const [creators, setCreators] = useState<CreatorPreview[]>([]);
+  const [creators, setCreators] = useState<CreatorPreviewDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ function CreatePlanPage() {
       try {
         const res = await fetch('/api/v1/creators');
         if (!res.ok) throw new Error('Failed to load creators');
-        const data: CreatorPreview[] = await res.json();
+        const data: CreatorPreviewDTO[] = await res.json();
         setCreators(data);
       } catch (err) {
         console.error(err);
@@ -117,7 +117,7 @@ function CreatePlanPage() {
                 </option>
                 {creators.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.username} ({c.subdomain})
+                    {c.username}
                   </option>
                 ))}
               </select>

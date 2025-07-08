@@ -42,7 +42,7 @@ export const promoteToCreator = async (req: Request, res: Response) => {
 
   const creator = await upgradeUser(intId, subdomain);
 
-  const preview = transformCreatorToPreview(creator);
+  const preview = await transformCreatorToPreview(creator);
 
   res.status(201).json(preview);
 };

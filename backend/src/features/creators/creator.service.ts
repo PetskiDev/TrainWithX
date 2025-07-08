@@ -30,6 +30,20 @@ export async function upgradeUser(userId: number, subdomain: string) {
   }
 }
 
+export async function getNoPlansOwnded(creatorId: number) {
+  const plansCount = await prisma.plan.count({
+    where: { creatorId },
+  });
+  return plansCount;
+}
+
+export async function getNoBuys(creatorId: number) {
+  const totalBuys = await prisma.purchase.count({
+    where: { plan: { creatorId } },
+  });
+  return totalBuys;
+}
+
 // export async function fetchCreatorPlans(username: string) {
 //   const creator = await prisma.creator.findFirst({
 //     where: { user: { username } },
