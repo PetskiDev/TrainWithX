@@ -77,7 +77,7 @@ export async function editUsername(userId: number, newUsername: string) {
 
 const AVATAR_DIR = path.join(__dirname, '..', '..', '..', 'uploads', 'avatars');
 
-export const uploadAvatar = async (
+export const storeAvatar = async (
   userId: number,
   file: Express.Multer.File
 ): Promise<string> => {

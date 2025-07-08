@@ -1,14 +1,12 @@
-import { uploadAvatar } from '@src/features/users/user.service';
+import { storeAvatar } from '@src/features/users/user.service';
 
 interface Args {
   userId: number;
   url: string;
 }
 
-export async function downloadAndStoreAvatar({ userId, url }: Args) {
-  console.log('FETCHIN GOOGLE');
+export async function downloadImageAsMulter({ url }: { url: string }) {
   const res = await fetch(url);
-  console.log('ENDED GOOGLE');
 
   if (!res.ok) throw new Error(`Failed to download image (${res.status})`);
 
@@ -21,5 +19,6 @@ export async function downloadAndStoreAvatar({ userId, url }: Args) {
     mimetype: contentType,
   } as unknown as Express.Multer.File;
 
-  return uploadAvatar(userId, fakeFile); // returns the relative path
+  return fakeFile;
 }
+

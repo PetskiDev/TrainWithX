@@ -8,7 +8,8 @@ import { env } from '@src/utils/env';
 import { sendMailFromFile } from '@src/utils/mail';
 import { addMinutes } from 'date-fns';
 import crypto from 'node:crypto';
-import { downloadAndStoreAvatar } from '@src/utils/downloadPicture';
+import { downloadImageAsMulter } from '@src/utils/downloadPicture';
+import { storeAvatar } from '@src/features/users/user.service';
 
 export async function register(
   email: string,
@@ -151,6 +152,17 @@ export async function generateUniqueUsername(
     username = `${base}${suffix}`;
   }
   return username;
+}
+
+async function downloadAndStoreAvatar({
+  userId,
+  url,
+}: {
+  userId: number;
+  url: string;
+}) {
+  const file = await downloadImageAsMulter({ url });
+  return await storeAvatar(userId, file);
 }
 
 //IF user exicsts get the json for that

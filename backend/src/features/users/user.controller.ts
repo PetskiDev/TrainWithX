@@ -7,7 +7,7 @@ import {
   fetchAllUsers,
   fetchUser,
   getPlansOwnedByUser,
-  uploadAvatar,
+  storeAvatar,
 } from '@src/features/users/user.service';
 import { toPlanPreview } from '@src/features/plans/plan.transformer';
 
@@ -68,6 +68,6 @@ export const uploadAvatarController = async (req: Request, res: Response) => {
   if (!userId) throw new AppError('Unauthenticated', 401);
   if (!req.file) throw new AppError('No file uploaded', 400);
 
-  const avatarUrl = await uploadAvatar(userId, req.file);
+  const avatarUrl = await storeAvatar(userId, req.file);
   res.status(200).json({ avatarUrl });
 };
