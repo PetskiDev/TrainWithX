@@ -8,6 +8,15 @@ export async function fetchAllCreators() {
   });
 }
 
+export async function fetchCreatorBySub(subdomain: string) {
+  return prisma.creator.findFirst({
+    where: {
+      subdomain,
+    },
+    include: { user: true },
+  });
+}
+
 export async function upgradeUser(userId: number, subdomain: string) {
   try {
     return await prisma.creator.create({
@@ -43,25 +52,3 @@ export async function getNoBuys(creatorId: number) {
   });
   return totalBuys;
 }
-
-// export async function fetchCreatorPlans(username: string) {
-//   const creator = await prisma.creator.findFirst({
-//     where: { user: { username } },
-//     include: { plans: true },
-//   });
-
-//   if (!creator) throw new AppError('Creator not found', 404);
-//   return creator.plans;
-// }
-
-// export async function fetchCreatorPlanBySlug(username: string, slug: string) {
-//   const plan = await prisma.plan.findFirst({
-//     where: {
-//       slug,
-//       creator: { user: { username } },
-//     },
-//   });
-
-//   if (!plan) throw new AppError('Plan not found', 404);
-//   return plan;
-// }

@@ -8,24 +8,13 @@ export async function getAllCreators(req: Request, res: Response) {
   const previews = await Promise.all(creators.map(transformCreatorToPreview));
   res.json(previews);
 }
-
-// export async function getCreatorPlans(req: Request, res: Response) {
-//   const { username } = req.params;
-//   const plans = await creatorService.getCreatorPlans(username);
-
-//   // Optionally transform plans before returning
-//   // const previews = plans.map(transformPlanToPreview);
-//   // res.json(previews);
-
-//   res.json(plans);
-// }
-
-// /**
-//  * GET /creators/:username/plans/:slug
-//  * Fetch one specific plan by creator and slug.
-//  */
-// export async function getCreatorPlanBySlug(req: Request, res: Response) {
-//   const { username, slug } = req.params;
-//   const plan = await creatorService.getCreatorPlanBySlug(username, slug);
-//   res.json(plan);
-// }
+export async function getByUsername(req: Request, res: Response) {
+  const { subdomain } = req.params;
+  const creator = await creatorService.fetchCreatorBySub(subdomain);
+  if (!creator) {
+    res.status(404).json({ error: 'Creator not found' });
+    return;
+  }
+  const preveiw = await transformCreatorToPreview(creator);
+  res.json(preveiw);
+}

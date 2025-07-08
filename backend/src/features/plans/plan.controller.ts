@@ -17,21 +17,11 @@ export async function getAllPlans(req: Request, res: Response) {
 
 /** GET /api/v1/creators/:username/plans */
 export async function getCreatorPlans(req: Request, res: Response) {
-  const { username } = req.params;
-  const plans = await fetchCreatorPlans(username);
+  const { subdomain } = req.params;
+  const plans = await fetchCreatorPlans(subdomain);
   res.json(plans.map(toPlanPreview));
 }
 
-/** GET /api/v1/plans/:slug */
-//WITH DETAILS
-export async function getPlansOfCreatorWithSlug(req: Request, res: Response) {
-  const { username, slug } = req.params;
-  const plan = await fetchPlanBySlug(slug);
-  if (plan.creator.user.username != username) {
-    res.status(404).send('Not found');
-  }
-  res.json(toPlanDetail(plan));
-}
 
 export async function getPlanWithSlug(req: Request, res: Response) {
   const { slug } = req.params;

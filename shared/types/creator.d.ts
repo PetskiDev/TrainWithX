@@ -3,9 +3,10 @@ export interface CreatorPreviewDTO {
   username: string;
   subdomain: string;
   plansCount: number;
-  rating: number;
+  rating: Decimal;
   noBuys: number;
   bio?: string;
   coverUrl?: string;
   avatarUrl?: string;
+  yearsXP?: Decimal;
 }

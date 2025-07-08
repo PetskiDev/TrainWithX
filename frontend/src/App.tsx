@@ -8,6 +8,8 @@ import NotFoundPage from '@frontend/pages/NotFoundPage';
 import CreatePlanPage from '@frontend/pages/CreatePlanPage';
 import VerifyEmail from '@frontend/pages/VerifyEmail';
 import Me from '@frontend/pages/Me';
+import Creators from '@frontend/pages/Creators';
+import Creator from '@frontend/pages/Creator';
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/plans" element={<PlansPage />} />
+        <Route path="/creators" element={<Creators />} />
+        <Route path="/creator/:subdomain" element={<Creator />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/createplan" element={<CreatePlanPage />} />

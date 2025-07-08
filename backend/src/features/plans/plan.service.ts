@@ -11,9 +11,9 @@ export async function fetchAllPlans() {
   });
 }
 
-export async function fetchCreatorPlans(username: string) {
+export async function fetchCreatorPlans(subdomain: string) {
   const creator = await prisma.creator.findFirst({
-    where: { user: { username } },
+    where: { subdomain },
     include: {
       plans: {
         include: {

@@ -22,6 +22,7 @@ export async function transformCreatorToPreview(
     avatarUrl: creator.user.avatarUrl ?? undefined,
     noBuys: noBuys,
     plansCount: plansCount,
+    yearsXP: creator.yearsXP ?? undefined,
     rating: 5,
   };
 }
