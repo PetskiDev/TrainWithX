@@ -126,7 +126,7 @@ const Me = () => {
       const form = new FormData();
       form.append('avatar', file); // field name must be "avatar"
 
-      const res = await fetch('/api/v1/me/avatar', {
+      const res = await fetch('/api/v1/users/me/avatar', {
         method: 'POST',
         body: form,
         credentials: 'include',

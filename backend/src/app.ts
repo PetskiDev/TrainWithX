@@ -6,7 +6,7 @@ import { errorHandler } from '@src/middleware/errorHandler';
 import cors from 'cors';
 import morgan from 'morgan';
 import apiRouter from './api.router';
-import path from 'path';
+import path from 'node:path';
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -15,6 +15,11 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 
 app.use('/api/v1', apiRouter);
+
+app.use(
+  '/uploads/avatars',
+  express.static(path.join(__dirname, '..', 'uploads', 'avatars'))
+);
 
 //this part only runs when vite does not run
 //in dev vite handles this responses and only proxies /api calls

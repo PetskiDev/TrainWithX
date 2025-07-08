@@ -8,6 +8,7 @@ import { env } from '@src/utils/env';
 import { sendMailFromFile } from '@src/utils/mail';
 import { addMinutes } from 'date-fns';
 import crypto from 'node:crypto';
+import { downloadAndStoreAvatar } from '@src/utils/downloadPicture';
 
 export async function register(
   email: string,
@@ -172,15 +173,12 @@ export async function getOrCreateGoogleUser({
     if (!user.googleId) {
       await prisma.user.update({
         where: { id: user.id },
-        data: { googleId, avatarUrl: picture },
+        data: { googleId },
       });
     }
     //if doesn't have a picture and google has.
     if (!user.avatarUrl && picture) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { avatarUrl: picture },
-      });
+      await downloadAndStoreAvatar({ userId: user.id, url: picture });
     }
     return {
       token: generateToken(user.id, user.isAdmin),
@@ -198,9 +196,15 @@ export async function getOrCreateGoogleUser({
       password: null, // no password
       googleId: googleId, // new column if you want to track it
       isVerified: true, // Google already verified this email
-      avatarUrl: picture,
     },
   });
+  if (picture) {
+    try {
+      await downloadAndStoreAvatar({ userId: user.id, url: picture });
+    } catch (e) {
+      console.error('Google avatar fetch failed:', e);
+    }
+  }
 
   return {
     token: generateToken(user.id, user.isAdmin),
