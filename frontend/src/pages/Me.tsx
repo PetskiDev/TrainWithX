@@ -104,7 +104,7 @@ const Me = () => {
   // ──────────────────────────────────────────────────────────────────────────────
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen-navbar flex items-center justify-center">
         Loading...
       </div>
     );
@@ -112,7 +112,7 @@ const Me = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen-navbar flex items-center justify-center">
         You are not logged in.
       </div>
     );
@@ -136,7 +136,7 @@ const Me = () => {
   // ──────────────────────────────────────────────────────────────────────────────
   console.log(user);
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* ──────────────── Welcome Header ──────────────── */}
         <div className="mb-8">

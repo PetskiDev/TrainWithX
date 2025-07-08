@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface TrainWithXLogoProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   showText?: boolean;
   className?: string;
 }
@@ -12,6 +12,7 @@ export const TrainWithXLogo: React.FC<TrainWithXLogoProps> = ({
   className = '',
 }) => {
   const sizeClasses = {
+    xs: 'w-6 h-6',
     sm: 'w-8 h-8',
     md: 'w-10 h-10',
     lg: 'w-16 h-16',
@@ -19,6 +20,7 @@ export const TrainWithXLogo: React.FC<TrainWithXLogoProps> = ({
   };
 
   const textSizeClasses = {
+    xs: 'text-sm',
     sm: 'text-lg',
     md: 'text-xl',
     lg: 'text-3xl',

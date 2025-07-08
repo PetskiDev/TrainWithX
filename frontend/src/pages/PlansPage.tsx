@@ -49,7 +49,7 @@ const PlansPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="mb-4 text-4xl font-bold">All Fitness Plans</h1>

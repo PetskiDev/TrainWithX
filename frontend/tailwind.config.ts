@@ -91,6 +91,9 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      minHeight: {
+        'screen-navbar': 'calc(100vh - 65px)', // or whatever your navbar height is
+      },
     },
   },
   plugins: [
@@ -99,7 +102,16 @@ export default {
       addComponents({
         '.container': {
           width: '90%',
-          'min-width': '430px',
+        },
+        '@media (max-width: 459px)': {
+          '.container': {
+            width: '97%',
+          },
+        },
+        '@media (max-width: 410px)': {
+          '.container': {
+            width: '100%',
+          },
         },
       });
     }),

@@ -87,7 +87,7 @@ function CreatePlanPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-primary/5 p-4">
+    <div className="min-h-screen-navbar flex items-center justify-center bg-gradient-to-br from-background to-primary/5 p-4">
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">

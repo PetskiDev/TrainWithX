@@ -69,13 +69,17 @@ const Navbar = () => {
           {/* Logo (left) */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center">
-              <TrainWithXLogo size="sm" />
+              <TrainWithXLogo
+                size="sm"
+                showText // keep the word-mark for normal screens
+                className="max-[370px]:[&>span]:text-sm" /* ⬅ hides text < 440 px */
+              />
             </Link>
           </div>
 
           {/* Desktop nav (center, md+) */}
-          <div className="hidden md:flex flex-1 justify-center">
-            <div className="flex items-center space-x-2">
+          <div className="hidden md:flex flex-1 absolute inset-0 left-5 justify-center items-center pointer-events-none">
+            <div className="flex items-center space-x-2 pointer-events-auto">
               <NavButton path="/plans">Plans</NavButton>
               <NavButton path="/creators">Creators</NavButton>
             </div>
@@ -97,7 +101,7 @@ const Navbar = () => {
                 <SheetHeader>
                   <SheetTitle>Navigation</SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col space-y-4 mt-6">
+                <div className="flex flex-col space-y-4 mt-6 pointer-events-auto">
                   <NavButton path="/plans">Plans</NavButton>
                   <NavButton path="/creators">Creators</NavButton>
                 </div>
@@ -106,7 +110,7 @@ const Navbar = () => {
           </div>
 
           {/* Auth / Sign-in (right) */}
-          <div className="flex-shrink-0 w-[118px] flex justify-end">
+          <div className="flex-shrink-0 w-[118px] flex justify-end z-20">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -154,7 +158,11 @@ const Navbar = () => {
               </DropdownMenu>
             ) : (
               <div className="flex items-center space-x-2">
-                <Button variant="ghost" onClick={() => navigate('/login')}>
+                <Button
+                  className="max-[370px]:hidden"
+                  variant="ghost"
+                  onClick={() => navigate('/login')}
+                >
                   Sign In
                 </Button>
                 <Button
