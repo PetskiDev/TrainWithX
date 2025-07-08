@@ -5,7 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { PlanCard } from '@/components/PlanCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, TrendingUp, Award, Edit2, Check, X } from 'lucide-react';
+import {
+  Calendar,
+  TrendingUp,
+  Award,
+  Edit2,
+  Check,
+  X,
+  Camera,
+} from 'lucide-react';
 import { useAuth } from '@/context/AuthContext'; // 👉 adjust the import path if different
 import type { PlanPreview } from '@shared/types/plan';
 
@@ -26,6 +34,8 @@ const Me = () => {
   const [plans, setPlans] = useState<PlanPreview[]>([]);
   const [plansLoading, setPlansLoading] = useState<boolean>(true);
 
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   // ──────────────────────────────────────────────────────────────────────────────
   // Fetch plans that the authenticated user owns
   // Route: GET /:id/plans (e.g. /123/plans)
@@ -98,7 +108,44 @@ const Me = () => {
     setIsEditingName(false);
     setEditedName(user?.username);
   };
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      return setUploadError('Only JPEG, PNG or WEBP images are allowed.');
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      return setUploadError('Image must be 10 MB or less.');
+    }
+
+    setUploading(true);
+    setUploadError(null);
+
+    try {
+      const form = new FormData();
+      form.append('avatar', file); // field name must be "avatar"
+
+      const res = await fetch('/api/v1/me/avatar', {
+        method: 'POST',
+        body: form,
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        const { error } = await res.json();
+        throw new Error(error ?? 'Upload failed');
+      }
+
+      await refreshUser();
+    } catch (err: any) {
+      console.error(err);
+      setUploadError(err.message);
+    } finally {
+      setUploading(false);
+      e.target.value = ''; // reset file input
+    }
+  };
   // ──────────────────────────────────────────────────────────────────────────────
   // Derived values & fallbacks
   // ──────────────────────────────────────────────────────────────────────────────
@@ -139,22 +186,44 @@ const Me = () => {
     <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* ──────────────── Welcome Header ──────────────── */}
+        {uploading && (
+          <p className="text-xs text-gray-500 mt-1 pb-3">Uploading…</p>
+        )}
+        {uploadError && (
+          <p className="text-xs text-red-600 mt-1 pb-3">{uploadError}</p>
+        )}
         <div className="mb-8">
           <div className="flex items-center gap-6 mb-6">
-            <Avatar className="w-20 h-20">
-              <AvatarImage
-                src={user.avatarUrl}
-                alt={displayName}
-                referrerPolicy="no-referrer" // blocks referer header
-                onError={(e) => (e.currentTarget.style.display = 'none')}
-              />
-              <AvatarFallback>
-                {displayName
-                  .split(' ')
-                  .map((n) => n.substring(0, 2).toUpperCase())
-                  .join('')}
-              </AvatarFallback>
-            </Avatar>
+            <div className="relative">
+              <Avatar className="w-20 h-20">
+                <AvatarImage
+                  src={user.avatarUrl}
+                  alt={displayName}
+                  referrerPolicy="no-referrer" // blocks referer header
+                  onError={(e) => (e.currentTarget.style.display = 'none')}
+                />
+                <AvatarFallback>
+                  {displayName
+                    .split(' ')
+                    .map((n) => n.substring(0, 2).toUpperCase())
+                    .join('')}
+                </AvatarFallback>
+              </Avatar>{' '}
+              <div className="absolute -top-2 -right-2">
+                <label htmlFor="avatar-upload" className="cursor-pointer">
+                  <div className="bg-primary text-primary-foreground rounded-full p-2 shadow-lg hover:bg-primary/90 transition-colors">
+                    <Camera className="h-4 w-4" />
+                  </div>
+                </label>
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  onChange={handleAvatarUpload}
+                  className="hidden"
+                />
+              </div>
+            </div>
 
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
