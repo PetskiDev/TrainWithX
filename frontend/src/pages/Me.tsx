@@ -47,7 +47,7 @@ const Me = () => {
     const fetchPlans = async () => {
       try {
         setPlansLoading(true);
-        const res = await fetch(`/api/v1/users/me/plans`, {
+        const res = await fetch(`/api/v1/me/plans`, {
           signal: controller.signal,
         });
         if (!res.ok) throw new Error(`Failed to fetch plans: ${res.status}`);
@@ -81,7 +81,7 @@ const Me = () => {
   const handleSaveName = async () => {
     const newUsername = editedName;
     try {
-      const res = await fetch('/api/v1/users/me', {
+      const res = await fetch('/api/v1/me', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ const Me = () => {
       const form = new FormData();
       form.append('avatar', file); // field name must be "avatar"
 
-      const res = await fetch('/api/v1/users/me/avatar', {
+      const res = await fetch('/api/v1/me/avatar', {
         method: 'POST',
         body: form,
         credentials: 'include',
