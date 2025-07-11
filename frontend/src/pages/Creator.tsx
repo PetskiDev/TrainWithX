@@ -1,6 +1,5 @@
 // src/pages/Creator.tsx
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import PlansGrid from '../components/PlansGrid';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -13,10 +12,8 @@ import type { PlanPreview } from '@shared/types/plan';
 // ────────────────────────────────────────────────────────────────────────────
 // Component
 // ────────────────────────────────────────────────────────────────────────────
-const Creator = () => {
-  const { subdomain } = useParams<'subdomain'>();
+const Creator = ({ subdomain }: { subdomain: string | null }) => {
   const [plans, setPlans] = useState<PlanPreview[]>([]);
-  //const navigate = useNavigate();
   const [creator, setCreator] = useState<CreatorPreviewDTO | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +58,6 @@ const Creator = () => {
   }, [subdomain]);
 
   // ───────────── Helpers ─────────────
-  //const handlePlanClick = (planId: number) => navigate(`/plans/${planId}`);
   const handleContactClick = () => {
     window.location.href = `mailto:${creator?.username}@example.com`;
   };

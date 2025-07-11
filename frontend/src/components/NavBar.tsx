@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { TrainWithXLogo } from './TrainWithXLogo';
 
 import { Button } from '@/components/ui/button';
@@ -22,23 +22,23 @@ import {
 import { User, Settings, LogOut, Menu } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
+import { goPublic } from '@frontend/lib/nav';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const location = useLocation();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const isActive = (path: string) => location.pathname === path;
 
   const handleNavClick = (path: string) => {
-    navigate(path);
+    goPublic(path);
     setIsSheetOpen(false);
   };
 
   const handleLogout = () => {
     logout?.();
-    navigate('/');
+    goPublic('/');
   };
 
   const NavButton = ({
@@ -141,11 +141,11 @@ const Navbar = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/me')}>
+                  <DropdownMenuItem onClick={() => goPublic('/me')}>
                     <User className="mr-2 h-4 w-4" />
                     <span>My Plans</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/settings')}>
+                  <DropdownMenuItem onClick={() => goPublic('/settings')}>
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </DropdownMenuItem>
@@ -161,13 +161,13 @@ const Navbar = () => {
                 <Button
                   className="max-[370px]:hidden"
                   variant="ghost"
-                  onClick={() => navigate('/login')}
+                  onClick={() => goPublic('/login')}
                 >
                   Sign In
                 </Button>
                 <Button
                   className="gradient-bg text-white hover:opacity-90"
-                  onClick={() => navigate('/register')}
+                  onClick={() => goPublic('/register')}
                 >
                   Sign Up
                 </Button>

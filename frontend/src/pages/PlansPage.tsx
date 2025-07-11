@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 
 import type { PlanPreview } from '@shared/types/plan';
 import PlansGrid from '@frontend/components/PlansGrid';
+import { goPublic } from '@frontend/lib/nav';
 
 const PlansPage = () => {
-  const navigate = useNavigate();
   const [plans, setPlans] = useState<PlanPreview[]>([]);
   const [filteredPlans, setFilteredPlans] = useState<PlanPreview[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -45,7 +44,7 @@ const PlansPage = () => {
   }, [searchTerm, plans]);
 
   const handlePlanClick = (planId: number) => {
-    navigate(`/plan/${planId}`);
+    goPublic(`/plan/${planId}`);
   };
 
   return (

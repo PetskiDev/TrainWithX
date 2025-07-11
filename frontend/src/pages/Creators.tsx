@@ -1,14 +1,12 @@
 // src/pages/Creators.tsx
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { CreatorCard } from '@/components/CreatorCard';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
+import { goToCreator } from '@frontend/lib/nav';
 
 const Creators = () => {
-  const navigate = useNavigate();
-
   // loading / data / error state
   const [creators, setCreators] = useState<CreatorPreviewDTO[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +43,7 @@ const Creators = () => {
   );
 
   const handleCreatorClick = (subdomain: string) => {
-    navigate(`/creator/${subdomain}`);
+    goToCreator({ subdomain });
   };
 
   return (

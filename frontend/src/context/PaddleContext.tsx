@@ -32,7 +32,6 @@ export function PaddleProvider({ children }: { children: ReactNode }) {
               : 'production',
           token: import.meta.env.VITE_PADDLE_AUTH_TOKEN, // Dashboard → “Client-side auth token”
         });
-        console.log("TOKEN INIT"+ import.meta.env.VITE_PADDLE_AUTH_TOKEN)
 
         if (!instance) throw new Error('Paddle failed to initialise');
         setPaddle(instance);

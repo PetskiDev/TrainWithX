@@ -3,7 +3,7 @@
  * ------------------------------------------------*/
 
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@frontend/context/AuthContext';
 
 import { TrainWithXLogo } from '@/components/TrainWithXLogo';
@@ -17,10 +17,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { goPublic } from '@frontend/lib/nav';
 
 const LoginPage = () => {
   /* -------------- state & hooks --------------------------------------- */
-  const navigate = useNavigate();
   const { user, loading, login } = useAuth();
 
   const [form, setForm] = useState({ email: '', password: '' });
@@ -28,8 +28,8 @@ const LoginPage = () => {
 
   /* -------------- redirect if already signed in ----------------------- */
   useEffect(() => {
-    if (!loading && user) navigate('/me');
-  }, [loading, user, navigate]);
+    if (!loading && user) goPublic('/me');
+  }, [loading, user]);
 
   /* -------------- handlers ------------------------------------------- */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -40,7 +40,7 @@ const LoginPage = () => {
     setError('');
     try {
       await login(form.email, form.password);
-      navigate('/me');
+      goPublic('/me');
     } catch (err: any) {
       setError(err.message);
     }

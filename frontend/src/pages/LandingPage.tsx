@@ -6,13 +6,11 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { useNavigate } from 'react-router-dom';
 import { Users, Search, Star, Shield, Zap } from 'lucide-react';
 import { TrainWithXLogo } from '@/components/TrainWithXLogo';
+import { goPublic } from '@frontend/lib/nav';
 
 const LandingPage = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="min-h-screen-navbar">
       {/* Hero Section */}
@@ -34,7 +32,7 @@ const LandingPage = () => {
               <Button
                 size="lg"
                 className="gradient-bg text-white hover:opacity-90 px-8 py-4 text-lg w-full sm:w-auto"
-                onClick={() => navigate('/plans')}
+                onClick={() => goPublic('/plans')}
               >
                 Explore All Plans
               </Button>
@@ -42,7 +40,7 @@ const LandingPage = () => {
                 size="lg"
                 variant="outline"
                 className="px-8 py-4 text-lg border-2 w-full sm:w-auto"
-                onClick={() => navigate('/creators')}
+                onClick={() => goPublic('/creators')}
               >
                 Meet Our Creators
               </Button>
@@ -105,7 +103,7 @@ const LandingPage = () => {
             <CardContent className="text-center pt-0">
               <Button
                 className="w-full gradient-bg text-white hover:opacity-90"
-                onClick={() => navigate('/plans')}
+                onClick={() => goPublic('/plans')}
               >
                 Browse Plans
               </Button>
@@ -127,7 +125,7 @@ const LandingPage = () => {
               <Button
                 className="w-full"
                 variant="outline"
-                onClick={() => navigate('/creators')}
+                onClick={() => goPublic('/creators')}
               >
                 Meet Creators
               </Button>
@@ -173,7 +171,7 @@ const LandingPage = () => {
             <Button
               size="lg"
               className="gradient-bg text-white hover:opacity-90 px-8 py-4 text-lg w-full sm:w-auto"
-              onClick={() => navigate('/plans')}
+              onClick={() => goPublic('/plans')}
             >
               Start Training Now
             </Button>
@@ -181,7 +179,7 @@ const LandingPage = () => {
               size="lg"
               variant="outline"
               className="px-8 py-4 text-lg border-2 w-full sm:w-auto"
-              onClick={() => navigate('/creators')}
+              onClick={() => goPublic('/creators')}
             >
               Explore Creators
             </Button>

@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@frontend/context/AuthContext';
 import './AccountMenu.css';
+import { goPublic } from '@frontend/lib/nav';
 
 function AccountMenu() {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const navigator = useNavigate();
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (!ref.current?.contains(e.target as Node)) setOpen(false);
@@ -38,7 +38,7 @@ function AccountMenu() {
               <button
                 className="dropdown-username"
                 onClick={() => {
-                  navigator('/me');
+                  goPublic('/me');
                   setOpen(false);
                 }}
               >

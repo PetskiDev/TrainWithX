@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import type { CreatePlanDto } from '@shared/types/plan';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 
@@ -15,6 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { TrainWithXLogo } from '@/components/TrainWithXLogo';
+import { goPublic } from '@frontend/lib/nav';
 
 function CreatePlanPage() {
   const [form, setForm] = useState<CreatePlanDto>({
@@ -29,7 +29,6 @@ function CreatePlanPage() {
   const [creators, setCreators] = useState<CreatorPreviewDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -78,7 +77,7 @@ function CreatePlanPage() {
         throw new Error(error || 'Could not create plan');
       }
 
-      navigate('/plans');
+      goPublic('/plans');
     } catch (err: any) {
       setError(err.message);
     } finally {
