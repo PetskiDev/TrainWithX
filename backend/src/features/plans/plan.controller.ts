@@ -5,9 +5,10 @@ import {
   fetchCreatorPlans,
   fetchPlanBySlug,
   createPlanPaddleDb,
+  getPlanFromSubWithSlug,
 } from './plan.service';
 import { AppError } from '@src/utils/AppError';
-import { toPlanDetail, toPlanPreview } from './plan.transformer';
+import { toPaidPlan, toPlanPreview } from './plan.transformer';
 
 /** GET /api/v1/plans */
 export async function getAllPlans(req: Request, res: Response) {
@@ -20,13 +21,6 @@ export async function getCreatorPlans(req: Request, res: Response) {
   const { subdomain } = req.params;
   const plans = await fetchCreatorPlans(subdomain);
   res.json(plans.map(toPlanPreview));
-}
-
-
-export async function getPlanWithSlug(req: Request, res: Response) {
-  const { slug } = req.params;
-  const plan = await fetchPlanBySlug(slug);
-  res.json(toPlanDetail(plan));
 }
 
 /** POST /api/v1/admin/plans */
@@ -51,4 +45,13 @@ export async function createPlanAsAdmin(req: Request, res: Response) {
   });
 
   res.status(201).json(toPlanPreview(plan));
+}
+
+export async function subdomainSlugController(req: Request, res: Response) {
+  const { subdomain, slug } = req.params;
+
+  const plan = await getPlanFromSubWithSlug({ subdomain, slug });
+  if (!plan) throw new AppError('Plan Not found', 404);
+
+  res.status(200).json(toPaidPlan(plan));
 }

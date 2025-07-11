@@ -32,24 +32,29 @@ model Creator {
   plans      Plan[]
 }
 
+enum Difficulty {
+  beginner
+  intermediate
+  advanced
+}
+
 model Plan {
-  id                    Int       @id @default(autoincrement())
-  paddleProductId       String       @unique
-  paddlePriceId         String       @unique
+  id                    Int           @id @default(autoincrement())
+  paddleProductId       String        @unique
+  paddlePriceId         String        @unique
   title                 String
-  slug                  String    @unique @db.VarChar(50)
+  slug                  String        @unique @db.VarChar(50)
   description           String
-  price                 Decimal   @db.Decimal(10, 2)
-  currency              String    @default("USD")
-  originalPrice         Decimal?   @db.Decimal(10, 2)
-  paddleDiscountId            String?
+  difficulty            Difficulty?
+  price                 Decimal       @db.Decimal(10, 2)
+  currency              String        @default("USD")
+  originalPrice         Decimal?      @db.Decimal(10, 2)
+  paddleDiscountId      String?
   image                 String?
-  preview               String?
-  markdown              String?
-  metadata              Json?
-  createdAt             DateTime  @default(now())
+  content               Json?
+  createdAt             DateTime      @default(now())
   creatorId             Int
-  creator               Creator   @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creator               Creator       @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   purchases             Purchase[]
 }
 

@@ -10,6 +10,7 @@ import fs from 'node:fs/promises';
 
 import path from 'node:path';
 import sharp from 'sharp';
+import { toPlanPreview } from '@src/features/plans/plan.transformer';
 
 export async function fetchAllUsers(): Promise<UserDto[]> {
   const users = await prisma.user.findMany();
@@ -36,9 +37,7 @@ export async function getPlansOwnedByUser(
         include: {
           creator: {
             include: {
-              user: {
-                select: { username: true },
-              },
+              user: true,
             },
           },
         },
@@ -47,16 +46,7 @@ export async function getPlansOwnedByUser(
     orderBy: { timestamp: 'desc' },
   });
 
-  return purchases.map(({ plan }) => ({
-    id: plan.id,
-    title: plan.title,
-    slug: plan.slug,
-    price: Number(plan.price),
-    description: plan.description,
-    originalPrice: plan.originalPrice ? Number(plan.originalPrice) : undefined,
-    creatorUsername: plan.creator.user.username,
-    creatorSubdomain: plan.creator.subdomain,
-  }));
+  return purchases.map((purchase) => toPlanPreview(purchase.plan));
 }
 
 export async function editUsername(userId: number, newUsername: string) {

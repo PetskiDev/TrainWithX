@@ -78,3 +78,28 @@ export async function createPlanPaddleDb(dto: CreatePlanDto) {
     throw err;
   }
 }
+
+export async function getPlanFromSubWithSlug({
+  subdomain,
+  slug,
+}: {
+  subdomain: string;
+  slug: string;
+}) {
+  const plan = await prisma.plan.findFirst({
+    where: {
+      slug,
+      creator: {
+        subdomain,
+      },
+    },
+    include: {
+      creator: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  });
+  return plan;
+}

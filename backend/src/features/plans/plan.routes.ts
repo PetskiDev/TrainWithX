@@ -1,17 +1,16 @@
 import { Router } from 'express';
 import {
   getAllPlans,
-  getPlanWithSlug,
   createPlanAsAdmin,
+  subdomainSlugController,
 } from './plan.controller';
 
 const router = Router();
 
 router.get('/', getAllPlans);
-router.get('/:slug', getPlanWithSlug);
 
+router.get('/:subdomain/:slug', subdomainSlugController);
 
 router.post('/admin/createplan', createPlanAsAdmin);
-
 
 export default router;
