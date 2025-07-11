@@ -10,6 +10,7 @@ import Me from '@frontend/pages/Me';
 import Creators from '@frontend/pages/Creators';
 import Creator from '@frontend/pages/Creator';
 import { getCreatorSubdomain } from '@frontend/lib/getCreatorSubdomain';
+import PlanContentPage from '@frontend/pages/PlanContent';
 
 function PublicRoutes() {
   return (
@@ -33,6 +34,7 @@ function CreatorRoutes({ sub }: { sub: string | null }) {
   return (
     <Routes>
       <Route path="/" element={<Creator subdomain={sub} />} />
+      <Route path="/:slug" element={<PlanContentPage subdomain={sub} />} />
       <Route path="*" element={<h1>{sub}: CREATOR not found</h1>} />
     </Routes>
   );
