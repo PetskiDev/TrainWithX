@@ -23,29 +23,6 @@ export async function getCreatorPlans(req: Request, res: Response) {
   res.json(plans.map(toPlanPreview));
 }
 
-/** POST /api/v1/admin/plans */
-export async function createPlanAsAdmin(req: Request, res: Response) {
-  const { title, description, slug, price, creatorId, originalPrice } =
-    req.body;
-
-  if (!title || !description || !slug || price === undefined || !creatorId) {
-    throw new AppError(
-      'title, description, slug, price and creatorId are required',
-      400
-    );
-  }
-
-  const plan = await createPlanPaddleDb({
-    creatorId,
-    title,
-    description,
-    slug,
-    price: Number(price),
-    originalPrice,
-  });
-
-  res.status(201).json(toPlanPreview(plan));
-}
 
 export async function subdomainSlugController(req: Request, res: Response) {
   const { subdomain, slug } = req.params;

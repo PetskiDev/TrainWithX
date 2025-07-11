@@ -62,6 +62,7 @@ export async function createPlanPaddleDb(dto: CreatePlanDto) {
         price: dto.price,
         originalPrice: dto.originalPrice, // may be undefined
         paddleDiscountId: discountId,
+        coverImage: '',
       },
       include: {
         creator: {

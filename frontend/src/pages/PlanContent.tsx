@@ -36,7 +36,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedWeek, setSelectedWeek] = useState(1);
   const [videoPlaying, setVideoPlaying] = useState(false);
- 
+
   useEffect(() => {
     const fetchPlan = async () => {
       try {
@@ -419,30 +419,6 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                                     <span className="text-muted-foreground">
                                       {exercise.sets} sets × {exercise.reps} (
                                       {exercise.weight})
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-
-                            {day.meals && (
-                              <div className="space-y-2">
-                                <h4 className="font-medium">Meals:</h4>
-                                {day.meals.map((meal, index) => (
-                                  <div
-                                    key={index}
-                                    className="flex items-center justify-between text-sm"
-                                  >
-                                    <div>
-                                      <span className="font-medium">
-                                        {meal.name}
-                                      </span>
-                                      <p className="text-muted-foreground">
-                                        {meal.description}
-                                      </p>
-                                    </div>
-                                    <span className="text-muted-foreground">
-                                      {meal.calories} cal
                                     </span>
                                   </div>
                                 ))}

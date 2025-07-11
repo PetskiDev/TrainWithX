@@ -1,10 +1,6 @@
 // backend/src/features/plans/plan.transformer.ts
 import { Plan, Creator, User } from '@prisma/client';
-import {
-  PlanPreview,
-  PlanPaid,
-  PlanContentJSON,
-} from '@shared/types/plan';
+import { PlanPreview, PlanPaid, PlanContentJSON } from '@shared/types/plan';
 
 export function toPlanPreview(
   plan: Plan & { creator: Creator & { user: User } }
@@ -14,6 +10,7 @@ export function toPlanPreview(
     title: plan.title,
     slug: plan.slug,
     price: Number(plan.price),
+    coverImage: plan.coverImage,
     creatorId: plan.creator.id,
     creatorUsername: plan.creator.user.username,
     creatorSubdomain: plan.creator.subdomain,
@@ -41,19 +38,18 @@ export function toPaidPlan(
       ) ?? 0,
     goals: content?.goals ?? [],
     tags: content?.tags ?? [],
-    weeks: content?.weeks.map((week) => ({
-      id: week.id,
-      title: week.title,
-      description: week.description,
-      status: week.status, // 'locked' | 'current' | 'unlocked'
-      days: week.days.map((day) => ({
-        id: day.id,
-        type: day.type,
-        title: day.title,
-        duration: day.duration ?? undefined,
-        exercises: day.exercises ?? [],
-        meals: day.meals ?? [],
-      })),
-    })) ?? [],
+    weeks:
+      content?.weeks.map((week) => ({
+        id: week.id,
+        title: week.title,
+        description: week.description,
+        days: week.days.map((day) => ({
+          id: day.id,
+          type: day.type,
+          title: day.title,
+          duration: day.duration ?? undefined,
+          exercises: day.exercises ?? [],
+        })),
+      })) ?? [],
   };
 }
