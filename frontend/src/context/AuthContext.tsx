@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(updatedUser);
   };
   const logout = async () => {
-    await fetch('api/v1/auth/logout', {
+    await fetch('/api/v1/auth/logout', {
       method: 'POST',
       credentials: 'include',
     });

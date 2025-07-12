@@ -8,6 +8,15 @@ export async function fetchAllCreators() {
   });
 }
 
+export async function fetchCreatorById(id: number) {
+  return prisma.creator.findFirst({
+    where: {
+      id,
+    },
+    include: { user: true },
+  });
+}
+
 export async function fetchCreatorBySub(subdomain: string) {
   return prisma.creator.findFirst({
     where: {

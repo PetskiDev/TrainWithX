@@ -1,6 +1,7 @@
 import {
   getAllCreators,
-  getByUsername as getBySub,
+  getById,
+  getBySubdomain as getBySub,
 } from '@src/features/creators/creator.controller';
 import { getCreatorPlans } from '@src/features/plans/plan.controller';
 import { Router } from 'express';
@@ -8,9 +9,10 @@ import { Router } from 'express';
 const router = Router();
 
 router.get('/', getAllCreators);
-router.get('/:subdomain', getBySub);
+router.get('/:id', getById);
+router.get('/sub/:subdomain', getBySub);
 //router.post('/', ); //THIS SHOULD BE TOTALLY NEW CREATOR, old upgrade moved to /users/:id/promote-creator
-router.get('/:subdomain/plans', getCreatorPlans);
+router.get('/sub/:subdomain/plans', getCreatorPlans);
 
 //router.get('/:username/plans/:slug', getPlansOfCreatorWithSlug);
 

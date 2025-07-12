@@ -4,7 +4,6 @@ import PlansPage from './pages/PlansPage';
 import LoginPage from '@frontend/pages/LoginPage';
 import RegisterPage from '@frontend/pages/RegisterPage';
 import NotFoundPage from '@frontend/pages/NotFoundPage';
-import CreatePlanPage from '@frontend/pages/CreatePlanPage';
 import VerifyEmail from '@frontend/pages/VerifyEmail';
 import Me from '@frontend/pages/Me';
 import Creators from '@frontend/pages/Creators';
@@ -22,7 +21,6 @@ function PublicRoutes() {
         <Route path="/creators" element={<Creators />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/createplan" element={<CreatePlanPage />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/me" element={<Me />} />
         <Route path="/me/creator/createplan" element={<CreatePlan />} />

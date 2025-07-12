@@ -1,7 +1,7 @@
 // backend/src/features/plans/plan.service.ts
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
-import { CreatePlanDto } from '@shared/types/plan';
+import { CreatePlanDto, PlanContentJSON } from '@shared/types/plan';
 import { createDiscountFor, createProductWithPrice } from '@src/utils/paddle';
 
 export async function fetchAllPlans() {
@@ -39,6 +39,56 @@ export async function fetchPlanBySlug(slug: string) {
 
   if (!plan) throw new AppError('Plan not found', 404);
   return plan;
+}
+
+export async function createPlanService(newPlan: CreatePlanDto) {
+  const { product, price } = await createProductWithPrice({
+    name: newPlan.title,
+    description: newPlan.description,
+    inputPrice: newPlan.originalPrice ? newPlan.originalPrice : newPlan.price,
+  });
+
+  let discountId = await createDiscountFor(newPlan);
+
+  const { goals, tags, weeks, introVideo, ...previewData } = newPlan;
+  const totalWorkouts = weeks.reduce(
+    (acc, week) => acc + week.days.filter((d) => d.type === 'workout').length,
+    0
+  );
+
+  const totalWeeks = weeks.length;
+  const newContent: PlanContentJSON = {
+    goals,
+    tags,
+    weeks,
+    introVideo,
+    totalWorkouts,
+    totalWeeks,
+  };
+
+  try {
+    return await prisma.plan.create({
+      data: {
+        ...previewData,
+        paddleProductId: product.id,
+        paddlePriceId: price.id,
+        paddleDiscountId: discountId,
+        content: JSON.parse(JSON.stringify(newContent)),
+      },
+      include: {
+        creator: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+  } catch (err: any) {
+    if (err.code === 'P2002') {
+      throw new AppError('Slug already in use', 409);
+    }
+    throw err;
+  }
 }
 
 export async function createPlanPaddleDb(dto: CreatePlanDto) {

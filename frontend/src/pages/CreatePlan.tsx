@@ -17,21 +17,38 @@ import type {
   CreatePlanDto,
   Exercise,
   PlanDay,
-  PlanPreview,
   PlanWeek,
 } from '@shared/types/plan';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 import { useAuth } from '@frontend/context/AuthContext';
+import { goPublic } from '@frontend/lib/nav';
 
 const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
   const isEditing = !!init;
-
   const { user } = useAuth();
+
+  const [error, setError] = useState<string | null>(null);
   const [creator, setCreator] = useState<CreatorPreviewDTO | null>(null);
   const [allCreators, setAllCreators] = useState<CreatorPreviewDTO[] | null>(
     null
   );
+  const [planData, setPlanData] = useState<CreatePlanDto>({
+    title: '',
+    description: '',
+    difficulty: 'beginner',
+    price: 25,
+    originalPrice: undefined,
+    slug: '',
+    goals: [],
+    tags: [],
+    weeks: [],
+    creatorId: -1, //Handle below
+  });
+
+  const [activeTab, setActiveTab] = useState('basic');
+
   useEffect(() => {
+    if (!user || !user.isAdmin) return;
     const fetchAllCreators = async () => {
       try {
         const res = await fetch('/api/v1/creators', {
@@ -42,33 +59,22 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
         setAllCreators(creators);
       } catch (err) {
         console.error('Error loading all creators:', err);
+        setError('Failed to load creators. Please try again later.');
       }
     };
-
     fetchAllCreators();
-  }, []);
-
-  const [planData, setPlanData] = useState<CreatePlanDto>({
-    title: '',
-    description: '',
-    difficulty: 'beginner',
-    price: 0,
-    originalPrice: undefined,
-    slug: '',
-    goals: [],
-    tags: [],
-    weeks: [],
-    creatorId: -1,
-    totalWeeks: 0,
-    totalWorkouts: 0,
-  });
-
+  }, [user, init]);
   useEffect(() => {
     const fetchCreator = async () => {
+      if (!user) return;
       try {
-        const res = await fetch(`/api/v1/creators/${user!.id}`, {
+        const res = await fetch(`/api/v1/creators/${user.id}`, {
           credentials: 'include',
         });
+        if (!res.ok) {
+          throw new Error('User is not creator');
+        }
+
         const c = await res.json();
         setCreator(c);
 
@@ -80,13 +86,37 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
         }
       } catch (err) {
         console.error('Failed to load creator:', err);
+        setError('Failed to load creator.');
       }
     };
 
     fetchCreator();
-  }, []);
+  }, [user, init]);
 
-  const [activeTab, setActiveTab] = useState('basic');
+  if (!user) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-red-600 font-semibold mb-2">
+          You must be logged in to create or edit a plan.
+        </p>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+          onClick={() => goPublic('/login')}
+        >
+          Go to Login
+        </button>
+      </div>
+    );
+  }
+  if (!creator) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-red-600 font-semibold mb-2">
+          You must be a creator to create a plan.
+        </p>
+      </div>
+    );
+  }
 
   // Basic plan info handlers
   const updateBasicInfo = (
@@ -262,16 +292,6 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
 
   const handleSave = async () => {
     try {
-      const payload: CreatePlanDto = {
-        ...planData,
-        totalWorkouts: planData.weeks.reduce(
-          (total, week) =>
-            total + week.days.filter((d) => d.type === 'workout').length,
-          0
-        ),
-        totalWeeks: planData.weeks.length,
-      };
-
       const endpoint = isEditing
         ? `/api/v1/plans/${planData.slug}`
         : `/api/v1/plans`;
@@ -282,36 +302,47 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
         method,
         headers: {
           'Content-Type': 'application/json',
-          credentials: 'include',
         },
-        body: JSON.stringify(payload),
+        credentials: 'include',
+
+        body: JSON.stringify(planData),
       });
 
       if (!res.ok) {
-        throw new Error(`Failed to ${isEditing ? 'update' : 'create'} plan`);
+        throw new Error(`Failed to ${isEditing ? 'update' : 'create'} plan `);
       }
 
       const saved = await res.json();
       console.log(`${isEditing ? 'Updated' : 'Created'} plan:`, saved);
 
+      goPublic('/plans');
       // Optional: redirect or show toast
     } catch (err) {
       console.error('Error saving plan:', err);
+      setError(String(err));
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded">
+            {error}
+          </div>
+        )}
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Create New Plan</h1>
+            <h1 className="text-3xl font-bold mb-2">
+              {' '}
+              {`Create New Plan ${user.isAdmin && '(admin)'}`}
+            </h1>
             <p className="text-muted-foreground">
               Build your training plan step by step
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col lg:flex-row gap-3">
             <Button variant="outline" onClick={handlePreview}>
               <Eye className="h-4 w-4 mr-2" />
               Preview
@@ -355,7 +386,9 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
                       placeholder="e.g., 30-day-muscle-building"
                     />
                     <p className="text-xs text-muted-foreground">
-                      creator.trainwithx.com/{planData.slug || 'your-slug'}
+                      {user.isAdmin ? 'admin' : creator.subdomain}
+                      .trainwithx.com/
+                      {planData.slug || 'your-slug'}
                     </p>
                   </div>
                 </div>
@@ -426,32 +459,44 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
                 </div>
 
                 {/* Creator Selection - Admin Only */}
-                <div className="space-y-2 pt-6 border-t">
-                  <Label htmlFor="selectedCreator">
-                    Assign to Creator (Admin Only)
-                  </Label>
-                  <Select
-                    value={String(planData.creatorId) || ''}
-                    onValueChange={(value) =>
-                      updateBasicInfo('creatorId', Number(value))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a creator" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {allCreators?.map((c) => (
-                        <SelectItem key={c.id} value={String(c.id)}>
-                          (@{c.username})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">
-                    This field is only visible to admin users. Leave empty to
-                    assign to yourself.
-                  </p>
-                </div>
+
+                {user.isAdmin && (
+                  <div className="space-y-2 pt-6 border-t">
+                    <Label htmlFor="selectedCreator">
+                      Assign to Creator (Admin Only)
+                    </Label>
+                    <Select
+                      value={
+                        planData.creatorId > 0 ? String(planData.creatorId) : ''
+                      }
+                      onValueChange={(value) =>
+                        updateBasicInfo('creatorId', Number(value))
+                      }
+                      disabled={!allCreators}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a creator" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {allCreators && allCreators.length > 0 ? (
+                          allCreators.map((c) => (
+                            <SelectItem key={c.id} value={String(c.id)}>
+                              (@{c.username})
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <div className="p-2 text-sm text-muted-foreground">
+                            No creators available.
+                          </div>
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      This field is only visible to admin users. Leave empty to
+                      assign to yourself.
+                    </p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

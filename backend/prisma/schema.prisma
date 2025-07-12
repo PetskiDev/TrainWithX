@@ -45,7 +45,7 @@ model Plan {
   title                 String
   slug                  String        @unique @db.VarChar(50)
   description           String
-  coverImage            String
+  coverImage            String?
   difficulty            Difficulty?
   price                 Decimal       @db.Decimal(10, 2)
   currency              String        @default("USD")

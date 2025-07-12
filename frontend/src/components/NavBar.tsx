@@ -36,8 +36,13 @@ const Navbar = () => {
     setIsSheetOpen(false);
   };
 
-  const handleLogout = () => {
-    logout?.();
+  const handleLogout = async () => {
+    if (!logout) {
+      console.error('Logout function is undefined!');
+      return;
+    }
+    console.log('LOGGING OUT');
+    await logout();
     goPublic('/');
   };
 

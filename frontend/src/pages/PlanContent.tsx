@@ -19,7 +19,7 @@ import {
   Star,
   Coffee,
 } from 'lucide-react';
-import type { PlanPaid } from '@shared/types/plan';
+import type { PlanPaidPreveiw } from '@shared/types/plan';
 import { useParams } from 'react-router-dom';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 
@@ -28,7 +28,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
     slug: string;
   }>();
 
-  const [planPaid, setPlanPaid] = useState<PlanPaid | null>(null);
+  const [planPaid, setPlanPaid] = useState<PlanPaidPreveiw | null>(null);
   const [creator, setCreator] = useState<CreatorPreviewDTO | null>(null);
 
   const [loading, setLoading] = useState(true);
@@ -44,7 +44,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data: PlanPaid = await response.json();
+        const data: PlanPaidPreveiw = await response.json();
         setPlanPaid(data);
       } catch (err) {
         setError((err as Error).message);
@@ -63,7 +63,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
       if (!planPaid?.creatorId) return;
       try {
         const res = await fetch(
-          `/api/v1/creators/${planPaid.creatorSubdomain}`
+          `/api/v1/creators/sub/${planPaid.creatorSubdomain}`
         );
         if (!res.ok) throw new Error('Creator not found');
         const data = await res.json();

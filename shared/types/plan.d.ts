@@ -24,11 +24,11 @@ export interface PlanContentJSON {
   weeks: PlanWeek[];
 }
 
-interface PlanPaid extends PlanPreview, PlanContentJSON {}
+interface PlanPaidPreveiw extends PlanPreview, PlanContentJSON {}
 
 export type CreatePlanDto = Omit<
-  PlanPaid,
-  'id' | 'creatorUsername' | 'creatorSubdomain'
+  PlanPaidPreveiw,
+  'id' | 'creatorUsername' | 'creatorSubdomain' | 'totalWeeks' | 'totalWorkouts'
 >;
 
 export interface PlanWeek {

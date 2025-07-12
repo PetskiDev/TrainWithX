@@ -8,7 +8,23 @@ export async function getAllCreators(req: Request, res: Response) {
   const previews = await Promise.all(creators.map(transformCreatorToPreview));
   res.json(previews);
 }
-export async function getByUsername(req: Request, res: Response) {
+
+export async function getById(req: Request, res: Response) {
+  const id = Number(req.params.id);
+  if (!id) {
+    res.status(404).json({ error: 'Invalid Id' });
+    return;
+  }
+  const creator = await creatorService.fetchCreatorById(id);
+  if (!creator) {
+    res.status(404).json({ error: 'Creator not found' });
+    return;
+  }
+  const preveiw = await transformCreatorToPreview(creator);
+  res.json(preveiw);
+}
+
+export async function getBySubdomain(req: Request, res: Response) {
   const { subdomain } = req.params;
   const creator = await creatorService.fetchCreatorBySub(subdomain);
   if (!creator) {

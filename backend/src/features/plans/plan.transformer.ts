@@ -1,6 +1,10 @@
 // backend/src/features/plans/plan.transformer.ts
 import { Plan, Creator, User } from '@prisma/client';
-import { PlanPreview, PlanPaid, PlanContentJSON } from '@shared/types/plan';
+import {
+  PlanPreview,
+  PlanPaidPreveiw,
+  PlanContentJSON,
+} from '@shared/types/plan';
 
 export function toPlanPreview(
   plan: Plan & { creator: Creator & { user: User } }
@@ -10,7 +14,7 @@ export function toPlanPreview(
     title: plan.title,
     slug: plan.slug,
     price: Number(plan.price),
-    coverImage: plan.coverImage,
+    coverImage: plan.coverImage ?? undefined,
     creatorId: plan.creator.id,
     creatorUsername: plan.creator.user.username,
     creatorSubdomain: plan.creator.subdomain,
@@ -25,7 +29,7 @@ export function toPaidPlan(
   plan: Plan & {
     creator: Creator & { user: User };
   }
-): PlanPaid {
+): PlanPaidPreveiw {
   const content = plan.content as unknown as PlanContentJSON | undefined; // TODO USE ZOD TO VALIDATE
   return {
     ...toPlanPreview(plan),
