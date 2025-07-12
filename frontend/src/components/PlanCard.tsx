@@ -5,8 +5,9 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { BuyButton } from '@frontend/components/BuyButton';
 import type { PlanPreview } from '@shared/types/plan';
+import { Button } from '@frontend/components/ui/button';
+import { goToCreator } from '@frontend/lib/nav';
 
 type Props = {
   plan: PlanPreview; // add optional description
@@ -22,6 +23,7 @@ export const PlanCard = ({ plan, onPlanClick }: Props) => {
     price,
     originalPrice,
     description,
+    creatorSubdomain,
   } = plan;
 
   const imageUrl = `/plan_images/${slug}.jpg`;
@@ -87,7 +89,17 @@ export const PlanCard = ({ plan, onPlanClick }: Props) => {
         </div>
         <CardFooter className="pt-0 p-0">
           <div onClick={(e) => e.stopPropagation()} className="w-full">
-            <BuyButton planId={id} />
+            <Button
+              className="w-full gradient-bg text-white hover:opacity-90"
+              onClick={() =>
+                goToCreator({
+                  subdomain: creatorSubdomain,
+                  path: `/${plan.slug}`,
+                })
+              }
+            >
+              Preveiw Plan
+            </Button>
           </div>
         </CardFooter>
       </div>

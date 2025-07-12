@@ -2,7 +2,8 @@ import { Router } from 'express';
 import {
   createPlanController,
   getAllPlans,
-  subdomainSlugController,
+  getPlanSubSlugContent,
+  getPlanSubSlugPreveiw,
 } from './plan.controller';
 import { doAuth } from '@src/middleware/auth';
 
@@ -12,7 +13,9 @@ router.get('/', getAllPlans);
 
 router.post('/', doAuth, createPlanController);
 
-router.get('/:subdomain/:slug', subdomainSlugController);
+router.get('/preview/:subdomain/:slug', getPlanSubSlugPreveiw);
 
+//do some security here.
+router.get('/content/:subdomain/:slug', getPlanSubSlugContent);
 
 export default router;

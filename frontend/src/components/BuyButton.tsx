@@ -12,11 +12,12 @@ import { Button } from '@/components/ui/button';
 
 interface BuyButtonProps {
   planId: number;
+  text?: string;
   /** Optional – extra Tailwind classes */
   className?: string;
 }
 
-export const BuyButton = ({ planId, className }: BuyButtonProps) => {
+export const BuyButton = ({ planId, text, className }: BuyButtonProps) => {
   const { paddle, loading: paddleLoading } = usePaddle();
   const { user } = useAuth();
   const [busy, setBusy] = useState(false);
@@ -71,7 +72,7 @@ export const BuyButton = ({ planId, className }: BuyButtonProps) => {
           Processing…
         </>
       ) : (
-        'Preview Plan'
+        text || 'Get This Plan'
       )}
     </Button>
   );
