@@ -4,63 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ArrowLeft, Play, Clock, Users, Star, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Play, Clock, Users, Star } from 'lucide-react';
 import type { PlanPaidPreveiw } from '@shared/types/plan';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 import { goToCreator } from '@frontend/lib/nav';
 import BuyButton from '@frontend/components/BuyButton';
-
-// Mock plan data with more details
-const mockPlanDetails = {
-  '1': {
-    id: '1',
-    title: '30-Day Muscle Building Program',
-    description:
-      'Complete muscle building program with detailed workout plans and nutrition guidance for maximum gains.',
-    originalPrice: 99,
-    price: 79,
-    imageUrl:
-      'https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=800&h=400&fit=crop',
-    creatorName: 'John Fitness',
-    creatorAvatar:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-    creatorBio:
-      'Certified personal trainer with 10+ years of experience. Specializing in muscle building and strength training.',
-    duration: '30 days',
-    workouts: 24,
-    difficulty: 'Intermediate',
-    rating: 4.8,
-    reviews: 156,
-    features: [
-      '24 detailed workout sessions',
-      'Complete nutrition guide',
-      'Progress tracking templates',
-      'Video demonstrations',
-      '24/7 community support',
-      'Supplement recommendations',
-    ],
-    preview: [
-      {
-        title: 'Week 1: Foundation Building',
-        description: 'Start with compound movements and proper form',
-        image:
-          'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=200&fit=crop',
-      },
-      {
-        title: 'Week 2-3: Progressive Overload',
-        description: 'Increase intensity and add advanced techniques',
-        image:
-          'https://images.unsplash.com/photo-1583500178690-5b3684db2e56?w=400&h=200&fit=crop',
-      },
-      {
-        title: 'Week 4: Peak Performance',
-        description: 'Maximum muscle activation and strength gains',
-        image:
-          'https://images.unsplash.com/photo-1594737623354-548d347b1401?w=400&h=200&fit=crop',
-      },
-    ],
-  },
-};
 
 const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
   const { slug } = useParams<{
