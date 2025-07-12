@@ -50,7 +50,7 @@ export async function createPlanService(newPlan: CreatePlanDto) {
 
   let discountId = await createDiscountFor(newPlan);
 
-  const { goals, tags, weeks, introVideo, ...previewData } = newPlan;
+  const { slug, goals, tags, weeks, introVideo, ...previewData } = newPlan;
   const totalWorkouts = weeks.reduce(
     (acc, week) => acc + week.days.filter((d) => d.type === 'workout').length,
     0
@@ -69,6 +69,7 @@ export async function createPlanService(newPlan: CreatePlanDto) {
   try {
     return await prisma.plan.create({
       data: {
+        slug: slug.toLowerCase(),
         ...previewData,
         paddleProductId: product.id,
         paddlePriceId: price.id,

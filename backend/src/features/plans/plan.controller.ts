@@ -35,8 +35,8 @@ export async function getCreatorPlans(req: Request, res: Response) {
 }
 
 export async function subdomainSlugController(req: Request, res: Response) {
-  const { subdomain, slug } = req.params;
-
+  let { subdomain, slug } = req.params;
+  slug = slug.toLowerCase();
   const plan = await getPlanFromSubWithSlug({ subdomain, slug });
   if (!plan) throw new AppError('Plan Not found', 404);
 

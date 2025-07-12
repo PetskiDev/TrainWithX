@@ -25,7 +25,8 @@ export async function getById(req: Request, res: Response) {
 }
 
 export async function getBySubdomain(req: Request, res: Response) {
-  const { subdomain } = req.params;
+  let { subdomain } = req.params;
+  subdomain = subdomain.toLowerCase();
   const creator = await creatorService.fetchCreatorBySub(subdomain);
   if (!creator) {
     res.status(404).json({ error: 'Creator not found' });

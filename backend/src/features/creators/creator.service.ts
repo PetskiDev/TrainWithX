@@ -29,7 +29,7 @@ export async function fetchCreatorBySub(subdomain: string) {
 export async function upgradeUser(userId: number, subdomain: string) {
   try {
     return await prisma.creator.create({
-      data: { id: userId, subdomain },
+      data: { id: userId, subdomain: subdomain.toLowerCase() },
       include: { user: true },
     });
   } catch (err) {
