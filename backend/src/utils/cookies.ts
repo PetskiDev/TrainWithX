@@ -1,4 +1,10 @@
+import { env } from '@src/utils/env';
+
+const isLocalhost =
+  env.DOMAIN === 'localhost' || env.DOMAIN.endsWith('.localhost');
+
 export const cookieOpts = {
+  domain: isLocalhost ? undefined : `.${env.DOMAIN}`,
   httpOnly: true,
   secure: false,
   sameSite: 'strict' as const,
@@ -6,6 +12,7 @@ export const cookieOpts = {
 };
 
 export const clearCookieOpts = {
+  domain: isLocalhost ? undefined : `.${env.DOMAIN}`,
   httpOnly: true,
   secure: false,
   sameSite: 'strict' as const,

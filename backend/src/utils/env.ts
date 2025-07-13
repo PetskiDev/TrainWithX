@@ -11,6 +11,7 @@ function getEnvVariable(key: string, required = true): string {
 }
 
 export const env = {
+  DOMAIN: getEnvVariable('DOMAIN'),
   FRONTEND_URL: getEnvVariable('FRONTEND_URL'),
   API_URL: getEnvVariable('API_URL'),
   DATABASE_URL: getEnvVariable('DATABASE_URL'),
