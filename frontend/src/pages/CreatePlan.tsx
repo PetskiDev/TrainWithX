@@ -335,8 +335,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">
-              {' '}
-              {`Create New Plan ${user.isAdmin && '(admin)'}`}
+              {`Create New Plan ${user.isAdmin ? '(admin)' : ''}`}
             </h1>
             <p className="text-muted-foreground">
               Build your training plan step by step

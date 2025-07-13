@@ -40,7 +40,9 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
   useEffect(() => {
     const fetchPlan = async () => {
       try {
-        const response = await fetch(`/api/v1/plans/${subdomain}/${slug}`);
+        const response = await fetch(
+          `/api/v1/plans/content/${subdomain}/${slug}`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
