@@ -108,7 +108,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
       </div>
     );
   }
-  if (!creator) {
+  if (!user.isAdmin && !creator) {
     return (
       <div className="p-4 text-center">
         <p className="text-red-600 font-semibold mb-2">
@@ -385,7 +385,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
                       placeholder="e.g., 30-day-muscle-building"
                     />
                     <p className="text-xs text-muted-foreground">
-                      {user.isAdmin ? 'admin' : creator.subdomain}
+                      {user.isAdmin ? 'admin' : creator?.subdomain}
                       .trainwithx.com/
                       {planData.slug || 'your-slug'}
                     </p>

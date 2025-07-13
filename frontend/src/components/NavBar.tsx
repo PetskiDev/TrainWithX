@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { TrainWithXLogo } from './TrainWithXLogo';
 
 import { Button } from '@/components/ui/button';
@@ -55,11 +55,10 @@ const Navbar = () => {
   }) => (
     <Button
       variant={isActive(path) ? 'default' : 'ghost'}
-      className={`px-5 py-0 rounded-full transition-all duration-300 ${
-        isActive(path)
-          ? 'gradient-bg text-white shadow-lg scale-101'
-          : 'hover:gradient-bg hover:scale-101 hover:shadow-md bg-white/80 backdrop-blur-sm border border-purple-200'
-      }`}
+      className={`px-5 py-0 rounded-full transition-all duration-300 ${isActive(path)
+        ? 'gradient-bg text-white shadow-lg scale-101'
+        : 'hover:gradient-bg hover:scale-101 hover:shadow-md bg-white/80 backdrop-blur-sm border border-purple-200'
+        }`}
       onClick={() => handleNavClick(path)}
     >
       {children}
@@ -72,14 +71,14 @@ const Navbar = () => {
         {/* relative here gives the hamburger a positioning context */}
         <div className="flex h-16 items-center justify-between relative">
           {/* Logo (left) */}
-          <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center">
-              <TrainWithXLogo
-                size="sm"
-                showText // keep the word-mark for normal screens
-                className="max-[370px]:[&>span]:text-sm" /* ⬅ hides text < 440 px */
-              />
-            </Link>
+          <div
+            onClick={() => goPublic()}
+            className="flex items-center cursor-pointer"
+          >           <TrainWithXLogo
+              size="sm"
+              showText // keep the word-mark for normal screens
+              className="max-[370px]:[&>span]:text-sm" /* ⬅ hides text < 440 px */
+            />
           </div>
 
           {/* Desktop nav (center, md+) */}
@@ -181,7 +180,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
+    </nav >
   );
 };
 
