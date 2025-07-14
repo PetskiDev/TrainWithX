@@ -11,6 +11,7 @@ export interface PlanPreview {
   creatorUsername: string;
   creatorSubdomain: string;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
+  sales: number;
 }
 
 //paid stuff in the json
@@ -24,11 +25,20 @@ export interface PlanContentJSON {
   weeks: PlanWeek[];
 }
 
-interface PlanPaidPreveiw extends PlanPreview, PlanContentJSON {}
+export interface PlanPaidPreveiw extends PlanPreview, PlanContentJSON {}
+
+export interface PlanCreatorData extends PlanPreview {
+  revenue: number;
+}
 
 export type CreatePlanDto = Omit<
   PlanPaidPreveiw,
-  'id' | 'creatorUsername' | 'creatorSubdomain' | 'totalWeeks' | 'totalWorkouts'
+  | 'id'
+  | 'creatorUsername'
+  | 'creatorSubdomain'
+  | 'totalWeeks'
+  | 'totalWorkouts'
+  | 'sales'
 >;
 
 export interface PlanWeek {

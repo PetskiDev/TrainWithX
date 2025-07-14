@@ -4,21 +4,27 @@ import {
 } from '@src/features/users/user.transformer';
 import { prisma } from '@src/utils/prisma';
 import { UserDto } from '@shared/types/user';
-import { PlanPreview } from '@shared/types/plan';
+import { PlanCreatorData, PlanPreview } from '@shared/types/plan';
 import { AppError } from '@src/utils/AppError';
 import fs from 'node:fs/promises';
 
 import path from 'node:path';
 import sharp from 'sharp';
-import { toPlanPreview } from '@src/features/plans/plan.transformer';
+import {
+  toPlanCreatorData,
+  toPlanPreview,
+} from '@src/features/plans/plan.transformer';
 
 export async function fetchAllUsers(): Promise<UserDto[]> {
-  const users = await prisma.user.findMany();
+  const users = await prisma.user.findMany({ include: { creator: true } });
   return transformUsersToPreview(users);
 }
 
 export async function fetchUser(id: number): Promise<UserDto | null> {
-  const user = await prisma.user.findUnique({ where: { id } });
+  const user = await prisma.user.findUnique({
+    where: { id },
+    include: { creator: true },
+  });
   if (!user) return null;
   return transformUserToPreview(user);
 }
@@ -40,6 +46,7 @@ export async function getPlansOwnedByUser(
               user: true,
             },
           },
+          purchases: true,
         },
       },
     },
@@ -47,6 +54,24 @@ export async function getPlansOwnedByUser(
   });
 
   return purchases.map((purchase) => toPlanPreview(purchase.plan));
+}
+
+export async function fetchPlansMadeByCreator(
+  creatorId: number
+): Promise<PlanCreatorData[]> {
+  const plans = await prisma.plan.findMany({
+    where: { creatorId },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      creator: {
+        include: {
+          user: true,
+        },
+      },
+      purchases: true, // In case you need number of purchases/sales per plan
+    },
+  });
+  return plans.map(toPlanCreatorData);
 }
 
 export async function editUsername(userId: number, newUsername: string) {

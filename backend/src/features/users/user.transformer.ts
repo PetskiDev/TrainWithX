@@ -9,6 +9,7 @@ export function transformUserToPreview(
     username: user.username,
     email: user.email,
     isAdmin: user.isAdmin,
+    isCreator: !!user.creator,
     createdAt: user.createdAt,
     avatarUrl: user.avatarUrl ?? undefined,
   };

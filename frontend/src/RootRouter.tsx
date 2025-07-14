@@ -12,6 +12,7 @@ import { getCreatorSubdomain } from '@frontend/lib/getCreatorSubdomain';
 import PlanContentPage from '@frontend/pages/PlanContent';
 import CreatePlan from '@frontend/pages/CreatePlan';
 import PlanPreview from '@frontend/pages/PlanPreview';
+import CreatorDashboard from '@frontend/pages/CreatorDashboard';
 
 function PublicRoutes() {
   return (
@@ -24,7 +25,8 @@ function PublicRoutes() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/me" element={<Me />} />
-        <Route path="/me/creator/createplan" element={<CreatePlan />} />
+        <Route path="/me/creator" element={<CreatorDashboard />} />
+        <Route path="/me/creator/create-plan" element={<CreatePlan />} />
         <Route path="*" element={<NotFoundPage />} /> {/* 404 */}
       </Routes>
     </>

@@ -21,7 +21,7 @@ function PlansGrid({ plans }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {plans.map((plan) => (
         <PlanCard key={plan.id} plan={plan} />
       ))}

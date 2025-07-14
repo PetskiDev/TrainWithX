@@ -44,6 +44,10 @@ const RegisterPage = () => {
     setError('');
     try {
       await register(form.email, form.username, form.password);
+      if (user?.isCreator) {
+        goPublic('/me/creator');
+        return;
+      }
       goPublic('/me');
     } catch (err: any) {
       setError(err.message);

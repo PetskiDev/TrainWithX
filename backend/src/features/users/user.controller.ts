@@ -1,15 +1,21 @@
 import { Request, Response } from 'express';
-import { upgradeUser } from '@src/features/creators/creator.service';
+import {
+  fetchCreatorById,
+  upgradeUser,
+} from '@src/features/creators/creator.service';
 import { AppError } from '@src/utils/AppError';
-import { transformCreatorToPreview } from '@src/features/creators/creator.transformer';
+import {
+  transformCreatorToPreview,
+  transformToCreatorFullDTO,
+} from '@src/features/creators/creator.transformer';
 import {
   editUsername,
   fetchAllUsers,
+  fetchPlansMadeByCreator,
   fetchUser,
   getPlansOwnedByUser,
   storeAvatar,
 } from '@src/features/users/user.service';
-import { toPlanPreview } from '@src/features/plans/plan.transformer';
 
 export const getUsers = async (req: Request, res: Response) => {
   const users = await fetchAllUsers();
@@ -29,6 +35,22 @@ export const getAuthUser = async (req: Request, res: Response) => {
   const id = Number(req.user?.id);
   const user = await fetchUser(id);
   res.json(user);
+};
+
+export const getAuthCreator = async (req: Request, res: Response) => {
+  const id = Number(req.user?.id);
+  const creator = await fetchCreatorById(id);
+  if (!creator) {
+    throw new AppError('User is not a creator', 401);
+  }
+  const dto = await transformToCreatorFullDTO(creator);
+  res.json(dto);
+};
+
+export const getPlansMadeByCreator = async (req: Request, res: Response) => {
+  const creatorId = Number(req.user?.id);
+  const plans = await fetchPlansMadeByCreator(creatorId);
+  res.status(200).json(plans);
 };
 
 export const promoteToCreator = async (req: Request, res: Response) => {

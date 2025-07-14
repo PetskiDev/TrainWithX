@@ -6,7 +6,7 @@ import { createDiscountFor, createProductWithPrice } from '@src/utils/paddle';
 
 export async function fetchAllPlans() {
   return prisma.plan.findMany({
-    include: { creator: { include: { user: true } } },
+    include: { purchases: true, creator: { include: { user: true } } },
     orderBy: { id: 'desc' },
   });
 }
@@ -20,6 +20,7 @@ export async function fetchCreatorPlans(subdomain: string) {
           creator: {
             include: { user: true },
           },
+          purchases: true,
         },
       },
     },
@@ -77,6 +78,7 @@ export async function createPlanService(newPlan: CreatePlanDto) {
         content: JSON.parse(JSON.stringify(newContent)),
       },
       include: {
+        purchases: true,
         creator: {
           include: {
             user: true,
@@ -146,6 +148,7 @@ export async function getPlanFromSubWithSlug({
       },
     },
     include: {
+      purchases: true,
       creator: {
         include: {
           user: true,

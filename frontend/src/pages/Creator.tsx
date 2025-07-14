@@ -133,7 +133,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
               <div className="flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5 text-muted-foreground" />
                 <span className="font-semibold">
-                  {creator.noBuys.toLocaleString()}
+                  {creator.totalSales.toLocaleString()}
                 </span>
                 <span className="text-sm text-muted-foreground">
                   Plans Sold
@@ -178,7 +178,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           <StatCard
             icon={<TrendingUp className="h-6 w-6 text-primary" />}
-            value={creator.noBuys.toLocaleString()}
+            value={creator.totalSales.toLocaleString()}
             label="Plans Sold"
           />
           <StatCard

@@ -40,7 +40,12 @@ const LoginPage = () => {
     setError('');
     try {
       await login(form.email, form.password);
+      if (user?.isCreator) {
+        goPublic('/me/creator');
+        return;
+      }
       goPublic('/me');
+
     } catch (err: any) {
       setError(err.message);
     }

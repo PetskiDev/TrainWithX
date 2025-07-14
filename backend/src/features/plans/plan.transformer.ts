@@ -1,13 +1,14 @@
 // backend/src/features/plans/plan.transformer.ts
-import { Plan, Creator, User } from '@prisma/client';
+import { Plan, Creator, User, Purchase } from '@prisma/client';
 import {
   PlanPreview,
   PlanPaidPreveiw,
   PlanContentJSON,
+  PlanCreatorData,
 } from '@shared/types/plan';
 
 export function toPlanPreview(
-  plan: Plan & { creator: Creator & { user: User } }
+  plan: Plan & { creator: Creator & { user: User }; purchases: Purchase[] }
 ): PlanPreview {
   return {
     id: plan.id,
@@ -19,15 +20,17 @@ export function toPlanPreview(
     creatorUsername: plan.creator.user.username,
     creatorSubdomain: plan.creator.subdomain,
     description: plan.description,
-    difficulty: 'beginner',
     originalPrice:
       plan.originalPrice !== null ? Number(plan.originalPrice) : undefined,
+    difficulty: 'beginner', //TODO add in db
+    sales: plan.purchases.length, // TODO add in db or calc somehow
   };
 }
 
 export function toPaidPlan(
   plan: Plan & {
     creator: Creator & { user: User };
+    purchases: Purchase[];
   }
 ): PlanPaidPreveiw {
   const content = plan.content as unknown as PlanContentJSON | undefined; // TODO USE ZOD TO VALIDATE
@@ -55,5 +58,17 @@ export function toPaidPlan(
           exercises: day.exercises ?? [],
         })),
       })) ?? [],
+  };
+}
+
+export function toPlanCreatorData(
+  plan: Plan & {
+    creator: Creator & { user: User };
+    purchases: Purchase[];
+  }
+): PlanCreatorData {
+  return {
+    ...toPlanPreview(plan),
+    revenue: plan.purchases.reduce((sum, p) => sum + Number(p.amount), 0),
   };
 }

@@ -4,5 +4,6 @@ export interface UserDto {
   username: string;
   avatarUrl?: string;
   isAdmin: boolean;
+  isCreator: boolean;
   createdAt: Date;
 }
