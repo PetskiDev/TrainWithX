@@ -102,7 +102,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
     // Here you would handle video playback
   };
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -145,13 +145,13 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                 planContent.difficulty === 'beginner'
                   ? 'secondary'
                   : planContent.difficulty === 'intermediate'
-                  ? 'default'
-                  : 'destructive'
+                    ? 'default'
+                    : 'destructive'
               }
             >
               {planContent.difficulty &&
                 planContent.difficulty.charAt(0).toUpperCase() +
-                  planContent.difficulty.slice(1)}
+                planContent.difficulty.slice(1)}
             </Badge>
           </div>
           <p className="text-muted-foreground mb-6">
@@ -353,13 +353,12 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                             <div className="flex items-center justify-between mb-3">
                               <div className="flex items-center gap-3">
                                 <div
-                                  className={`p-2 rounded-full ${
-                                    day.type === 'workout'
+                                  className={`p-2 rounded-full ${day.type === 'workout'
                                       ? 'bg-primary/10'
                                       : day.type === 'rest'
-                                      ? 'bg-orange-500/10'
-                                      : 'bg-green-500/10'
-                                  }`}
+                                        ? 'bg-orange-500/10'
+                                        : 'bg-green-500/10'
+                                    }`}
                                 >
                                   {day.type === 'workout' ? (
                                     <Target className="h-5 w-5 text-primary" />

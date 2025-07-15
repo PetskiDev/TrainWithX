@@ -70,7 +70,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
 
   if (!planPreveiw) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen-navbar bg-background flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">Plan not found</h2>
           <p className="text-muted-foreground">
@@ -90,7 +90,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
     : 0;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Back Button */}
         <Button variant="ghost" className="mb-6" onClick={() => navigate(-1)}>

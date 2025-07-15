@@ -324,7 +324,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded">

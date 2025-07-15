@@ -113,7 +113,7 @@ const BecomeCreator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 py-12">
+    <div className="min-h-screen-navbar bg-gradient-to-br from-background to-muted/20 py-12">
       <div className="container mx-auto px-4 max-w-2xl">
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">

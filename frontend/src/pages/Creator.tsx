@@ -65,21 +65,13 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
   // ───────────── Render logic ─────────────
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen-navbar flex items-center justify-center bg-background">
         <p className="text-muted-foreground">Loading…</p>
       </div>
     );
-
-  if (error)
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-destructive">Error: {error}</p>
-      </div>
-    );
-
   if (!creator)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen-navbar flex items-center justify-center bg-background">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">Creator not found</h2>
           <p className="text-muted-foreground">
@@ -89,9 +81,19 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
       </div>
     );
 
+
+  if (error)
+    return (
+      <div className="min-h-screen-navbar flex items-center justify-center bg-background">
+        <p className="text-destructive">Error: {error}</p>
+      </div>
+    );
+
+
+
   // ───────────── UI ─────────────
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen-navbar bg-background">
       {/* Cover */}
       {creator.coverUrl && (
         <div className="relative h-[300px] overflow-hidden">
