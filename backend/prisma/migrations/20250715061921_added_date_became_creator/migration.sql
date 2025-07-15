@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Creator" ADD COLUMN     "becomeCreator" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
