@@ -14,6 +14,7 @@ model User {
   username               String                   @unique @db.VarChar(30)
   password               String?
   isVerified             Boolean                  @default(false)
+  isActive               Boolean                  @default(true)
   isAdmin                Boolean                  @default(false)
   isCreator              Boolean                  @default(false)
   avatarUrl              String?
@@ -50,6 +51,7 @@ model Plan {
   description      String
   coverImage       String?
   difficulty       Difficulty?
+  isPublished      Boolean     @default(false)
   price            Decimal     @db.Decimal(10, 2)
   currency         String      @default("USD")
   originalPrice    Decimal?    @db.Decimal(10, 2)
@@ -95,6 +97,7 @@ model CreatorApplication {
   id             Int               @id @default(autoincrement())
   userId         Int               @unique
   fullName       String
+  email          String
   subdomain      String            @unique
   specialization String
   experience     String

@@ -5,6 +5,7 @@ import {
   getNoBuys as getTotalSales,
   getNoPlansOwnded,
 } from '@src/features/creators/creator.service';
+import { prisma } from '@src/utils/prisma';
 
 export async function transformCreatorToPreview(
   creator: Creator & { user: User }
@@ -31,8 +32,23 @@ export async function transformToCreatorFullDTO(
   creator: Creator & { user: User }
 ): Promise<CreatorFullDTO> {
   const preview = await transformCreatorToPreview(creator);
+
+  const revenueResult = await prisma.purchase.aggregate({
+    _sum: {
+      amount: true,
+    },
+    where: {
+      user: {
+        creator: {
+          id: creator.id,
+        },
+      },
+    },
+  });
+
   return {
     ...preview,
-    profileViews: 123, // TODO: Replace with actual profile views from DB
+    profileViews: 123, // TODO: replace with real analytics
+    totalRevenue: Number(revenueResult._sum.amount ?? 0),
   };
 }

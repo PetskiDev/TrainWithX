@@ -14,12 +14,14 @@ import PlanPreview from '@frontend/pages/PlanPreview';
 import CreatorDashboard from '@frontend/pages/CreatorDashboard';
 import BecomeCreator from '@frontend/pages/BecomeCreator';
 import EmailVerificationPage from '@frontend/pages/EmailVerificationPage';
+import AdminDashboard from '@frontend/pages/AdminDashboard';
 
 function PublicRoutes() {
   return (
     <>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/plans" element={<PlansPage />} />
         <Route path="/creators" element={<Creators />} />
         <Route path="/login" element={<LoginPage />} />

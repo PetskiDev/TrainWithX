@@ -8,8 +8,10 @@ export interface PlanPreview {
   coverImage?: string;
   originalPrice?: number;
   creatorId: number;
+  isPublished: boolean;
   creatorUsername: string;
   creatorSubdomain: string;
+  createdAt: DateTime;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   sales: number;
 }
@@ -39,6 +41,8 @@ export type CreatePlanDto = Omit<
   | 'totalWeeks'
   | 'totalWorkouts'
   | 'sales'
+  | 'createdAt'
+  | 'isPublished'
 >;
 
 export interface PlanWeek {

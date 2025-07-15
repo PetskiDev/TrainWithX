@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,13 +9,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { TrainWithXLogo } from "@/components/TrainWithXLogo";
 import { useAuth } from "@frontend/context/AuthContext";
-import type { CreatorApplicationDTO } from "@shared/types/creator";
+import type { SendApplicationDTO } from "@shared/types/creator";
 import { goPublic } from "@frontend/lib/nav";
 
 const BecomeCreator = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [formData, setFormData] = useState<CreatorApplicationDTO>({
+  const [formData, setFormData] = useState<SendApplicationDTO>({
     fullName: "",
     subdomain: "",
     specialization: "",
@@ -24,9 +24,13 @@ const BecomeCreator = () => {
     certifications: "",
     socialMedia: "",
     agreeToTerms: false,
+    email: "",
   });
-
-
+  useEffect(() => {
+    if (user?.email) {
+      setFormData(prev => ({ ...prev, email: user.email }));
+    }
+  }, [user]);
   if (!user) {
     return <div className="p-4 text-center">
       <p className="text-2xl text-red-600 font-semibold mb-3">
@@ -68,7 +72,7 @@ const BecomeCreator = () => {
     }
 
     try {
-      const payload: CreatorApplicationDTO = formData;
+      const payload: SendApplicationDTO = formData;
 
       const res = await fetch("/api/v1/creators/apply", {
         method: "POST",

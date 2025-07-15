@@ -1,6 +1,6 @@
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
-import { CreatorApplicationDTO } from '@shared/types/creator';
+import { SendApplicationDTO } from '@shared/types/creator';
 
 export async function fetchAllCreators() {
   return prisma.creator.findMany({
@@ -19,7 +19,7 @@ export async function fetchCreatorById(id: number) {
 
 export async function submitCreatorApplication(
   userId: number,
-  dto: CreatorApplicationDTO
+  dto: SendApplicationDTO
 ) {
   const existingApplication = await prisma.creatorApplication.findUnique({
     where: { userId },
@@ -59,8 +59,6 @@ export async function fetchCreatorBySub(subdomain: string) {
     include: { user: true },
   });
 }
-
-
 
 export async function getNoPlansOwnded(creatorId: number) {
   const plansCount = await prisma.plan.count({

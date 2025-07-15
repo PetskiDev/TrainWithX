@@ -7,4 +7,5 @@ export interface UserDto {
   isAdmin: boolean;
   isCreator: boolean;
   createdAt: Date;
+  isActive: boolean;
 }

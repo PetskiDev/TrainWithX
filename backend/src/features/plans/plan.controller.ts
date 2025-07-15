@@ -34,10 +34,7 @@ export async function getCreatorPlans(req: Request, res: Response) {
   res.json(plans.map(toPlanPreview));
 }
 
-export async function getPlanSubSlugPreveiw(
-  req: Request,
-  res: Response
-) {
+export async function getPlanSubSlugPreveiw(req: Request, res: Response) {
   let { subdomain, slug } = req.params;
   slug = slug.toLowerCase();
   const plan = await getPlanFromSubWithSlug({ subdomain, slug });
@@ -46,10 +43,7 @@ export async function getPlanSubSlugPreveiw(
   res.status(200).json(toPlanPreview(plan));
 }
 
-export async function getPlanSubSlugContent(
-  req: Request,
-  res: Response
-) {
+export async function getPlanSubSlugContent(req: Request, res: Response) {
   let { subdomain, slug } = req.params;
   slug = slug.toLowerCase();
   const plan = await getPlanFromSubWithSlug({ subdomain, slug });

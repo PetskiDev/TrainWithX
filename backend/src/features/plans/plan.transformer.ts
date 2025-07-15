@@ -24,6 +24,8 @@ export function toPlanPreview(
       plan.originalPrice !== null ? Number(plan.originalPrice) : undefined,
     difficulty: 'beginner', //TODO add in db
     sales: plan.purchases.length, // TODO add in db or calc somehow
+    createdAt: plan.createdAt,
+    isPublished: plan.isPublished,
   };
 }
 

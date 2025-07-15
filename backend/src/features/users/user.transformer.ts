@@ -11,6 +11,7 @@ export function toUserDTO(user: User): UserDto {
     createdAt: user.createdAt,
     avatarUrl: user.avatarUrl ?? undefined,
     isVerified: user.isVerified,
+    isActive: user.isActive,
   };
 }
 

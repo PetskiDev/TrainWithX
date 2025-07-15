@@ -3,7 +3,7 @@ export interface AdminInfoDTO {
   newUsers: number;
   totalCreators: number;
   newCreators: number;
-  plans: number;
+  totalPlans: number;
   newPlans: number;
   totalRevenue: number; // converted from Decimal
   newRevenue: number; // should also be Decimal -> number

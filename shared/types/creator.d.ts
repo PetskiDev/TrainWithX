@@ -13,9 +13,10 @@ export interface CreatorPreviewDTO {
 
 export interface CreatorFullDTO extends CreatorPreviewDTO {
   profileViews: number;
+  totalRevenue: number;
 }
 
-export interface CreatorApplicationDTO {
+export interface SendApplicationDTO {
   fullName: string;
   subdomain: string;
   specialization: string;
@@ -24,4 +25,10 @@ export interface CreatorApplicationDTO {
   certifications?: string;
   socialMedia?: string;
   agreeToTerms: boolean;
+  email: string;
+}
+
+export interface CreatorApplicationDTO extends SendApplicationDTO {
+  id: number;
+  createdAt: Date;
 }
