@@ -11,6 +11,10 @@ export async function fetchAllPlans() {
   });
 }
 
+export async function deletePlanWithId(planId: number) {
+  await prisma.plan.delete({ where: { id: planId } });
+}
+
 export async function fetchCreatorPlans(subdomain: string) {
   const creator = await prisma.creator.findFirst({
     where: { subdomain },

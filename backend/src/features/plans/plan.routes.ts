@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   createPlanController,
+  deletePlanController,
   getAllPlansPreview,
   getPlanSubSlugContent,
   getPlanSubSlugPreveiw,
@@ -10,9 +11,9 @@ import { doAuth } from '@src/middleware/auth';
 const router = Router();
 
 router.get('/', getAllPlansPreview);
+router.delete('/:planId', deletePlanController);
 
 router.post('/', doAuth, createPlanController);
-
 router.get('/preview/:subdomain/:slug', getPlanSubSlugPreveiw);
 
 //do some security here.

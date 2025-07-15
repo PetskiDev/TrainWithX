@@ -14,6 +14,9 @@ import { getUserRole } from "@frontend/lib/role";
 import type { UserDto } from "@shared/types/user";
 import type { PlanCreatorData } from "@shared/types/plan";
 import type { CreatorApplicationDTO } from "@shared/types/creator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+
+
 
 const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,7 +26,12 @@ const AdminDashboard = () => {
   const [planSortBy, setPlanSortBy] = useState("title");
   const [creatorSortBy, setCreatorSortBy] = useState("username");
 
-  const { stats, users, plans, applications, loading, creators } = useAdminDashboardData();
+
+  const { stats, users, plans, applications, loading, creators, refetch } = useAdminDashboardData();
+  const [showPromoteDialog, setShowPromoteDialog] = useState<boolean>(false);
+  const [promotionSubdomain, setPromotionSubdomain] = useState<string>("");
+  const [userToPromote, setUserToPromote] = useState<UserDto | null>(null);
+
 
   const { toast } = useToast();
 
@@ -82,12 +90,38 @@ const AdminDashboard = () => {
           return 0;
       }
     });
-  const handlePromoteToCreator = (user: UserDto) => {
+  const handlePromoteToCreator = (subdomain: string) => {
+    if (!userToPromote) return;
     toast({
       title: "User Promoted",
-      description: `${user.username} has been promoted to creator status.`,
+      description: `${userToPromote.username} has been promoted to creator status with subdomain: ${subdomain}`,
+
     });
-    // In a real app, you'd make an API call here
+    setShowPromoteDialog(false);
+    setPromotionSubdomain("");
+    //TODO API CALL
+  };
+  const handlePromoteClick = (user: UserDto) => {
+    setUserToPromote(user);
+    setShowPromoteDialog(true);
+  };
+
+  const handleCancelPromotion = () => {
+    setShowPromoteDialog(false);
+    setPromotionSubdomain("");
+    setUserToPromote(null);
+  };
+
+  const handleSubmitPromotion = () => {
+    if (!promotionSubdomain.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a subdomain",
+        variant: "destructive",
+      });
+      return;
+    }
+    handlePromoteToCreator(promotionSubdomain);
   };
 
   const handleBanUser = (user: UserDto) => {
@@ -98,20 +132,60 @@ const AdminDashboard = () => {
     });
   };
 
-  const handleDeleteUser = (user: UserDto) => {
-    toast({
-      title: "User Deleted",
-      description: `${user.username} has been permanently removed from the platform.`,
-      variant: "destructive",
-    });
+  const handleDeleteUser = async (user: UserDto) => {
+    try {
+      // Call your API to delete the user
+      const res = await fetch(`/api/v1/users/${user.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to delete user.');
+      }
+
+      toast({
+        title: "User Deleted",
+        description: `${user.username} has been permanently removed from the platform.`,
+        variant: "destructive",
+      });
+
+      // Optionally update your local state/UI here
+      await refetch();
+    } catch (error) {
+      toast({
+        title: "Deletion Failed",
+        description: `Could not delete ${user.username}. Please try again.`,
+        variant: "destructive",
+      });
+      console.error(error);
+    }
   };
 
-  const handleDeletePlan = (plan: PlanCreatorData) => {
-    toast({
-      title: "Plan Deleted",
-      description: `"${plan.title}" has been removed.`,
-      variant: "destructive",
-    });
+  const handleDeletePlan = async (plan: PlanCreatorData) => {
+    try {
+      const res = await fetch(`/api/v1/plans/${plan.id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to delete plan.");
+      }
+
+      // Remove plan from local state
+      await refetch();
+      toast({
+        title: "Plan Deleted",
+        description: `"${plan.title}" has been removed.`,
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Error Deleting Plan",
+        description: `Could not delete "${plan.title}". Please try again.`,
+        variant: "destructive",
+      });
+      console.error(error);
+    }
   };
 
   const handlePublishPlan = (plan: PlanCreatorData) => {
@@ -139,7 +213,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen-navbar bg-background">
       {/* Header */}
       <div className="border-b bg-card">
         <div className="container mx-auto px-4 py-6">
@@ -152,70 +226,71 @@ const AdminDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Stats Cards */}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+          <Card className="shadow-lg hover:shadow-xl transition duration-300">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-base font-semibold">Total Users</CardTitle>
+              <Users className="h-5 w-5 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalUsers.toLocaleString()}</div>
+              <div className="text-3xl font-extrabold text-black">{stats.totalUsers.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">+{stats.newUsers} this month</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Creators</CardTitle>
-              <Crown className="h-4 w-4 text-muted-foreground" />
+          <Card className="shadow-lg hover:shadow-xl transition duration-300">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-base font-semibold"> Creators</CardTitle>
+              <Crown className="h-5 w-5 text-yellow-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalCreators}</div>
+              <div className="text-3xl font-extrabold text-black">{stats.totalCreators}</div>
               <p className="text-xs text-muted-foreground">+{stats.newCreators} this month</p>
-              <p className="text-xs text-muted-foreground"> {(100 * stats.totalCreators / stats.totalUsers).toPrecision(3)}% of users</p>
+              <p className="text-xs text-muted-foreground">{(100 * stats.totalCreators / stats.totalUsers).toPrecision(3)}% of users</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Training Plans</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+          <Card className="shadow-lg hover:shadow-xl transition duration-300">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-base font-semibold"> Training Plans</CardTitle>
+              <FileText className="h-5 w-5 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalPlans}</div>
+              <div className="text-3xl font-extrabold text-black">{stats.totalPlans}</div>
               <p className="text-xs text-muted-foreground">{stats.newPlans} new this month</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Revenue This Month</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+          <Card className="shadow-lg hover:shadow-xl transition duration-300">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-base font-semibold"> Revenue This Month</CardTitle>
+              <DollarSign className="h-5 w-5 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${stats.newRevenue.toLocaleString()}  </div>
-              <p className="text-xs text-muted-foreground">Total: {stats.totalRevenue}</p>
+              <div className="text-3xl font-extrabold text-black">${stats.newRevenue.toLocaleString()}</div>
+              <p className="text-xs text-muted-foreground">Total: ${stats.totalRevenue.toLocaleString()}</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Buys</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          <Card className="shadow-lg hover:shadow-xl transition duration-300">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-base font-semibold"> Total Buys</CardTitle>
+              <TrendingUp className="h-5 w-5 text-emerald-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalBuys}</div>
-              <p className="text-xs text-muted-foreground"> +{stats.newBuys} this month </p>
+              <div className="text-3xl font-extrabold text-black">{stats.totalBuys}</div>
+              <p className="text-xs text-muted-foreground">+{stats.newBuys} this month</p>
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
-              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+          <Card className="shadow-lg hover:shadow-xl transition duration-300">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-base font-semibold"> Conversion Rate</CardTitle>
+              <BarChart3 className="h-5 w-5 text-indigo-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">100.0%</div>
+              <div className="text-3xl font-extrabold text-black">100.0%</div>
             </CardContent>
           </Card>
         </div>
@@ -309,7 +384,7 @@ const AdminDashboard = () => {
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => handlePromoteToCreator(user)}
+                              onClick={() => handlePromoteClick(user)}
                               className="text-green-600 hover:text-green-700"
                               disabled={getUserRole(user) === 'creator'}
 
@@ -676,7 +751,33 @@ const AdminDashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
+      <Dialog open={showPromoteDialog} onOpenChange={setShowPromoteDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Promote to Creator</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Enter a subdomain for {userToPromote?.username}'s creator profile:
+            </p>
+            <Input
+              placeholder="Enter subdomain (e.g., johndoe)"
+              value={promotionSubdomain}
+              onChange={(e) => setPromotionSubdomain(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelPromotion}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmitPromotion}>
+              Promote
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div >
   );
 };
 
