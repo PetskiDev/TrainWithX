@@ -17,7 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { goPublic } from '@frontend/lib/nav';
+import { goPublic, goToDashboard } from '@frontend/lib/nav';
 
 const RegisterPage = () => {
   /* -------------- state & hooks --------------------------------------- */
@@ -46,14 +46,9 @@ const RegisterPage = () => {
       const user = await register(form.email, form.username, form.password);
 
       if (!user.isVerified) {
-        //new user
         goPublic('/email-verification');
-      } else if (user.isCreator) {
-        //google login creator already excists
-        goPublic('/me/creator');
       } else {
-        //google login user already excists
-        goPublic('/me');
+        goToDashboard(user);
       }
     } catch (err: any) {
       setError(err.message);

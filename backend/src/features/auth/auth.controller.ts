@@ -100,9 +100,13 @@ export const googleCallbackController = async (req: Request, res: Response) => {
     name,
     picture,
   });
+  let redirectPath = '/me';
+  if (result.user.isCreator) redirectPath = '/me/creator';
+  if (result.user.isAdmin) redirectPath = '/admin';
 
+  console.log(redirectPath);
   //google redirects to me, with cookie it hydrates.
   res
     .cookie('access', result.token, cookieOpts)
-    .redirect(`${env.FRONTEND_URL}/me`);
+    .redirect(`${env.FRONTEND_URL}${redirectPath}`);
 };

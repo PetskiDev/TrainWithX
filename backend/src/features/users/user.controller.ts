@@ -1,8 +1,5 @@
 import { Request, Response } from 'express';
-import {
-  fetchCreatorById,
-  upgradeUser,
-} from '@src/features/creators/creator.service';
+import { fetchCreatorById } from '@src/features/creators/creator.service';
 import { AppError } from '@src/utils/AppError';
 import {
   transformCreatorToPreview,
@@ -14,6 +11,7 @@ import {
   fetchPlansMadeByCreator,
   fetchUser,
   getPlansOwnedByUser,
+  promoteUserToCreator,
   storeAvatar,
 } from '@src/features/users/user.service';
 
@@ -54,15 +52,14 @@ export const getPlansMadeByCreator = async (req: Request, res: Response) => {
 };
 
 export const promoteToCreator = async (req: Request, res: Response) => {
-  const userId = req.params.id;
+  const userId = Number(req.params.id);
   const { subdomain } = req.body;
 
   if (!userId || !subdomain) {
     throw new AppError('userId and subdomain are required', 400);
   }
-  const intId = Number(userId);
 
-  const creator = await upgradeUser(intId, subdomain);
+  const creator = await promoteUserToCreator(userId, subdomain);
 
   const preview = await transformCreatorToPreview(creator);
 

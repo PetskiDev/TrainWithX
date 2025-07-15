@@ -15,6 +15,7 @@ model User {
   password               String?
   isVerified             Boolean                  @default(false)
   isAdmin                Boolean                  @default(false)
+  isCreator              Boolean                  @default(false)
   avatarUrl              String?
   createdAt              DateTime                 @default(now())
   creator                Creator?

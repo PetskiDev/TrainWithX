@@ -185,7 +185,6 @@ const Me = () => {
   // ──────────────────────────────────────────────────────────────────────────────
   // Render
   // ──────────────────────────────────────────────────────────────────────────────
-  console.log(user);
   return (
     <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">

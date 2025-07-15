@@ -17,7 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { goPublic } from '@frontend/lib/nav';
+import { goToDashboard } from '@frontend/lib/nav';
 
 const LoginPage = () => {
   /* -------------- state & hooks --------------------------------------- */
@@ -28,7 +28,7 @@ const LoginPage = () => {
 
   /* -------------- redirect if already signed in ----------------------- */
   useEffect(() => {
-    if (!loading && user) goPublic('/me');
+    if (!loading && user) goToDashboard(user);
   }, [loading, user]);
 
   /* -------------- handlers ------------------------------------------- */
@@ -40,12 +40,7 @@ const LoginPage = () => {
     setError('');
     try {
       const user = await login(form.email, form.password);
-
-      if (user.isCreator) {
-        goPublic('/me/creator');
-      } else {
-        goPublic('/me');
-      }
+      goToDashboard(user);
 
     } catch (err: any) {
       setError(err.message);

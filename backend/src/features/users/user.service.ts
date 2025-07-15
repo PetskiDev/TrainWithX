@@ -1,12 +1,10 @@
-import {
-  transformUsersToPreview,
-  transformUserToPreview,
-} from '@src/features/users/user.transformer';
+import { toUsersDTO, toUserDTO } from '@src/features/users/user.transformer';
 import { prisma } from '@src/utils/prisma';
 import { UserDto } from '@shared/types/user';
 import { PlanCreatorData, PlanPreview } from '@shared/types/plan';
 import { AppError } from '@src/utils/AppError';
 import fs from 'node:fs/promises';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 import path from 'node:path';
 import sharp from 'sharp';
@@ -16,21 +14,49 @@ import {
 } from '@src/features/plans/plan.transformer';
 
 export async function fetchAllUsers(): Promise<UserDto[]> {
-  const users = await prisma.user.findMany({ include: { creator: true } });
-  return transformUsersToPreview(users);
+  const users = await prisma.user.findMany();
+  return toUsersDTO(users);
 }
 
 export async function fetchUser(id: number): Promise<UserDto | null> {
   const user = await prisma.user.findUnique({
     where: { id },
-    include: { creator: true },
   });
   if (!user) return null;
-  return transformUserToPreview(user);
+  return toUserDTO(user);
 }
 
-export async function promoteUserToCreator(id: number) {
-  //todo
+export async function promoteUserToCreator(userId: number, subdomain: string) {
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const creator = await tx.creator.create({
+        data: {
+          id: userId,
+          subdomain: subdomain.toLowerCase(),
+        },
+        include: { user: true },
+      });
+
+      await tx.user.update({
+        where: { id: userId },
+        data: { isCreator: true },
+      });
+
+      return creator;
+    });
+  } catch (err) {
+    if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002') {
+      const dup = (err.meta?.target as string[]) ?? [];
+      if (dup.includes('id')) {
+        throw new AppError('User is already a creator.', 409);
+      }
+      if (dup.includes('subdomain')) {
+        throw new AppError('Subdomain already taken.', 409);
+      }
+      throw new AppError('Duplicate creator data.', 409);
+    }
+    throw err;
+  }
 }
 
 export async function getPlansOwnedByUser(

@@ -3,7 +3,7 @@ import { prisma } from '@src/utils/prisma';
 import { generateToken } from '@src/utils/jwt';
 import { AppError } from '@src/utils/AppError';
 import { AuthResult } from '@src/features/auth/auth.types';
-import { transformUserToPreview } from '@src/features/users/user.transformer';
+import { toUserDTO } from '@src/features/users/user.transformer';
 import { env } from '@src/utils/env';
 import { sendMailFromFile } from '@src/utils/mail';
 import { addMinutes, subMinutes } from 'date-fns';
@@ -84,7 +84,7 @@ export async function register(
   await createAndSendVerificationToken({ userId: user.id, email, username });
   return {
     token: generateToken(user.id, user.isAdmin),
-    user: transformUserToPreview(user),
+    user: toUserDTO(user),
   };
 }
 
@@ -92,7 +92,9 @@ export async function login(
   email: string,
   password: string
 ): Promise<AuthResult> {
-  let user = await prisma.user.findUnique({ where: { email } });
+  let user = await prisma.user.findUnique({
+    where: { email },
+  });
 
   //user excists but doesn't have password -> google auth
   if (user && !user.password) {
@@ -108,7 +110,7 @@ export async function login(
 
   return {
     token,
-    user: transformUserToPreview(user),
+    user: toUserDTO(user),
   };
 }
 
@@ -209,13 +211,15 @@ export async function getOrCreateGoogleUser({
   picture?: string;
 }): Promise<AuthResult> {
   console.log('PIC ' + picture);
-  let user = await prisma.user.findUnique({ where: { email } });
+  let user = await prisma.user.findUnique({
+    where: { email },
+  });
   if (user) {
     // email already exists
     if (!user.googleId) {
       await prisma.user.update({
         where: { id: user.id },
-        data: { googleId },
+        data: { googleId, isVerified: true },
       });
     }
     //if doesn't have a picture and google has.
@@ -224,7 +228,7 @@ export async function getOrCreateGoogleUser({
     }
     return {
       token: generateToken(user.id, user.isAdmin),
-      user: transformUserToPreview(user),
+      user: toUserDTO(user),
     };
   }
 
@@ -250,6 +254,6 @@ export async function getOrCreateGoogleUser({
 
   return {
     token: generateToken(user.id, user.isAdmin),
-    user: transformUserToPreview(user),
+    user: toUserDTO(user),
   };
 }
