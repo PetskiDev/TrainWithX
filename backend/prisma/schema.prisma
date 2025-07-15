@@ -8,28 +8,29 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  googleId String? @unique
-  email     String    @unique @db.VarChar(255)
-  username  String    @unique @db.VarChar(30)
-  password  String?
-  isVerified Boolean  @default(false)
-  isAdmin   Boolean   @default(false)
-  avatarUrl  String?
-  createdAt DateTime  @default(now())
-  creator   Creator?
-  purchases Purchase[]
+  id                     Int                      @id @default(autoincrement())
+  googleId               String?                  @unique
+  email                  String                   @unique @db.VarChar(255)
+  username               String                   @unique @db.VarChar(30)
+  password               String?
+  isVerified             Boolean                  @default(false)
+  isAdmin                Boolean                  @default(false)
+  avatarUrl              String?
+  createdAt              DateTime                 @default(now())
+  creator                Creator?
+  purchases              Purchase[]
   emailVerificationToken EmailVerificationToken[]
+  creatorApplication     CreatorApplication?
 }
 
 model Creator {
-  id         Int     @id
-  bio        String?
-  subdomain  String  @unique @db.VarChar(50)
-  yearsXP    Decimal? @db.Decimal(3, 1)
-  coverUrl   String?
-  user       User    @relation(fields: [id], references: [id], onDelete: Cascade)
-  plans      Plan[]
+  id        Int      @id
+  bio       String?
+  subdomain String   @unique @db.VarChar(50)
+  yearsXP   Decimal? @db.Decimal(3, 1)
+  coverUrl  String?
+  user      User     @relation(fields: [id], references: [id], onDelete: Cascade)
+  plans     Plan[]
 }
 
 enum Difficulty {
@@ -39,35 +40,35 @@ enum Difficulty {
 }
 
 model Plan {
-  id                    Int           @id @default(autoincrement())
-  paddleProductId       String        @unique
-  paddlePriceId         String        @unique
-  title                 String
-  slug                  String        @unique @db.VarChar(50)
-  description           String
-  coverImage            String?
-  difficulty            Difficulty?
-  price                 Decimal       @db.Decimal(10, 2)
-  currency              String        @default("USD")
-  originalPrice         Decimal?      @db.Decimal(10, 2)
-  paddleDiscountId      String?
-  image                 String?
-  content               Json?
-  createdAt             DateTime      @default(now())
-  creatorId             Int
-  creator               Creator       @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  purchases             Purchase[]
+  id               Int         @id @default(autoincrement())
+  paddleProductId  String      @unique
+  paddlePriceId    String      @unique
+  title            String
+  slug             String      @unique @db.VarChar(50)
+  description      String
+  coverImage       String?
+  difficulty       Difficulty?
+  price            Decimal     @db.Decimal(10, 2)
+  currency         String      @default("USD")
+  originalPrice    Decimal?    @db.Decimal(10, 2)
+  paddleDiscountId String?
+  image            String?
+  content          Json?
+  createdAt        DateTime    @default(now())
+  creatorId        Int
+  creator          Creator     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  purchases        Purchase[]
 }
 
 model Purchase {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  planId    Int
-  amount    Decimal  @db.Decimal(10, 2)
-  paddleOrderId String  @unique
-  timestamp DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan      Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  planId        Int
+  amount        Decimal  @db.Decimal(10, 2)
+  paddleOrderId String   @unique
+  timestamp     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan          Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
 
   @@unique([userId, planId])
 }
@@ -80,4 +81,26 @@ model EmailVerificationToken {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+enum ApplicationStatus {
+  pending
+  approved
+  rejected
+}
+
+model CreatorApplication {
+  id             Int               @id @default(autoincrement())
+  userId         Int               @unique
+  fullName       String
+  subdomain      String            @unique
+  specialization String
+  experience     String
+  bio            String
+  certifications String?
+  socialMedia    String?
+  agreeToTerms   Boolean
+  user           User              @relation(fields: [userId], references: [id])
+  status         ApplicationStatus @default(pending)
+  createdAt      DateTime          @default(now())
 }

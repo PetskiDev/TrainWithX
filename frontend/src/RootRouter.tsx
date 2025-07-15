@@ -13,6 +13,7 @@ import PlanContentPage from '@frontend/pages/PlanContent';
 import CreatePlan from '@frontend/pages/CreatePlan';
 import PlanPreview from '@frontend/pages/PlanPreview';
 import CreatorDashboard from '@frontend/pages/CreatorDashboard';
+import BecomeCreator from '@frontend/pages/BecomeCreator';
 
 function PublicRoutes() {
   return (
@@ -23,6 +24,7 @@ function PublicRoutes() {
         <Route path="/creators" element={<Creators />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/become-creator" element={<BecomeCreator />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/me" element={<Me />} />
         <Route path="/me/creator" element={<CreatorDashboard />} />

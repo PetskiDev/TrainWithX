@@ -2,11 +2,23 @@ import { Request, Response } from 'express';
 import * as creatorService from './creator.service';
 import { transformCreatorToPreview } from './creator.transformer';
 import { AppError } from '@src/utils/AppError';
+import { CreatorApplicationDTO } from '@shared/types/creator';
 
 export async function getAllCreators(req: Request, res: Response) {
   const creators = await creatorService.fetchAllCreators();
   const previews = await Promise.all(creators.map(transformCreatorToPreview));
   res.json(previews);
+}
+
+export async function postCreatorApplication(req: Request, res: Response) {
+  const data = req.body as CreatorApplicationDTO;
+  const user = req.user!;
+  const application = await creatorService.submitCreatorApplication(
+    user.id,
+    data
+  );
+
+  res.status(201).json(application);
 }
 
 export async function getById(req: Request, res: Response) {

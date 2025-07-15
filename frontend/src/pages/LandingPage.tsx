@@ -9,6 +9,7 @@ import {
 import { Users, Search, Star, Shield, Zap } from 'lucide-react';
 import { TrainWithXLogo } from '@/components/TrainWithXLogo';
 import { goPublic } from '@frontend/lib/nav';
+import BecomeCreatorSection from '@frontend/components/BecomeCreatorSection';
 
 const LandingPage = () => {
   return (
@@ -159,7 +160,7 @@ const LandingPage = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="text-center bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-8 sm:p-12">
+        <div className="text-center bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-8 sm:p-12 mb-10">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold pb-1 mb-4 text-gradient">
             Ready to Transform?
           </h2>
@@ -184,7 +185,10 @@ const LandingPage = () => {
               Explore Creators
             </Button>
           </div>
+
         </div>
+        <BecomeCreatorSection />
+
       </div>
     </div>
   );

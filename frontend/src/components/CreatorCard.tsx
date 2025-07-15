@@ -17,7 +17,7 @@ export const CreatorCard = ({
   avatarUrl,
   rating,
   plansCount,
-  noBuys,
+  totalSales,
 }: CreatorPreviewDTO) => {
   return (
     <Card
@@ -41,7 +41,7 @@ export const CreatorCard = ({
         <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
             <Users className="h-4 w-4" />
-            <span>{noBuys}</span>
+            <span>{totalSales}</span>
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 text-yellow-500 fill-current" />

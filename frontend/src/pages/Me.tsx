@@ -13,9 +13,13 @@ import {
   Check,
   X,
   Camera,
+  Settings,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext'; // 👉 adjust the import path if different
 import type { PlanPreview } from '@shared/types/plan';
+import { Link } from 'react-router-dom';
+import { Label } from '@radix-ui/react-label';
+import BecomeCreatorSection from '@frontend/components/BecomeCreatorSection';
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Component
@@ -185,6 +189,33 @@ const Me = () => {
   return (
     <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">
+
+        {/* If user is creator, remind him to go to the dashboard */}
+        {user.isCreator && (
+          <Card className="mt-1 mb-8">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <Label htmlFor="creator-mode" className="text-base font-medium">
+                    Creator Dashboard
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Access your creator tools and analytics
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button asChild variant="outline">
+                    <Link to="/me/creator">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Creator Dashboard
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* ──────────────── Welcome Header ──────────────── */}
         {uploading && (
           <p className="text-xs text-gray-500 mt-1 pb-3">Uploading…</p>
@@ -272,6 +303,7 @@ const Me = () => {
             </div>
           </div>
 
+
           {/* ──────────────── Stats Cards ──────────────── */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <Card>
@@ -329,12 +361,15 @@ const Me = () => {
 
           <TabsContent value="plans">
             <div className="space-y-6">
-              <h2 className="text-2xl font-semibold">Your Training Plans</h2>
+              <h2 className="text-3xl font-semibold">Jump into training! 👇</h2>
 
               {plansLoading ? (
                 <div>Loading plans...</div>
               ) : plans.length === 0 ? (
-                <div>You don't own any plans yet.</div>
+                <>
+                  <div>You don't own any plans yet.</div>
+                  <Button>Buy some! (todo)</Button>
+                </>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {plans.map((plan) => (
@@ -389,8 +424,13 @@ const Me = () => {
             </div>
           </TabsContent>
         </Tabs>
+        {!user.isCreator && (
+          <BecomeCreatorSection className='mt-10' />
+        )
+        }
+
       </div>
-    </div>
+    </div >
   );
 };
 

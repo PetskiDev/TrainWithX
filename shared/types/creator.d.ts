@@ -14,3 +14,14 @@ export interface CreatorPreviewDTO {
 export interface CreatorFullDTO extends CreatorPreviewDTO {
   profileViews: number;
 }
+
+export interface CreatorApplicationDTO {
+  fullName: string;
+  subdomain: string;
+  specialization: string;
+  experience: string;
+  bio: string;
+  certifications?: string;
+  socialMedia?: string;
+  agreeToTerms: boolean;
+}
