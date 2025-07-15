@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
   createPlanController,
-  getAllPlans,
+  getAllPlansPreview,
   getPlanSubSlugContent,
   getPlanSubSlugPreveiw,
 } from './plan.controller';
@@ -9,7 +9,7 @@ import { doAuth } from '@src/middleware/auth';
 
 const router = Router();
 
-router.get('/', getAllPlans);
+router.get('/', getAllPlansPreview);
 
 router.post('/', doAuth, createPlanController);
 

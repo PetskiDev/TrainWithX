@@ -7,14 +7,20 @@ import {
   createPlanService,
 } from './plan.service';
 import { AppError } from '@src/utils/AppError';
-import { toPaidPlan, toPlanPreview } from './plan.transformer';
+import { toPaidPlan, toPlanCreatorData, toPlanPreview } from './plan.transformer';
 import { CreatePlanDto } from '@shared/types/plan';
 
 /** GET /api/v1/plans */
-export async function getAllPlans(req: Request, res: Response) {
+export async function getAllPlansPreview(req: Request, res: Response) {
   const plans = await fetchAllPlans();
   res.json(plans.map(toPlanPreview));
 }
+
+export async function getAllPlansCreatorDTO(req: Request, res: Response) {
+  const plans = await fetchAllPlans();
+  res.json(plans.map(toPlanCreatorData));
+}
+
 
 export async function createPlanController(req: Request, res: Response) {
   const user = req.user!;

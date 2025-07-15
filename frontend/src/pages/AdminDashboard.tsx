@@ -266,48 +266,57 @@ const AdminDashboard = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Username</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Join Date</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead className="text-left">Username</TableHead>
+                      <TableHead className="text-left">Email</TableHead>
+                      <TableHead className="text-center">Role</TableHead>
+                      <TableHead className="text-center">Join Date</TableHead>
+                      <TableHead className="text-center">Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
+
                   <TableBody>
                     {filteredAndSortedUsers.map((user) => (
                       <TableRow key={user.id}>
-                        <TableCell className="font-medium">{user.username}</TableCell>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>
-                          <Badge variant={user.isAdmin ? 'destructive' : user.isCreator ? 'default' : 'secondary'}>
+                        <TableCell className="text-left font-medium">{user.username}</TableCell>
+                        <TableCell className="text-left">{user.email}</TableCell>
+                        <TableCell className="text-center">
+                          <Badge
+                            variant={
+                              user.isAdmin ? 'destructive' : user.isCreator ? 'default' : 'secondary'
+                            }
+                          >
                             {getUserRole(user)}
                           </Badge>
                         </TableCell>
-                        <TableCell>{user.createdAt.toLocaleString()}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline"> {user.isActive ? 'Active' : 'Deactivated'}</Badge>
+                        <TableCell className="text-center">
+                          {new Date(user.createdAt).toLocaleDateString()}
                         </TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
+                        <TableCell className="text-center">
+                          <Badge variant="outline">
+                            {user.isActive ? 'Active' : 'Deactivated'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
                             <Button variant="ghost" size="sm">
                               <Eye className="h-4 w-4" />
                             </Button>
                             <Button variant="ghost" size="sm">
                               <Edit className="h-4 w-4" />
                             </Button>
-                            {getUserRole(user) === 'user' ? (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handlePromoteToCreator(user)}
-                                className="text-green-600 hover:text-green-700"
-                              >
-                                <Crown className="h-4 w-4" />
-                              </Button>
-                            ) : (
-                              <Crown className="h-4 w-4 text-muted-foreground" />
-                            )}
+
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handlePromoteToCreator(user)}
+                              className="text-green-600 hover:text-green-700"
+                              disabled={getUserRole(user) === 'creator'}
+
+                            >
+                              <Crown className="h-4 w-4" />
+                            </Button>
+
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="sm">
@@ -315,11 +324,17 @@ const AdminDashboard = () => {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => handleBanUser(user)} className="text-orange-600">
+                                <DropdownMenuItem
+                                  onClick={() => handleBanUser(user)}
+                                  className="text-orange-600"
+                                >
                                   <Ban className="h-4 w-4 mr-2" />
                                   Ban User
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleDeleteUser(user)} className="text-red-600">
+                                <DropdownMenuItem
+                                  onClick={() => handleDeleteUser(user)}
+                                  className="text-red-600"
+                                >
                                   <Trash2 className="h-4 w-4 mr-2" />
                                   Delete User
                                 </DropdownMenuItem>
@@ -331,6 +346,7 @@ const AdminDashboard = () => {
                     ))}
                   </TableBody>
                 </Table>
+
               </CardContent>
             </Card>
           </TabsContent>
@@ -370,34 +386,35 @@ const AdminDashboard = () => {
                     Create Plan
                   </Button>
                 </div>
-
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Creator</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Sales</TableHead>
-                      <TableHead>Revenue</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead className="text-left">Title</TableHead>
+                      <TableHead className="text-left">Creator</TableHead>
+                      <TableHead className="text-center">Status</TableHead>
+                      <TableHead className="text-center">Created</TableHead>
+                      <TableHead className="text-center">Sales</TableHead>
+                      <TableHead className="text-center">Revenue</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
+
                   <TableBody>
                     {filteredAndSortedPlans.map((plan) => (
                       <TableRow key={plan.id}>
-                        <TableCell className="font-medium">{plan.title}</TableCell>
-                        <TableCell>{plan.creatorUsername}</TableCell>
-                        <TableCell>
+                        <TableCell className="text-left font-medium">{plan.title}</TableCell>
+                        <TableCell className="text-left">{plan.creatorUsername}</TableCell>
+                        <TableCell className="text-center">
                           <Badge variant={plan.isPublished ? 'default' : 'secondary'}>
-                            TODO
+                            {plan.isPublished ? 'Published' : 'Draft'}
                           </Badge>
                         </TableCell>
-                        <TableCell>{plan.createdAt}</TableCell>
-                        <TableCell>{plan.sales}</TableCell>
-                        <TableCell>${plan.revenue}</TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
+                        <TableCell className="text-center">{new Date(plan.createdAt).toLocaleDateString()
+                        }</TableCell>
+                        <TableCell className="text-center">{plan.sales}</TableCell>
+                        <TableCell className="text-center">${plan.revenue.toFixed(2)}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
                             <Button variant="ghost" size="sm">
                               <Eye className="h-4 w-4" />
                             </Button>
@@ -408,9 +425,17 @@ const AdminDashboard = () => {
                               variant="ghost"
                               size="sm"
                               onClick={() => handlePublishPlan(plan)}
-                              className={plan.isPublished ? 'text-orange-600 hover:text-orange-700' : 'text-green-600 hover:text-green-700'}
+                              className={
+                                plan.isPublished
+                                  ? 'text-orange-600 hover:text-orange-700'
+                                  : 'text-green-600 hover:text-green-700'
+                              }
                             >
-                              {plan.isPublished ? <XCircle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
+                              {plan.isPublished ? (
+                                <XCircle className="h-4 w-4" />
+                              ) : (
+                                <CheckCircle className="h-4 w-4" />
+                              )}
                             </Button>
                             <Button
                               variant="ghost"
@@ -424,7 +449,9 @@ const AdminDashboard = () => {
                       </TableRow>
                     ))}
                   </TableBody>
+
                 </Table>
+
               </CardContent>
             </Card>
           </TabsContent>
@@ -449,7 +476,7 @@ const AdminDashboard = () => {
                               <div>
                                 <h3 className="font-semibold text-lg">{application.fullName}</h3>
                                 <p className="text-muted-foreground">{application.email}</p>
-                                <p className="text-sm text-muted-foreground">Requested on {application.createdAt.toLocaleString()}</p>
+                                <p className="text-sm text-muted-foreground">Requested on {new Date(application.createdAt).toLocaleDateString()}</p>
                               </div>
                             </div>
                             <Badge variant="outline">Pending Review</Badge>
@@ -568,19 +595,20 @@ const AdminDashboard = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Creator</TableHead>
-                      <TableHead>Plans</TableHead>
-                      <TableHead>Sales</TableHead>
-                      <TableHead>Revenue</TableHead>
-                      <TableHead>Rating</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead className="text-left">Creator</TableHead>
+                      <TableHead className="text-center">Plans</TableHead>
+                      <TableHead className="text-center">Sales</TableHead>
+                      <TableHead className="text-center">Revenue</TableHead>
+                      <TableHead className="text-center">Monthly</TableHead>
+                      <TableHead className="text-center">Rating</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
 
                   <TableBody>
                     {filteredAndSortedCreators.map((creator) => (
                       <TableRow key={creator.id}>
-                        <TableCell>
+                        <TableCell className="text-left">
                           <div className="flex items-center gap-3">
                             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
                               <span className="text-sm font-medium">
@@ -592,33 +620,39 @@ const AdminDashboard = () => {
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="text-center">
+                        <TableCell className="text-center">
+                          <div>
                             <div className="text-lg font-semibold">{creator.plansCount}</div>
                             <div className="text-xs text-muted-foreground">Published</div>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="text-center">
+                        <TableCell className="text-center">
+                          <div>
                             <div className="text-lg font-semibold">{creator.totalSales.toLocaleString()}</div>
                             <div className="text-xs text-muted-foreground">Total Sales</div>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="text-center">
-                            <div className="text-lg font-semibold">${creator.totalRevenue}</div>
-                            <div className="text-xs text-muted-foreground">This month</div>
+                        <TableCell className="text-center">
+                          <div>
+                            <div className="text-lg font-semibold">${creator.totalRevenue.toFixed(2)}</div>
+                            <div className="text-xs text-muted-foreground">All Time</div>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1">
+                        <TableCell className="text-center">
+                          <div>
+                            <div className="text-lg font-semibold">${creator.revenueThisMonth.toFixed(2)}</div>
+                            <div className="text-xs text-muted-foreground">This Month</div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <div className="flex items-center justify-center gap-1">
                             <span className="text-yellow-500">★</span>
                             <span className="font-medium">{creator.rating}</span>
                             <span className="text-xs text-muted-foreground">({creator.rating})</span>
                           </div>
                         </TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
+                        <TableCell className="text-right">
+                          <div className="flex gap-2 justify-end">
                             <Button variant="ghost" size="sm">
                               <Eye className="h-4 w-4" />
                             </Button>

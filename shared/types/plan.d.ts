@@ -11,7 +11,7 @@ export interface PlanPreview {
   isPublished: boolean;
   creatorUsername: string;
   creatorSubdomain: string;
-  createdAt: DateTime;
+  createdAt: Date;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   sales: number;
 }

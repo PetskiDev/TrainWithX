@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import * as creatorService from './creator.service';
-import { transformCreatorToPreview } from './creator.transformer';
+import { transformCreatorToPreview, transformToCreatorFullDTO } from './creator.transformer';
 import { SendApplicationDTO } from '@shared/types/creator';
 
 export async function getAllCreators(req: Request, res: Response) {
@@ -8,6 +8,13 @@ export async function getAllCreators(req: Request, res: Response) {
   const previews = await Promise.all(creators.map(transformCreatorToPreview));
   res.json(previews);
 }
+
+export async function getAllCreatorsFullDTO(req: Request, res: Response) {
+  const creators = await creatorService.fetchAllCreators();
+  const previews = await Promise.all(creators.map(transformToCreatorFullDTO));
+  res.json(previews);
+}
+
 
 export async function postCreatorApplication(req: Request, res: Response) {
   const data = req.body as SendApplicationDTO;

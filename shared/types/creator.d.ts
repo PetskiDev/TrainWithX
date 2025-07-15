@@ -14,6 +14,7 @@ export interface CreatorPreviewDTO {
 export interface CreatorFullDTO extends CreatorPreviewDTO {
   profileViews: number;
   totalRevenue: number;
+  revenueThisMonth: number;
 }
 
 export interface SendApplicationDTO {

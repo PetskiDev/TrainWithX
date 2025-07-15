@@ -38,10 +38,29 @@ export async function transformToCreatorFullDTO(
       amount: true,
     },
     where: {
-      user: {
+      plan: {
         creator: {
           id: creator.id,
         },
+      },
+    },
+  });
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const revenueThisMonth = await prisma.purchase.aggregate({
+    _sum: {
+      amount: true,
+    },
+    where: {
+      plan: {
+        creator: {
+          id: creator.id,
+        },
+      },
+      timestamp: {
+        gte: startOfMonth,
+        lte: now,
       },
     },
   });
@@ -50,5 +69,6 @@ export async function transformToCreatorFullDTO(
     ...preview,
     profileViews: 123, // TODO: replace with real analytics
     totalRevenue: Number(revenueResult._sum.amount ?? 0),
+    revenueThisMonth: Number(revenueThisMonth._sum.amount ?? 0),
   };
 }
