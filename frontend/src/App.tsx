@@ -1,3 +1,4 @@
+import Footer from '@frontend/components/Footer';
 import NavBar from '@frontend/components/NavBar';
 import { Toaster } from '@frontend/components/ui/toaster';
 import RootRouter from '@frontend/RootRouter';
@@ -8,6 +9,7 @@ function App() {
       <NavBar />
       <Toaster />
       <RootRouter />
+      <Footer />
     </>
   );
 }

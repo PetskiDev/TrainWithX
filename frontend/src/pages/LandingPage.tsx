@@ -10,6 +10,7 @@ import { Users, Search, Star, Shield, Zap } from 'lucide-react';
 import { TrainWithXLogo } from '@/components/TrainWithXLogo';
 import { goPublic } from '@frontend/lib/nav';
 import BecomeCreatorSection from '@frontend/components/BecomeCreatorSection';
+import Footer from '@frontend/components/Footer';
 
 const LandingPage = () => {
   return (
@@ -188,7 +189,6 @@ const LandingPage = () => {
 
         </div>
         <BecomeCreatorSection />
-
       </div>
     </div>
   );
