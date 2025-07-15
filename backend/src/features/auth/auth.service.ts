@@ -6,10 +6,60 @@ import { AuthResult } from '@src/features/auth/auth.types';
 import { transformUserToPreview } from '@src/features/users/user.transformer';
 import { env } from '@src/utils/env';
 import { sendMailFromFile } from '@src/utils/mail';
-import { addMinutes } from 'date-fns';
+import { addMinutes, subMinutes } from 'date-fns';
 import crypto from 'node:crypto';
 import { downloadImageAsMulter } from '@src/utils/downloadPicture';
 import { storeAvatar } from '@src/features/users/user.service';
+
+export async function createAndSendVerificationToken({
+  userId,
+  email,
+  username,
+}: {
+  userId: number;
+  email: string;
+  username: string;
+}) {
+  // 1. Delete expired tokens
+  await prisma.emailVerificationToken.deleteMany({
+    where: { expiresAt: { lt: new Date() } },
+  });
+
+  // 2. Check for existing token in last 5 minutes
+  const fiveMinutesAgo = subMinutes(new Date(), 5);
+  const recentToken = await prisma.emailVerificationToken.findFirst({
+    where: {
+      userId,
+      createdAt: { gt: fiveMinutesAgo },
+    },
+  });
+
+  if (recentToken) {
+    throw new AppError(
+      'A verification email was recently sent. Please wait a few minutes before trying again.',
+      429
+    );
+  }
+
+  // 3. Create new token
+  const rawToken = crypto.randomUUID();
+  const expires = addMinutes(new Date(), 10);
+
+  await prisma.emailVerificationToken.create({
+    data: {
+      token: rawToken,
+      userId,
+      expiresAt: expires,
+    },
+  });
+
+  // 4. Send email
+  await sendMailFromFile(email, 'Confirm your email', 'email-verification', {
+    name: username,
+    link: `${env.FRONTEND_URL}/email-verification?token=${rawToken}`,
+    year: new Date().getFullYear().toString(),
+  });
+}
 
 export async function register(
   email: string,
@@ -31,27 +81,7 @@ export async function register(
   });
 
   // 4. Issue JWT
-
-  const rawToken = crypto.randomUUID();
-
-  const expires = addMinutes(new Date(), 30); // valid for 30 minutes
-
-  await prisma.emailVerificationToken.deleteMany({
-    where: { expiresAt: { lt: new Date() } },
-  });
-
-  await prisma.emailVerificationToken.create({
-    data: {
-      token: rawToken,
-      userId: user.id,
-      expiresAt: expires,
-    },
-  });
-
-  await sendMailFromFile(email, 'Confirm your email', 'verify-email', {
-    name: user.username,
-    link: `${env.FRONTEND_URL}/verify-email?token=${rawToken}`,
-  });
+  await createAndSendVerificationToken({ userId: user.id, email, username });
   return {
     token: generateToken(user.id, user.isAdmin),
     user: transformUserToPreview(user),

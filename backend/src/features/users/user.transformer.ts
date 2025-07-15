@@ -12,6 +12,7 @@ export function transformUserToPreview(
     isCreator: !!user.creator,
     createdAt: user.createdAt,
     avatarUrl: user.avatarUrl ?? undefined,
+    isVerified: user.isVerified,
   };
 }
 

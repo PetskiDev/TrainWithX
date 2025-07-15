@@ -43,12 +43,18 @@ const RegisterPage = () => {
     e.preventDefault();
     setError('');
     try {
-      await register(form.email, form.username, form.password);
-      if (user?.isCreator) {
+      const user = await register(form.email, form.username, form.password);
+
+      if (!user.isVerified) {
+        //new user
+        goPublic('/email-verification');
+      } else if (user.isCreator) {
+        //google login creator already excists
         goPublic('/me/creator');
-        return;
+      } else {
+        //google login user already excists
+        goPublic('/me');
       }
-      goPublic('/me');
     } catch (err: any) {
       setError(err.message);
     }

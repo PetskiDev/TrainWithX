@@ -5,6 +5,7 @@ import {
   register,
   getOrCreateGoogleUser,
   verifyEmail,
+  createAndSendVerificationToken,
 } from './auth.service';
 import { AppError } from '@src/utils/AppError';
 import { clearCookieOpts, cookieOpts } from '@src/utils/cookies';
@@ -19,10 +20,16 @@ export const registerController = async (req: Request, res: Response) => {
 
   const result = await register(email, username, password);
 
-  //JWT TOKEN NOT VISIBLE TO JS. SEND JUST THE INFO THAT THE FRONTEND NEEDS
-  //TOKEN IS HANDLED BY BROWSER.
-  //sending just the UserDTO
-  res.cookie('access', result.token, cookieOpts).status(201).json(result.user);
+  if (result.user.isVerified) {
+    //it was a already-registered google acc
+    res
+      .cookie('access', result.token, cookieOpts)
+      .status(201)
+      .json(result.user);
+  } else {
+    res.status(200).json(result.user);
+    //no cookie till login
+  }
 };
 
 export const loginController = async (req: Request, res: Response) => {
@@ -31,6 +38,21 @@ export const loginController = async (req: Request, res: Response) => {
     throw new AppError('Email, and password are required.', 400);
   }
   const result = await login(email, password);
+
+  if (!result.user.isVerified) {
+    // Don't set cookie, just return info for frontend to act
+    await createAndSendVerificationToken({
+      userId: result.user.id,
+      email: result.user.email,
+      username: result.user.username,
+    });
+    res.status(401).json({
+      error: 'Email not verified.',
+      reason: 'not_verified',
+    });
+    return;
+  }
+
   res.cookie('access', result.token, cookieOpts).status(200).json(result.user);
 };
 

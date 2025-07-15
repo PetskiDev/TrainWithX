@@ -39,12 +39,13 @@ const LoginPage = () => {
     e.preventDefault();
     setError('');
     try {
-      await login(form.email, form.password);
-      if (user?.isCreator) {
+      const user = await login(form.email, form.password);
+
+      if (user.isCreator) {
         goPublic('/me/creator');
-        return;
+      } else {
+        goPublic('/me');
       }
-      goPublic('/me');
 
     } catch (err: any) {
       setError(err.message);

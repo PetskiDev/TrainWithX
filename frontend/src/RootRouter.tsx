@@ -4,7 +4,6 @@ import PlansPage from './pages/PlansPage';
 import LoginPage from '@frontend/pages/LoginPage';
 import RegisterPage from '@frontend/pages/RegisterPage';
 import NotFoundPage from '@frontend/pages/NotFoundPage';
-import VerifyEmail from '@frontend/pages/VerifyEmail';
 import Me from '@frontend/pages/Me';
 import Creators from '@frontend/pages/Creators';
 import Creator from '@frontend/pages/Creator';
@@ -14,6 +13,7 @@ import CreatePlan from '@frontend/pages/CreatePlan';
 import PlanPreview from '@frontend/pages/PlanPreview';
 import CreatorDashboard from '@frontend/pages/CreatorDashboard';
 import BecomeCreator from '@frontend/pages/BecomeCreator';
+import EmailVerificationPage from '@frontend/pages/EmailVerificationPage';
 
 function PublicRoutes() {
   return (
@@ -25,7 +25,7 @@ function PublicRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/become-creator" element={<BecomeCreator />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/email-verification" element={<EmailVerificationPage />} />
         <Route path="/me" element={<Me />} />
         <Route path="/me/creator" element={<CreatorDashboard />} />
         <Route path="/me/creator/create-plan" element={<CreatePlan />} />

@@ -3,6 +3,7 @@ export interface UserDto {
   email: string;
   username: string;
   avatarUrl?: string;
+  isVerified: boolean;
   isAdmin: boolean;
   isCreator: boolean;
   createdAt: Date;
