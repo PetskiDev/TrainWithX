@@ -37,11 +37,18 @@ export function toPlanPreview(
     description: plan.description,
     originalPrice:
       plan.originalPrice !== null ? Number(plan.originalPrice) : undefined,
-    difficulty: 'beginner', //TODO add in db
+    difficulty: plan.difficulty ?? 'beginner', //TODO MAKE IT NOT NULL IN DB
+    duration: content?.weeks.length ?? 0,
     sales: plan.purchases.length, // TODO add in db or calc somehow
     createdAt: plan.createdAt,
     isPublished: plan.isPublished,
+    features: plan.features,
     weeksInfo: extractPlanWeekInfo(content),
+    totalWorkouts:
+      content?.weeks.reduce(
+        (sum, w) => sum + w.days.filter((d) => d.type === 'workout').length,
+        0
+      ) ?? 0,
   };
 }
 

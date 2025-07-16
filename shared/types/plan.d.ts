@@ -11,6 +11,9 @@ export interface PlanPreview {
   isPublished: boolean;
   creatorUsername: string;
   creatorSubdomain: string;
+  totalWorkouts: number;
+  duration: number;
+  features: string[];
   createdAt: Date;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   sales: number;
@@ -22,7 +25,6 @@ export interface PlanContentJSON {
   // or just `string` if not strict
   introVideo?: string;
   totalWeeks: number;
-  totalWorkouts: number;
   goals: string[];
   tags: string[];
   weeks: PlanWeek[];

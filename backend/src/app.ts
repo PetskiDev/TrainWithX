@@ -16,10 +16,7 @@ app.use(morgan('dev'));
 
 app.use('/api/v1', apiRouter);
 
-app.use(
-  '/uploads/avatars',
-  express.static(path.join(__dirname, '..', 'uploads', 'avatars'))
-);
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 //this part only runs when vite does not run
 //in dev vite handles this responses and only proxies /api calls

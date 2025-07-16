@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ArrowLeft, Play, Clock, Users, Star } from 'lucide-react';
+import { ArrowLeft, Play, Clock, Users, Star, CheckCircle } from 'lucide-react';
 import type { PlanPaidPreveiw } from '@shared/types/plan';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 import { goToCreator } from '@frontend/lib/nav';
@@ -113,7 +113,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
               <div className="flex items-center space-x-4 text-sm">
                 <div className="flex items-center">
                   <Clock className="mr-1 h-4 w-4" />
-                  {'DURATION ADD'}
+                  {plan.duration} weeks
                 </div>
                 <div className="flex items-center">
                   <Play className="mr-1 h-4 w-4" />
@@ -156,15 +156,14 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                 <CardTitle>What You'll Get</CardTitle>
               </CardHeader>
               <CardContent>
-                todo
-                {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {plan.features.map((feature, index) => (
                     <div key={index} className="flex items-center">
                       <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
                       <span className="text-sm">{feature}</span>
                     </div>
                   ))}
-                </div> */}
+                </div>
               </CardContent>
             </Card>
 
@@ -225,9 +224,9 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                   </p>
                 </div>
                 <BuyButton planId={plan.id}></BuyButton>
-                <Button variant="outline" className="w-full">
+                {/* TODO<Button variant="outline" className="w-full">
                   Add to Wishlist
-                </Button>
+                </Button> */}
               </CardContent>
             </Card>
 
@@ -271,7 +270,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

@@ -67,7 +67,6 @@ export async function createPlanService(newPlan: CreatePlanDto) {
     tags,
     weeks,
     introVideo,
-    totalWorkouts,
     totalWeeks,
   };
 
