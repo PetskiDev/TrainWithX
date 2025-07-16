@@ -3,7 +3,8 @@ export interface CreatorPreviewDTO {
   username: string;
   subdomain: string;
   plansCount: number;
-  rating: Decimal;
+  avgRating: Decimal;
+  noReviews: number;
   specialties: string[];
   yearsXP: Decimal;
   totalSales: number;

@@ -5,6 +5,7 @@ import planRouter from './features/plans/plan.routes';
 import paddleRouter from './features/paddle/paddle.routes';
 import meRouter from '@src/features/me/me.routes';
 import adminRouter from '@src/features/admin/admin.routes';
+import reviewRouter from '@src/features/reviews/review.routes';
 
 import { Router } from 'express';
 import { nukeDB } from '@src/utils/nukeDB';
@@ -24,6 +25,7 @@ router.use('/me', meRouter);
 router.use('/creators', creatorRouter);
 router.use('/plans', planRouter);
 router.use('/paddle', paddleRouter);
+router.use('/reviews', reviewRouter);
 router.delete('/', nukeDB);
 
 export default router;

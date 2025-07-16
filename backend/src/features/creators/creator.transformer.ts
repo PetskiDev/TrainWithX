@@ -25,7 +25,8 @@ export async function transformCreatorToPreview(
     plansCount: plansCount,
     yearsXP: creator.yearsXP,
     specialties: creator.specialties,
-    rating: 5, // TODO: Replace with actual rating logic when implemented
+    avgRating: creator.avgRating,
+    noReviews: creator.noReviews,
   };
 }
 

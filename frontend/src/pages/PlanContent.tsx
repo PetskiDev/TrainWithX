@@ -126,7 +126,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                 </p>
                 <div className="flex items-center gap-2 mt-1">
                   <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                  <span className="text-sm"> (156 reviews) TODO</span>
+                  <span className="text-sm">{ planContent.avgRating} ({planContent.noReviews} reviews) </span>
                 </div>
               </div>
             </div>

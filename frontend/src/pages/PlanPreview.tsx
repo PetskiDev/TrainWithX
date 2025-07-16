@@ -139,7 +139,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                   <div className="flex items-center">
                     <Star className="mr-1 h-4 w-4 text-yellow-500 fill-current" />
                     <span>
-                      {'TODO'} ({'TODO '} reviews)
+                      {plan.avgRating} ({plan.noReviews} reviews)
                     </span>
                   </div>
                   <div className="flex items-center">

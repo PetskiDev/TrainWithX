@@ -15,14 +15,15 @@ export const CreatorCard = ({
   username,
   bio,
   avatarUrl,
-  rating,
+  avgRating,
+  noReviews,
   plansCount,
   totalSales,
 }: CreatorPreviewDTO) => {
   return (
     <Card
       className="hover:shadow-lg transition-shadow cursor-pointer"
-      onClick={() => {}}
+      onClick={() => { }}
     >
       <CardHeader className="text-center">
         <Avatar className="w-16 h-16 mx-auto mb-4">
@@ -45,7 +46,7 @@ export const CreatorCard = ({
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 text-yellow-500 fill-current" />
-            <span>{rating}</span>
+            <span>{avgRating} ({noReviews} reviews)</span> 
           </div>
         </div>
         <Badge variant="secondary">{plansCount} plans</Badge>

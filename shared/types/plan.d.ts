@@ -9,6 +9,8 @@ export interface PlanPreview {
   originalPrice?: number;
   creatorId: number;
   isPublished: boolean;
+  avgRating: Decimal;
+  noReviews: number;
   creatorUsername: string;
   creatorSubdomain: string;
   totalWorkouts: number;
@@ -36,6 +38,7 @@ export interface PlanCreatorData extends PlanPreview {
   revenue: number;
 }
 
+//FIX THIS AS NEW TYPE IMMIDIATELY
 export type CreatePlanDto = Omit<
   PlanPaidPreveiw,
   | 'id'
@@ -47,7 +50,11 @@ export type CreatePlanDto = Omit<
   | 'createdAt'
   | 'isPublished'
   | 'weeksInfo'
->;
+  | 'avgRating'
+  | 'noReviews'
+  | 'duration'
+  | 'features'
+>; //TODO SEPERATE THIS INTO DIFFERENT DATA TYPE AND MAKE DIFFERENT HIEARACHY. THOSE ARE ALL AFTER-CALCULATED VALUES WHICH STRART OFF AT 0 BY DEFAULT
 
 export interface PlanWeek {
   id: number;

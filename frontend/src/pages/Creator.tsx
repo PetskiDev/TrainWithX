@@ -138,13 +138,11 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                   Plans Sold
                 </span>
               </div>
-              {creator.rating !== undefined && (
-                <div className="flex items-center gap-2">
-                  <Star className="h-5 w-5 text-yellow-500 fill-current" />
-                  <span className="font-semibold">{creator.rating}</span>
-                  <span className="text-sm text-muted-foreground">rating</span>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500 fill-current" />
+                <span className="font-semibold">{creator.avgRating}</span>
+                <span className="text-sm text-muted-foreground">rating</span>
+              </div>
               <div className="flex items-center gap-2">
                 <Award className="h-5 w-5 text-muted-foreground" />
                 <span className="font-semibold">
@@ -182,7 +180,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
           />
           <StatCard
             icon={<Star className="h-6 w-6 text-primary" />}
-            value={creator.rating ? `${creator.rating}/5` : 'N/A'}
+            value={creator.avgRating}
             label="Average Rating"
           />
           <StatCard

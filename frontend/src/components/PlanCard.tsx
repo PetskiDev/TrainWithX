@@ -76,7 +76,13 @@ export const PlanCard = ({ plan, onPlanClick }: Props) => {
           </p>
         )}
       </CardContent>
-
+      <div className="px-6 pb-2 text-sm text-muted-foreground flex items-center gap-1">
+        <span className="text-yellow-500">★</span>
+        <span className="font-medium">{plan.avgRating}</span>
+        <span className="text-medium text-muted-foreground">
+          ({plan.noReviews} {plan.noReviews === 1 ? 'review' : 'reviews'})
+        </span>
+      </div>
       {/* ---------- price + button at bottom ---------- */}
       <div className="px-6 pb-4">
         <div className="mb-2 flex items-center gap-2">

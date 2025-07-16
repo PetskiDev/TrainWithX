@@ -87,7 +87,7 @@ const AdminDashboard = () => {
         case "revenue":
           return (b as any).revenue - (a as any).revenue; // only if you extend DTO
         case "rating":
-          return Number(b.rating) - Number(a.rating);
+          return Number(b.avgRating) - Number(a.avgRating);
         default:
           return 0;
       }
@@ -724,8 +724,8 @@ const AdminDashboard = () => {
                         <TableCell className="text-center">
                           <div className="flex items-center justify-center gap-1">
                             <span className="text-yellow-500">★</span>
-                            <span className="font-medium">{creator.rating}</span>
-                            <span className="text-xs text-muted-foreground">({creator.rating})</span>
+                            <span className="font-medium">{creator.avgRating}</span>
+                            <span className="text-xs text-muted-foreground">({creator.noReviews})</span>
                           </div>
                         </TableCell>
                         <TableCell className="text-right">

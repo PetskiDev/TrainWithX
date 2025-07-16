@@ -23,6 +23,7 @@ model User {
   purchases              Purchase[]
   emailVerificationToken EmailVerificationToken[]
   creatorApplication     CreatorApplication?
+  reviews                Review[]
 }
 
 model Creator {
@@ -31,7 +32,9 @@ model Creator {
   subdomain     String   @unique @db.VarChar(50)
   yearsXP       Decimal  @db.Decimal(3, 1)
   coverUrl      String?
-  specialties   String[]   @default([])
+  avgRating     Decimal  @default(0) @db.Decimal(5, 1)
+  noReviews     Int      @default(0)
+  specialties   String[] @default([])
   becomeCreator DateTime @default(now())
   user          User     @relation(fields: [id], references: [id], onDelete: Cascade)
   plans         Plan[]
@@ -53,6 +56,8 @@ model Plan {
   features         String[]    @default([])
   coverImage       String?
   difficulty       Difficulty?
+  avgRating        Decimal     @default(0) @db.Decimal(3, 2)
+  noReviews        Int         @default(0)
   isPublished      Boolean     @default(false)
   price            Decimal     @db.Decimal(10, 2)
   currency         String      @default("USD")
@@ -64,6 +69,7 @@ model Plan {
   creatorId        Int
   creator          Creator     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   purchases        Purchase[]
+  reviews          Review[]
 }
 
 model Purchase {
@@ -110,4 +116,24 @@ model CreatorApplication {
   user           User              @relation(fields: [userId], references: [id])
   status         ApplicationStatus @default(pending)
   createdAt      DateTime          @default(now())
+}
+
+model Review {
+  id      Int     @id @default(autoincrement())
+  rating  Int
+  comment String?
+
+  createdAt DateTime @default(now())
+
+  userId Int
+  planId Int
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, planId])
+
+  @@index([planId])
+  @@index([userId])
+  @@index([planId, userId])
 }

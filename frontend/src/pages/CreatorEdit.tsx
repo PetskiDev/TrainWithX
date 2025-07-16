@@ -253,7 +253,7 @@ const CreatorEdit = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-yellow-500 fill-current" />
-                <span className="font-semibold">{creator.rating}</span>
+                <span className="font-semibold">{creator.avgRating}</span>
                 <span className="text-sm text-muted-foreground">rating</span>
               </div>
               <div className="flex items-center gap-2">
@@ -313,7 +313,7 @@ const CreatorEdit = () => {
               <div className="flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full mx-auto mb-4">
                 <Star className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold mb-2">{creator.rating}/5</h3>
+              <h3 className="text-2xl font-bold mb-2">{creator.avgRating}/5</h3>
               <p className="text-muted-foreground">Average Rating</p>
             </CardContent>
           </Card>

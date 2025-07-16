@@ -49,6 +49,8 @@ export function toPlanPreview(
         (sum, w) => sum + w.days.filter((d) => d.type === 'workout').length,
         0
       ) ?? 0,
+    avgRating: plan.avgRating,
+    noReviews: plan.noReviews,
   };
 }
 
