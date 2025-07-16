@@ -27,14 +27,16 @@ const AdminDashboard = () => {
   const [creatorSortBy, setCreatorSortBy] = useState("username");
 
 
-  const { stats, users, plans, applications, loading, creators, refetch } = useAdminDashboardData();
+  const { user, stats, users, plans, applications, loading, creators, refetch } = useAdminDashboardData();
   const [showPromoteDialog, setShowPromoteDialog] = useState<boolean>(false);
   const [promotionSubdomain, setPromotionSubdomain] = useState<string>("");
   const [userToPromote, setUserToPromote] = useState<UserDto | null>(null);
 
 
   const { toast } = useToast();
-
+  if (!user?.isAdmin) {
+    return <>Unauthorized to be here. You are not an admin</>
+  }
   if (loading || !stats) return <>Loading data</>;
 
 

@@ -10,6 +10,7 @@ import { toast } from '@frontend/hooks/use-toast';
 
 export const useAdminDashboardData = () => {
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<UserDto>();
   const [stats, setStats] = useState<AdminInfoDTO>();
   const [users, setUsers] = useState<UserDto[]>([]);
   const [plans, setPlans] = useState<PlanCreatorData[]>([]);
@@ -20,9 +21,10 @@ export const useAdminDashboardData = () => {
   const fetchAllData = async () => {
     setLoading(true);
     try {
-      const [statsRes, usersRes, plansRes, creatorsRes, appsRes] =
+      const [dashUserRes, statsRes, usersRes, plansRes, creatorsRes, appsRes] =
         await Promise.all([
           //TODO BUG ADMIN PANEL REVENUE MISSING: FETCH FROM ADMIN SOURCES, NOT GETTING FULL DATA
+          fetch('/api/v1/me'),
           fetch('/api/v1/admin/stats'),
           fetch('/api/v1/users'),
           fetch('/api/v1/admin/plans'),
@@ -33,12 +35,14 @@ export const useAdminDashboardData = () => {
       if (!statsRes.ok || !usersRes.ok || !plansRes.ok || !appsRes.ok)
         throw new Error('Failed to fetch dashboard data');
 
+      const dashUser: UserDto = await dashUserRes.json();
       const statsData: AdminInfoDTO = await statsRes.json();
       const usersData: UserDto[] = await usersRes.json();
       const plansData: PlanCreatorData[] = await plansRes.json();
       const creatorsData: CreatorFullDTO[] = await creatorsRes.json();
       const appsData: CreatorApplicationDTO[] = await appsRes.json();
 
+      setUser(dashUser);
       setStats(statsData);
       setUsers(usersData);
       setPlans(plansData);
@@ -60,6 +64,7 @@ export const useAdminDashboardData = () => {
   }, []);
 
   return {
+    user,
     loading,
     stats,
     users,
