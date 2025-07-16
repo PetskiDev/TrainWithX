@@ -5,11 +5,26 @@ import {
   PlanPaidPreveiw,
   PlanContentJSON,
   PlanCreatorData,
+  PlanWeekInfo,
 } from '@shared/types/plan';
+
+function extractPlanWeekInfo(content?: PlanContentJSON): PlanWeekInfo[] {
+  if (!content) {
+    return [];
+  }
+  return content.weeks.map((week) => ({
+    id: week.id,
+    title: week.title,
+    description: week.description,
+    emoj: '🆕',
+  }));
+}
 
 export function toPlanPreview(
   plan: Plan & { creator: Creator & { user: User }; purchases: Purchase[] }
 ): PlanPreview {
+  const content = plan.content as unknown as PlanContentJSON | undefined; // TODO USE ZOD TO VALIDATE
+
   return {
     id: plan.id,
     title: plan.title,
@@ -26,6 +41,7 @@ export function toPlanPreview(
     sales: plan.purchases.length, // TODO add in db or calc somehow
     createdAt: plan.createdAt,
     isPublished: plan.isPublished,
+    weeksInfo: extractPlanWeekInfo(content),
   };
 }
 
@@ -51,6 +67,7 @@ export function toPaidPlan(
       content?.weeks.map((week) => ({
         id: week.id,
         title: week.title,
+        emoj: week.emoj, //TODO IN DB SAVE GET FROM CONENT
         description: week.description,
         days: week.days.map((day) => ({
           id: day.id,

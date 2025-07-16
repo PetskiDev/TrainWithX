@@ -14,6 +14,7 @@ export interface PlanPreview {
   createdAt: Date;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   sales: number;
+  weeksInfo: PlanWeekInfo[];
 }
 
 //paid stuff in the json
@@ -43,6 +44,7 @@ export type CreatePlanDto = Omit<
   | 'sales'
   | 'createdAt'
   | 'isPublished'
+  | 'weeksInfo'
 >;
 
 export interface PlanWeek {
@@ -50,6 +52,14 @@ export interface PlanWeek {
   title: string;
   description: string;
   days: PlanDay[];
+  emoj: string;
+}
+
+export interface PlanWeekInfo {
+  id: number;
+  title: string;
+  description: string;
+  emoj: string;
 }
 
 export interface PlanDay {

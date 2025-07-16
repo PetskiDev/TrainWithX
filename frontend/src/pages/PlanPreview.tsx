@@ -85,8 +85,8 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
   const hasDiscount = plan.originalPrice && plan.originalPrice > plan.price;
   const discountPercentage = hasDiscount
     ? Math.round(
-        ((plan.originalPrice! - plan.price) / plan.originalPrice!) * 100
-      )
+      ((plan.originalPrice! - plan.price) / plan.originalPrice!) * 100
+    )
     : 0;
 
   return (
@@ -174,27 +174,27 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                 <CardTitle>Program Overview</CardTitle>
               </CardHeader>
               <CardContent>
-                TODO
-                {/* <div className="space-y-4">
-                  {plan.preview.map((week, index) => (
+                <div className="space-y-4">
+                  {plan.weeksInfo.map((week, index) => (
                     <div
                       key={index}
-                      className="flex gap-4 p-4 border rounded-lg"
+                      className="flex items-center gap-4 p-4 border rounded-lg"
                     >
-                      <img
-                        src={week.image}
-                        alt={week.title}
-                        className="w-20 h-20 object-cover rounded"
-                      />
+                      <div className="w-16 h-16 text-3xl bg-muted flex items-center justify-center overflow-hidden rounded shrink-0">
+                        <span role="img" aria-label={`Week ${index + 1} emoji`}>
+                          {week.emoj}
+                        </span>
+                      </div>
                       <div>
-                        <h4 className="font-semibold mb-1">{week.title}</h4>
+                        <h4 className="font-semibold mb-1">  Week {week.id}: {week.title}
+                        </h4>
                         <p className="text-sm text-muted-foreground">
                           {week.description}
                         </p>
                       </div>
                     </div>
                   ))}
-                </div> */}
+                </div>
               </CardContent>
             </Card>
           </div>

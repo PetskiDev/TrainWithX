@@ -132,6 +132,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
       id: planData.weeks.length + 1,
       title: `Week ${planData.weeks.length + 1}`,
       description: '',
+      emoj: '🆕',
       days: [],
     };
     setPlanData((prev) => ({
