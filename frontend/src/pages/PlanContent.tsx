@@ -18,10 +18,13 @@ import {
   Share2,
   Star,
   Coffee,
+  Send,
 } from 'lucide-react';
 import type { PlanPaidPreveiw } from '@shared/types/plan';
 import { useParams } from 'react-router-dom';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
+import { Textarea } from '@frontend/components/ui/textarea';
+import { toast } from '@frontend/hooks/use-toast';
 
 const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
   const { slug } = useParams<{
@@ -30,7 +33,8 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
 
   const [planPaid, setPlanPaid] = useState<PlanPaidPreveiw | null>(null);
   const [creator, setCreator] = useState<CreatorPreviewDTO | null>(null);
-
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -85,6 +89,9 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
   if (error) {
     return <div className="text-center text-red-500 py-10">Error: {error}</div>;
   }
+  if (!planPaid) {
+    return <div className="text-center py-10">Canno't load plan</div>;
+  }
 
   const planContent = planPaid!;
 
@@ -100,6 +107,43 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
   const playIntroVideo = () => {
     setVideoPlaying(true);
     // Here you would handle video playback
+  };
+  const handleSubmitReview = async () => {
+    if (reviewRating === 0 || !reviewText.trim()) return;
+
+    try {
+      const response = await fetch('/api/v1/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planId: planPaid.id, // ensure `plan.id` is accessible
+          rating: reviewRating,
+          comment: reviewText.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to submit review');
+      }
+      toast({
+        title: 'Review Submitted',
+        description: 'Thank you for your feedback!',
+      });
+
+      setReviewRating(0);
+      setReviewText('');
+
+    } catch (err: any) {
+      console.error('Error submitting review:', err.message);
+      toast({
+        title: 'Error',
+        description: err.message || 'Something went wrong.',
+        variant: 'destructive',
+      });
+    }
   };
   return (
     <div className="min-h-screen-navbar bg-background">
@@ -126,11 +170,15 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                 </p>
                 <div className="flex items-center gap-2 mt-1">
                   <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                  <span className="text-sm">{ planContent.avgRating} ({planContent.noReviews} reviews) </span>
+                  <span className="text-sm">{planContent.avgRating} ({planContent.noReviews} reviews) </span>
                 </div>
               </div>
             </div>
             <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setActiveTab('add-review')}>
+                <Star className="h-4 w-4 mr-2" />
+                Add Review
+              </Button>
               <Button variant="outline" size="sm">
                 <Share2 className="h-4 w-4 mr-2" />
                 Share
@@ -207,6 +255,8 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
             <TabsTrigger value="workouts">Workouts</TabsTrigger>
             <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
             <TabsTrigger value="community">Community</TabsTrigger>
+            <TabsTrigger value="add-review">Add Review</TabsTrigger>
+
           </TabsList>
 
           <TabsContent value="overview">
@@ -354,10 +404,10 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                               <div className="flex items-center gap-3">
                                 <div
                                   className={`p-2 rounded-full ${day.type === 'workout'
-                                      ? 'bg-primary/10'
-                                      : day.type === 'rest'
-                                        ? 'bg-orange-500/10'
-                                        : 'bg-green-500/10'
+                                    ? 'bg-primary/10'
+                                    : day.type === 'rest'
+                                      ? 'bg-orange-500/10'
+                                      : 'bg-green-500/10'
                                     }`}
                                 >
                                   {day.type === 'workout' ? (
@@ -531,6 +581,89 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                     </p>
                     <Button>Join Discussion</Button>
                   </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          <TabsContent value="add-review">
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Add Your Review</CardTitle>
+                  <p className="text-muted-foreground">
+                    Share your experience with this program to help others
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {/* Rating Section */}
+                    <div>
+                      <h3 className="font-medium mb-3">Your Rating</h3>
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            onClick={() => setReviewRating(star)}
+                            className="p-1 hover:scale-110 transition-transform"
+                          >
+                            <Star
+                              className={`h-6 w-6 ${star <= reviewRating
+                                ? 'fill-yellow-500 text-yellow-500'
+                                : 'text-muted-foreground'
+                                }`}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                      {reviewRating > 0 && (
+                        <p className="text-sm text-muted-foreground mt-2">
+                          You rated this program {reviewRating} out of 5 stars
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Review Text */}
+                    <div>
+                      <h3 className="font-medium mb-3">Your Review</h3>
+                      <Textarea
+                        placeholder="Tell others about your experience with this program. What did you like? What results did you achieve?"
+                        value={reviewText}
+                        onChange={(e) => setReviewText(e.target.value)}
+                        className="min-h-[120px]"
+                      />
+                      <p className="text-sm text-muted-foreground mt-2">
+                        {reviewText.length}/500 characters
+                      </p>
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-end">
+                      <Button
+                        onClick={handleSubmitReview}
+                        disabled={reviewRating === 0 || !reviewText.trim()}
+                        className="gap-2"
+                      >
+                        <Send className="h-4 w-4" />
+                        Submit Review
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Guidelines Card */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Review Guidelines</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm text-muted-foreground space-y-2">
+                    <li>• Be honest and constructive in your feedback</li>
+                    <li>• Focus on your experience with the program</li>
+                    <li>• Mention specific results or improvements you noticed</li>
+                    <li>• Keep your review respectful and appropriate</li>
+                    <li>• Reviews are public and help other users make informed decisions</li>
+                  </ul>
                 </CardContent>
               </Card>
             </div>
