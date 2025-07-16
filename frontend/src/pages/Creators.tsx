@@ -39,7 +39,7 @@ const Creators = () => {
   const filteredCreators = creators.filter(
     (c) =>
       c.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (c.bio ?? '').toLowerCase().includes(searchTerm.toLowerCase())
+      c.bio.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleCreatorClick = (subdomain: string) => {

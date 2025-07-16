@@ -27,9 +27,9 @@ model User {
 
 model Creator {
   id            Int      @id
-  bio           String?
+  bio           String   @default("")
   subdomain     String   @unique @db.VarChar(50)
-  yearsXP       Decimal? @db.Decimal(3, 1)
+  yearsXP       Decimal  @db.Decimal(3, 1)
   coverUrl      String?
   specialties   String[]   @default([])
   becomeCreator DateTime @default(now())

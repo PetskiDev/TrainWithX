@@ -5,11 +5,11 @@ export interface CreatorPreviewDTO {
   plansCount: number;
   rating: Decimal;
   specialties: string[];
+  yearsXP: Decimal;
   totalSales: number;
-  bio?: string;
+  bio: string;
   coverUrl?: string;
   avatarUrl?: string;
-  yearsXP?: Decimal;
 }
 
 export interface CreatorFullDTO extends CreatorPreviewDTO {

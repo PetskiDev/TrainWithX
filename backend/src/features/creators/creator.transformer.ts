@@ -19,11 +19,11 @@ export async function transformCreatorToPreview(
     username: creator.user.username,
     subdomain: creator.subdomain,
     coverUrl: creator.coverUrl ?? undefined,
-    bio: creator.bio ?? undefined,
+    bio: creator.bio,
     avatarUrl: creator.user.avatarUrl ?? undefined,
     totalSales: totalSales,
     plansCount: plansCount,
-    yearsXP: creator.yearsXP ?? undefined,
+    yearsXP: creator.yearsXP,
     specialties: creator.specialties,
     rating: 5, // TODO: Replace with actual rating logic when implemented
   };

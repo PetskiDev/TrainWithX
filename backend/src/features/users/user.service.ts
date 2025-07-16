@@ -33,6 +33,7 @@ export async function promoteUserToCreator(userId: number, subdomain: string) {
         data: {
           id: userId,
           subdomain: subdomain.toLowerCase(),
+          yearsXP: 0,
         },
         include: { user: true },
       });

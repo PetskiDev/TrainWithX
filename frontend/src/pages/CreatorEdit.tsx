@@ -67,12 +67,12 @@ const CreatorEdit = () => {
   const handleSave = async () => {
     try {
       const payload: CreatorPostDTO = {
-        bio: editData.bio?.trim() || undefined,
+        bio: editData.bio.trim() || undefined,
         specialties: editData.specialties
           ?.split(",")
           .map(s => s.trim())
           .filter(Boolean),
-        yearsXP: parseFloat(editData.yearsExperience || "0") || undefined,
+        yearsXP: parseFloat(editData.yearsExperience || "0"),
       };
 
       const response = await fetch(`/api/v1//creators/${creator.id}`, {
@@ -86,7 +86,7 @@ const CreatorEdit = () => {
         throw new Error(errorData.error || 'Failed to update creator');
       }
 
-      const updated = await response.json();
+      //const updated = await response.json();
       toast({
         title: "Profile updated",
         description: "Your changes have been saved.",
