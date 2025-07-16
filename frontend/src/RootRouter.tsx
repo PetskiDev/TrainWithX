@@ -15,6 +15,7 @@ import CreatorDashboard from '@frontend/pages/CreatorDashboard';
 import BecomeCreator from '@frontend/pages/BecomeCreator';
 import EmailVerificationPage from '@frontend/pages/EmailVerificationPage';
 import AdminDashboard from '@frontend/pages/AdminDashboard';
+import CreatorEdit from '@frontend/pages/CreatorEdit';
 
 function PublicRoutes() {
   return (
@@ -30,6 +31,7 @@ function PublicRoutes() {
         <Route path="/email-verification" element={<EmailVerificationPage />} />
         <Route path="/me" element={<Me />} />
         <Route path="/me/creator" element={<CreatorDashboard />} />
+        <Route path="/me/creator/edit" element={<CreatorEdit />} />
         <Route path="/me/creator/create-plan" element={<CreatePlan />} />
         <Route path="*" element={<NotFoundPage />} /> {/* 404 */}
       </Routes>

@@ -4,6 +4,7 @@ export interface CreatorPreviewDTO {
   subdomain: string;
   plansCount: number;
   rating: Decimal;
+  specialties: string[];
   totalSales: number;
   bio?: string;
   coverUrl?: string;
@@ -27,6 +28,13 @@ export interface SendApplicationDTO {
   socialMedia?: string;
   agreeToTerms: boolean;
   email: string;
+}
+
+export interface CreatorPostDTO {
+  username?: string;
+  bio?: string;
+  specialties?: string[];
+  yearsXP?: Decimal;
 }
 
 export interface CreatorApplicationDTO extends SendApplicationDTO {

@@ -131,7 +131,7 @@ const CreatorDashboard = () => {
           </div>
           <div className="flex gap-2">
             <Button asChild>
-              <Link to="/me/creator/edit" className="flex items-center">
+              <Link to="/me/creator/edit" state={{ creator }} className="flex items-center">
                 <Edit3 className="h-4 w-4" />
                 Edit Profile
               </Link>

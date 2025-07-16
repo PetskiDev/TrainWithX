@@ -1,7 +1,12 @@
 import { Request, Response } from 'express';
 import * as creatorService from './creator.service';
-import { transformCreatorToPreview, transformToCreatorFullDTO } from './creator.transformer';
-import { SendApplicationDTO } from '@shared/types/creator';
+import {
+  transformCreatorToPreview,
+  transformToCreatorFullDTO,
+} from './creator.transformer';
+import { CreatorPostDTO, SendApplicationDTO } from '@shared/types/creator';
+import { userInfo } from 'os';
+import { AppError } from '@src/utils/AppError';
 
 export async function getAllCreators(req: Request, res: Response) {
   const creators = await creatorService.fetchAllCreators();
@@ -15,11 +20,13 @@ export async function getAllCreatorsFullDTO(req: Request, res: Response) {
   res.json(previews);
 }
 
-
 export async function postCreatorApplication(req: Request, res: Response) {
   const data = req.body as SendApplicationDTO;
   const userId = req.user!.id;
-  const application = await creatorService.submitCreatorApplication(userId, data);
+  const application = await creatorService.submitCreatorApplication(
+    userId,
+    data
+  );
 
   res.status(201).json(application);
 }
@@ -35,6 +42,20 @@ export async function getById(req: Request, res: Response) {
     res.status(404).json({ error: 'Creator not found' });
     return;
   }
+  const preveiw = await transformCreatorToPreview(creator);
+  res.json(preveiw);
+}
+
+export async function patchCreator(req: Request, res: Response) {
+  const creatorId = Number(req.params.creatorId);
+  const data = req.body as CreatorPostDTO;
+  if (!creatorId) {
+    throw new AppError('Invalid Creator Id', 404);
+  }
+  if (creatorId !== req.user?.id && !req.user?.isAdmin) {
+    throw new AppError('Unauthorized', 401);
+  }
+  const creator = await creatorService.editCreator(creatorId, data);
   const preveiw = await transformCreatorToPreview(creator);
   res.json(preveiw);
 }

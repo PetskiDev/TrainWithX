@@ -18,9 +18,6 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  //TODO: fetch them and store
-  const specialties = ['Work', 'Travel'];
-
   // ───────────── Fetch creator ─────────────
   useEffect(() => {
     if (!subdomain) return;
@@ -161,7 +158,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
 
             {/* Specialties */}
             <div className="flex flex-wrap gap-2 mb-6">
-              {specialties.map((s, i) => (
+              {creator.specialties.map((s, i) => (
                 <Badge key={i} variant="secondary">
                   {s}
                 </Badge>

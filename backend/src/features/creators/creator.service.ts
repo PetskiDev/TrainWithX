@@ -1,6 +1,6 @@
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
-import { SendApplicationDTO } from '@shared/types/creator';
+import { CreatorPostDTO, SendApplicationDTO } from '@shared/types/creator';
 
 export async function fetchAllCreators() {
   return prisma.creator.findMany({
@@ -14,6 +14,23 @@ export async function fetchCreatorById(id: number) {
       id,
     },
     include: { user: true },
+  });
+}
+
+export async function editCreator(creatorId: number, data: CreatorPostDTO) {
+  //TODO, EDIT NAME IT WOULD BE PROBABLY IN CREATOR
+  return prisma.creator.update({
+    where: {
+      id: creatorId,
+    },
+    data: {
+      specialties: data.specialties,
+      yearsXP: data.yearsXP,
+      bio: data.bio,
+    },
+    include: {
+      user: true,
+    },
   });
 }
 
