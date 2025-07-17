@@ -1,14 +1,15 @@
+//TODO: Rename this to purchases
+
 import { Router } from 'express';
 import {
-  planCheckoutController,
+  purchasePlanController,
 } from './paddle.controller';
-import express from 'express';
 import { doAuth } from '@src/middleware/auth';
 
 const router = Router();
 
-router.post('/checkout', doAuth, planCheckoutController);
+router.post('/checkout', doAuth, purchasePlanController);
 
-// Webhook initialized in app for json things. 
+// Webhook initialized in app for json things. TODO:MOVE IT HERE BECASUE IT WON't HAVE /PADDLE PREFIX
 
 export default router;

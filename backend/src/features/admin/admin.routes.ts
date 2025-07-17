@@ -1,20 +1,20 @@
 import {
   adminDashboardController,
-  getCreatorApplications,
+  getAllPlansAdminController,
+  getCreatorApplicationsController,
 } from '@src/features/admin/admin.controller';
-import { getAllCreatorsFullDTO } from '@src/features/creators/creator.controller';
-import { getAllPlansCreatorDTO } from '@src/features/plans/plan.controller';
+import { getAllCreatorsAdminController } from './admin.controller';
 import { doAuth, isAdmin } from '@src/middleware/auth';
 import { Router } from 'express';
 
 const router = Router();
 router.use(doAuth, isAdmin);
 
-router.get('/stats',adminDashboardController);
+router.get('/stats', adminDashboardController);
 
-router.get('/plans', getAllPlansCreatorDTO);
-router.get('/creators', getAllCreatorsFullDTO);
+router.get('/plans', getAllPlansAdminController);
+router.get('/creators', getAllCreatorsAdminController);
 
-router.get('/creator-applications', doAuth, isAdmin, getCreatorApplications);
+router.get('/creator-applications', getCreatorApplicationsController);
 
 export default router;

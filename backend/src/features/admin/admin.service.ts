@@ -1,7 +1,8 @@
 import { prisma } from '@src/utils/prisma';
 import { subMonths, startOfMonth } from 'date-fns';
 import { AdminInfoDTO } from '@shared/types/admin';
-import { CreatorApplicationDTO } from '@shared/types/creator';
+import { UserDto } from '@shared/types/user';
+import { toUsersDTO } from '@src/features/users/user.transformer';
 
 export async function getDashboardStats(): Promise<AdminInfoDTO> {
   const startOfCurrentMonth = startOfMonth(new Date());
@@ -55,26 +56,10 @@ export async function getDashboardStats(): Promise<AdminInfoDTO> {
     newBuys,
   };
 }
-
-export async function fetchCreatorApplications(): Promise<
-  CreatorApplicationDTO[]
-> {
-  const applications = await prisma.creatorApplication.findMany({
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
-  return applications.map((app) => ({
-    fullName: app.fullName,
-    subdomain: app.subdomain,
-    specialization: app.specialization,
-    experience: app.experience,
-    bio: app.bio,
-    certifications: app.certifications || '',
-    socialMedia: app.socialMedia || '',
-    agreeToTerms: app.agreeToTerms,
-    email: app.email,
-    createdAt: app.createdAt,
-    id: app.id,
-  }));
+export async function getAllUsersAdmin(): Promise<UserDto[]> {
+  const users = await prisma.user.findMany();
+  return toUsersDTO(users);
 }
+
+
+

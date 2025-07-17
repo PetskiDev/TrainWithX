@@ -2,7 +2,7 @@ import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
 import { generateTransaction } from '@src/utils/paddle';
 
-export async function checkoutService({
+export async function generateTransactionToken({
   planId,
   userId,
 }: {
@@ -21,7 +21,7 @@ export async function checkoutService({
   return payLink;
 }
 
-export async function paymentComplete({
+export async function handlePaymentComplete({
   userId,
   planId,
   amount,
@@ -54,5 +54,23 @@ export async function checkAlreadyPurchased({
   });
   if (purchase) {
     throw new AppError('Plan Already Purchased', 400);
+  }
+}
+export async function enforceHasPurchased({
+  userId, planId,
+}: {
+  userId: number;
+  planId: number;
+}) {
+  const hasPurchased = await prisma.purchase.findUnique({
+    where: {
+      userId_planId: {
+        userId,
+        planId,
+      },
+    },
+  });
+  if (!hasPurchased) {
+    throw new AppError("Unauthorized. You don't own the plan", 401);
   }
 }

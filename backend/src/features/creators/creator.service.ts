@@ -1,15 +1,15 @@
 import { prisma } from '@src/utils/prisma';
+import { CreatorPostDTO } from '@shared/types/creator';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AppError } from '@src/utils/AppError';
-import { CreatorPostDTO, SendApplicationDTO } from '@shared/types/creator';
-import { CreatorPageReviewDTO, ReviewPreviewDTO } from '@shared/types/review';
 
-export async function fetchAllCreators() {
+export async function getAllCreators() {
   return prisma.creator.findMany({
     include: { user: true },
   });
 }
 
-export async function fetchCreatorById(id: number) {
+export async function getCreatorById(id: number) {
   return prisma.creator.findFirst({
     where: {
       id,
@@ -35,41 +35,7 @@ export async function editCreator(creatorId: number, data: CreatorPostDTO) {
   });
 }
 
-export async function submitCreatorApplication(
-  userId: number,
-  dto: SendApplicationDTO
-) {
-  const existingApplication = await prisma.creatorApplication.findUnique({
-    where: { userId },
-  });
-
-  if (existingApplication) {
-    throw new AppError('You have already submitted an application.', 400);
-  }
-
-  // 2. Check if subdomain is already taken (by Creator or another Application)
-  const subdomainTaken =
-    (await prisma.creator.findFirst({
-      where: { subdomain: dto.subdomain },
-    })) ||
-    (await prisma.creatorApplication.findFirst({
-      where: { subdomain: dto.subdomain },
-    }));
-
-  if (subdomainTaken) {
-    throw new AppError('Subdomain is already in use.', 400);
-  }
-  const application = await prisma.creatorApplication.create({
-    data: {
-      userId,
-      ...dto,
-    },
-  });
-
-  return application;
-}
-
-export async function fetchCreatorBySub(subdomain: string) {
+export async function getCreatorBySub(subdomain: string) {
   return prisma.creator.findFirst({
     where: {
       subdomain,
@@ -77,46 +43,38 @@ export async function fetchCreatorBySub(subdomain: string) {
     include: { user: true },
   });
 }
-
-export async function fetchCreatorReviews(
-  creatorId: number
-): Promise<CreatorPageReviewDTO[]> {
-  const reviews = await prisma.review.findMany({
-    where: {
-      plan: {
-        creator: {
-          id: creatorId,
+export async function promoteUserToCreator(userId: number, subdomain: string) {
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const creator = await tx.creator.create({
+        data: {
+          id: userId,
+          subdomain: subdomain.toLowerCase(),
+          yearsXP: 0,
         },
-      },
-    },
-    include: {
-      plan: { select: { title: true } }, // ensure planId is available
-      user: { select: { username: true, avatarUrl: true } },
-    },
-  });
+        include: { user: true },
+      });
 
-  return reviews.map((review) => ({
-    rating: review.rating,
-    comment: review.comment ?? '',
-    createdAt: review.createdAt,
-    userId: review.userId,
-    planId: review.planId,
-    planTitle: review.plan.title,
-    userAvatar: review.user.avatarUrl ?? '',
-    userUsername: review.user.username,
-  }));
+      await tx.user.update({
+        where: { id: userId },
+        data: { isCreator: true },
+      });
+
+      return creator;
+    });
+  } catch (err) {
+    if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002') {
+      const dup = (err.meta?.target as string[]) ?? [];
+      if (dup.includes('id')) {
+        throw new AppError('User is already a creator.', 409);
+      }
+      if (dup.includes('subdomain')) {
+        throw new AppError('Subdomain already taken.', 409);
+      }
+      throw new AppError('Duplicate creator data.', 409);
+    }
+    throw err;
+  }
 }
 
-export async function getNoPlansOwnded(creatorId: number) {
-  const plansCount = await prisma.plan.count({
-    where: { creatorId },
-  });
-  return plansCount;
-}
 
-export async function getNoBuys(creatorId: number) {
-  const totalBuys = await prisma.purchase.count({
-    where: { plan: { creatorId } },
-  });
-  return totalBuys;
-}

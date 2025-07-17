@@ -1,43 +1,27 @@
 import { Request, Response } from 'express';
-import * as creatorService from './creator.service';
+
+
 import {
   transformCreatorToPreview,
   transformToCreatorFullDTO,
 } from './creator.transformer';
-import { CreatorPostDTO, SendApplicationDTO } from '@shared/types/creator';
-import { userInfo } from 'os';
+import { CreatorPostDTO } from '@shared/types/creator';
 import { AppError } from '@src/utils/AppError';
+import { editCreator, getAllCreators, getCreatorById, getCreatorBySub, promoteUserToCreator } from './creator.service';
 
-export async function getAllCreators(req: Request, res: Response) {
-  const creators = await creatorService.fetchAllCreators();
+export async function getAllCreatorsPreviewController(req: Request, res: Response) {
+  const creators = await getAllCreators();
   const previews = await Promise.all(creators.map(transformCreatorToPreview));
   res.json(previews);
 }
 
-export async function getAllCreatorsFullDTO(req: Request, res: Response) {
-  const creators = await creatorService.fetchAllCreators();
-  const previews = await Promise.all(creators.map(transformToCreatorFullDTO));
-  res.json(previews);
-}
-
-export async function postCreatorApplication(req: Request, res: Response) {
-  const data = req.body as SendApplicationDTO;
-  const userId = req.user!.id;
-  const application = await creatorService.submitCreatorApplication(
-    userId,
-    data
-  );
-
-  res.status(201).json(application);
-}
-
-export async function getById(req: Request, res: Response) {
+export async function getCreatorByIdController(req: Request, res: Response) {
   const id = Number(req.params.id);
   if (!id) {
     res.status(404).json({ error: 'Invalid Id' });
     return;
   }
-  const creator = await creatorService.fetchCreatorById(id);
+  const creator = await getCreatorById(id);
   if (!creator) {
     res.status(404).json({ error: 'Creator not found' });
     return;
@@ -46,7 +30,7 @@ export async function getById(req: Request, res: Response) {
   res.json(preveiw);
 }
 
-export async function patchCreator(req: Request, res: Response) {
+export async function editCreatorController(req: Request, res: Response) {
   const creatorId = Number(req.params.creatorId);
   const data = req.body as CreatorPostDTO;
   if (!creatorId) {
@@ -55,15 +39,15 @@ export async function patchCreator(req: Request, res: Response) {
   if (creatorId !== req.user?.id && !req.user?.isAdmin) {
     throw new AppError('Unauthorized', 401);
   }
-  const creator = await creatorService.editCreator(creatorId, data);
+  const creator = await editCreator(creatorId, data);
   const preveiw = await transformCreatorToPreview(creator);
   res.json(preveiw);
 }
 
-export async function getBySubdomain(req: Request, res: Response) {
+export async function getCreatorBySubController(req: Request, res: Response) {
   let { subdomain } = req.params;
   subdomain = subdomain.toLowerCase();
-  const creator = await creatorService.fetchCreatorBySub(subdomain);
+  const creator = await getCreatorBySub(subdomain);
   if (!creator) {
     res.status(404).json({ error: 'Creator not found' });
     return;
@@ -72,14 +56,27 @@ export async function getBySubdomain(req: Request, res: Response) {
   res.json(preveiw);
 }
 
-export async function getCreatorReviews(req: Request, res: Response) {
-  const creatorId = Number(req.params.creatorId);
+export async function getMyCreatorController(req: Request, res: Response) {
+  const id = Number(req.user?.id);
+  const creator = await getCreatorById(id);
+  if (!creator) {
+    throw new AppError('User is not a creator', 401);
+  }
+  const dto = await transformToCreatorFullDTO(creator);
+  res.json(dto);
+};
+export async function promoteToCreatorController(req: Request, res: Response) {
+  const userId = Number(req.params.id);
+  const { subdomain } = req.body;
 
-  if (!creatorId) {
-    throw new AppError('Invalid Creator Id', 404);
+  if (!userId || !subdomain) {
+    throw new AppError('userId and subdomain are required', 400);
   }
 
-  const reviews = await creatorService.fetchCreatorReviews(creatorId);
+  const creator = await promoteUserToCreator(userId, subdomain);
 
-  res.json(reviews);
+  const preview = await transformCreatorToPreview(creator);
+
+  res.status(201).json(preview);
 }
+

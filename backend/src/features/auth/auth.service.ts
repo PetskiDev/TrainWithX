@@ -134,7 +134,7 @@ export async function verifyEmail(token: string) {
   ]);
 }
 
-export async function fetchUserInfoFromGoogle(code: string) {
+export async function getUserInfoFromGoogle(code: string) {
   const body = new URLSearchParams({
     code,
     client_id: env.GOOGLE_CLIENT_ID,

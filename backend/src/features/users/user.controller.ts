@@ -1,78 +1,20 @@
 import { Request, Response } from 'express';
-import { fetchCreatorById } from '@src/features/creators/creator.service';
 import { AppError } from '@src/utils/AppError';
 import {
-  transformCreatorToPreview,
-  transformToCreatorFullDTO,
-} from '@src/features/creators/creator.transformer';
-import {
   editUsername,
-  fetchAllUsers,
-  fetchPlansMadeByCreator,
-  fetchUser,
-  getPlansOwnedByUser,
-  promoteUserToCreator,
   storeAvatar,
 } from '@src/features/users/user.service';
+import { getUserById } from './user.service';
 
-export const getUsers = async (req: Request, res: Response) => {
-  const users = await fetchAllUsers();
-  res.json(users);
-};
 
-export const getUser = async (req: Request, res: Response) => {
-  const id = Number(req.params.id);
-  if (!id) {
-    throw new AppError('ID not found', 404);
-  }
-  const user = await fetchUser(id);
+export async function getMyUserController(req: Request, res: Response) {
+  const id = Number(req.user?.id);
+  const user = await getUserById(id);
   res.json(user);
-};
+}
 
-export const getAuthUser = async (req: Request, res: Response) => {
-  const id = Number(req.user?.id);
-  const user = await fetchUser(id);
-  res.json(user);
-};
 
-export const getAuthCreator = async (req: Request, res: Response) => {
-  const id = Number(req.user?.id);
-  const creator = await fetchCreatorById(id);
-  if (!creator) {
-    throw new AppError('User is not a creator', 401);
-  }
-  const dto = await transformToCreatorFullDTO(creator);
-  res.json(dto);
-};
-
-export const getPlansMadeByCreator = async (req: Request, res: Response) => {
-  const creatorId = Number(req.user?.id);
-  const plans = await fetchPlansMadeByCreator(creatorId);
-  res.status(200).json(plans);
-};
-
-export const promoteToCreator = async (req: Request, res: Response) => {
-  const userId = Number(req.params.id);
-  const { subdomain } = req.body;
-
-  if (!userId || !subdomain) {
-    throw new AppError('userId and subdomain are required', 400);
-  }
-
-  const creator = await promoteUserToCreator(userId, subdomain);
-
-  const preview = await transformCreatorToPreview(creator);
-
-  res.status(201).json(preview);
-};
-
-export const getUserPlans = async (req: Request, res: Response) => {
-  const id = Number(req.user?.id);
-  const plans = await getPlansOwnedByUser(id);
-  res.status(200).json(plans);
-};
-
-export const editUsernameController = async (req: Request, res: Response) => {
+export async function editMyUsernameController(req: Request, res: Response) {
   const id = Number(req.user?.id);
   const newUsername = req.body.newUsername;
   if (!newUsername) {
@@ -80,13 +22,13 @@ export const editUsernameController = async (req: Request, res: Response) => {
   }
   await editUsername(id, newUsername);
   res.sendStatus(200);
-};
+}
 
-export const uploadAvatarController = async (req: Request, res: Response) => {
+export async function uploadAvatarController(req: Request, res: Response) {
   const userId = Number(req.user?.id);
   if (!userId) throw new AppError('Unauthenticated', 401);
   if (!req.file) throw new AppError('No file uploaded', 400);
 
   const avatarUrl = await storeAvatar(userId, req.file);
   res.status(200).json({ avatarUrl });
-};
+}

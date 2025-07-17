@@ -3,10 +3,10 @@ import {
   createPlanController,
   deletePlanController,
   getAllPlansPreview,
-  getPlanReviews,
   getPlanSubSlugContent,
   getPlanSubSlugPreveiw,
 } from './plan.controller';
+import { getReviewsOfPlanController } from '../reviews/review.routes';
 import { doAuth } from '@src/middleware/auth';
 
 const router = Router();
@@ -20,6 +20,6 @@ router.get('/preview/:subdomain/:slug', getPlanSubSlugPreveiw);
 //do some security here.
 router.get('/content/:subdomain/:slug', getPlanSubSlugContent);
 
-router.get('/:planId/reviews', getPlanReviews);
+router.get('/:planId/reviews', getReviewsOfPlanController);
 
 export default router;

@@ -1,18 +1,15 @@
 // backend/src/features/creators/creator.transformer.ts
 import type { Creator, User } from '@prisma/client';
 import { CreatorFullDTO, CreatorPreviewDTO } from '@shared/types/creator';
-import {
-  getNoBuys as getTotalSales,
-  getNoPlansOwnded,
-} from '@src/features/creators/creator.service';
+import { countPlansByCreatorId, countSalesByCreatorId } from '../plans/plan.service';
 import { prisma } from '@src/utils/prisma';
 
 export async function transformCreatorToPreview(
   creator: Creator & { user: User }
 ): Promise<CreatorPreviewDTO> {
   const [totalSales, plansCount] = await Promise.all([
-    getTotalSales(creator.id),
-    getNoPlansOwnded(creator.id),
+    countSalesByCreatorId(creator.id),
+    countPlansByCreatorId(creator.id),
   ]);
   return {
     id: creator.id,

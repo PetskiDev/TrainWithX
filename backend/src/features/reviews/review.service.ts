@@ -1,40 +1,9 @@
 import { Prisma } from '@prisma/client';
 import { CreateReviewDTO, CreatorPageReviewDTO, ReviewPreviewDTO, UpdateReviewDTO } from '@shared/types/review';
-import { deletePlanWithId } from '@src/features/plans/plan.service';
+import { getCreatorIdForPlan } from '@src/features/plans/plan.service';
+import { enforceHasPurchased } from '../paddle/paddle.service';
 import { AppError } from '@src/utils/AppError';
 import { prisma } from '@src/utils/prisma';
-
-export async function enforceHasPurchased({
-  userId,
-  planId,
-}: {
-  userId: number;
-  planId: number;
-}) {
-  const hasPurchased = await prisma.purchase.findUnique({
-    where: {
-      userId_planId: {
-        userId,
-        planId,
-      },
-    },
-  });
-  if (!hasPurchased) {
-    throw new AppError("Unauthorized. You don't own the plan", 401);
-  }
-}
-async function getCreatorIdForPlan(
-  planId: number,
-  tx: Prisma.TransactionClient
-) {
-  const plan = await tx.plan.findUnique({
-    where: { id: planId },
-    select: { creatorId: true },
-  });
-
-  if (!plan) throw new AppError('Plan not found', 404);
-  return plan.creatorId;
-}
 
 // Update stats for creators and plans
 // Storing info in the plan and creator themselves so the things are not calculated
@@ -205,13 +174,41 @@ export async function deleteReview(userId: number, planId: number) {
 
 
 
-export async function fetchPlanReviews(
+export async function getReviewsOfPlan(
   planId: number
 ): Promise<CreatorPageReviewDTO[]> {
   const reviews = await prisma.review.findMany({
     where: {
       plan: {
         id: planId
+      },
+    },
+    include: {
+      plan: { select: { title: true } }, // ensure planId is available
+      user: { select: { username: true, avatarUrl: true } },
+    },
+  });
+
+  return reviews.map((review) => ({
+    rating: review.rating,
+    comment: review.comment ?? '',
+    createdAt: review.createdAt,
+    userId: review.userId,
+    planId: review.planId,
+    planTitle: review.plan.title,
+    userAvatar: review.user.avatarUrl ?? '',
+    userUsername: review.user.username,
+  }));
+}
+export async function getCreatorReviews(
+  creatorId: number
+): Promise<CreatorPageReviewDTO[]> {
+  const reviews = await prisma.review.findMany({
+    where: {
+      plan: {
+        creator: {
+          id: creatorId,
+        },
       },
     },
     include: {

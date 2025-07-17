@@ -1,24 +1,24 @@
 // backend/src/features/plans/plan.controller.ts
 import { Request, Response } from 'express';
 import {
-  fetchAllPlans,
+  getAllPlans,
   fetchCreatorPlans,
   getPlanFromSubWithSlug,
   createPlanService,
   deletePlanWithId,
+  getPlansMadeByCreator,
+  getPlansOwnedByUser,
 } from './plan.service';
 import { AppError } from '@src/utils/AppError';
 import {
   toPaidPlan,
-  toPlanCreatorData,
   toPlanPreview,
 } from './plan.transformer';
 import { CreatePlanDto } from '@shared/types/plan';
-import { fetchPlanReviews } from '@src/features/reviews/review.service';
 
-/** GET /api/v1/plans */
+
 export async function getAllPlansPreview(req: Request, res: Response) {
-  const plans = await fetchAllPlans();
+  const plans = await getAllPlans();
   res.json(plans.map(toPlanPreview));
 }
 
@@ -29,11 +29,6 @@ export async function deletePlanController(req: Request, res: Response) {
   }
   await deletePlanWithId(planId);
   res.sendStatus(200);
-}
-
-export async function getAllPlansCreatorDTO(req: Request, res: Response) {
-  const plans = await fetchAllPlans();
-  res.json(plans.map(toPlanCreatorData));
 }
 
 export async function createPlanController(req: Request, res: Response) {
@@ -48,7 +43,7 @@ export async function createPlanController(req: Request, res: Response) {
 }
 
 /** GET /api/v1/creators/:username/plans */
-export async function getCreatorPlans(req: Request, res: Response) {
+export async function getCreatorPlansController(req: Request, res: Response) {
   const { subdomain } = req.params;
   const plans = await fetchCreatorPlans(subdomain);
   res.json(plans.map(toPlanPreview));
@@ -72,16 +67,15 @@ export async function getPlanSubSlugContent(req: Request, res: Response) {
   res.status(200).json(toPaidPlan(plan));
 }
 
-export async function getPlanReviews(req: Request, res: Response) {
-  const planId = Number(req.params.planId);
-
-  if (!planId) {
-    throw new AppError('Invalid Plan Id', 404);
-  }
-
-  const reviews = await fetchPlanReviews(planId);
-
-  res.json(reviews);
-
+export async function getMyCreatedPlansController(req: Request, res: Response) {
+  const creatorId = Number(req.user?.id);
+  const plans = await getPlansMadeByCreator(creatorId);
+  res.status(200).json(plans);
+};
+export async function getMyPurchasedPlansController(req: Request, res: Response) {
+  const id = Number(req.user?.id);
+  const plans = await getPlansOwnedByUser(id);
+  res.status(200).json(plans);
 }
+
 

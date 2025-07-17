@@ -3,12 +3,13 @@ import { CreateReviewDTO, ReviewPreviewDTO, type UpdateReviewDTO } from '@shared
 import {
   createReview,
   deleteReview,
+  getCreatorReviews as getReviewsOfCreator,
   getReview,
   updateReview,
 } from '@src/features/reviews/review.service';
 import { AppError } from '@src/utils/AppError';
 
-export async function getReviewController(req: Request, res: Response) {
+export async function getMyReviewForPlanController(req: Request, res: Response) {
   const user = req.user!;
   const planId = Number(req.params.planId);
 
@@ -22,7 +23,7 @@ export async function getReviewController(req: Request, res: Response) {
 }
 
 
-export async function postReview(req: Request, res: Response) {
+export async function createReviewController(req: Request, res: Response) {
   const user = req.user!;
   const review = req.body as CreateReviewDTO;
 
@@ -31,7 +32,7 @@ export async function postReview(req: Request, res: Response) {
   res.status(201).json({ success: true });
 }
 
-export async function putReview(req: Request, res: Response) {
+export async function updateReviewController(req: Request, res: Response) {
   const user = req.user!;
   const review = req.body as UpdateReviewDTO;
 
@@ -40,11 +41,23 @@ export async function putReview(req: Request, res: Response) {
   res.status(200).json({ success: true });
 }
 
-export async function deleteReviewHandler(req: Request, res: Response) {
+export async function deleteReviewController(req: Request, res: Response) {
   const user = req.user!;
   const planId = parseInt(req.params.planId);
 
   await deleteReview(user.id, planId);
 
   res.status(200).json({ success: true });
+}
+
+export async function getReviewsOfCreatorController(req: Request, res: Response) {
+  const creatorId = Number(req.params.creatorId);
+
+  if (!creatorId) {
+    throw new AppError('Invalid Creator Id', 404);
+  }
+
+  const reviews = await getReviewsOfCreator(creatorId);
+
+  res.json(reviews);
 }

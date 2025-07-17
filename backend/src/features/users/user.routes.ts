@@ -1,17 +1,14 @@
-import {
-  getUser,
-  getUserPlans as getOwnedPlans,
-  getUsers,
-  promoteToCreator,
-} from '@src/features/users/user.controller';
+import { getUserByIdAdminController } from '../admin/admin.controller';
+import { promoteToCreatorController } from '../creators/creator.controller';
+import { getAllUsersAdminController } from '../admin/admin.controller';
 import { Router } from 'express';
 
 const router = Router();
 
-router.get('/', getUsers);
+router.get('/', getAllUsersAdminController);
 
-router.get('/:id', getUser);
+router.get('/:id', getUserByIdAdminController);
 
-router.patch('/:id/promote-creator', promoteToCreator); //TODO
+router.patch('/:id/promote-creator', promoteToCreatorController); //TODO
 
 export default router;

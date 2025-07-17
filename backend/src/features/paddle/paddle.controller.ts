@@ -1,7 +1,7 @@
 import {
   checkAlreadyPurchased,
-  checkoutService,
-  paymentComplete,
+  generateTransactionToken,
+  handlePaymentComplete as createPurchase,
 } from '@src/features/paddle/paddle.service';
 import { AppError } from '@src/utils/AppError';
 import { Request, Response } from 'express';
@@ -14,9 +14,7 @@ import {
 } from '@paddle/paddle-node-sdk';
 import { paddle } from '@src/utils/paddle';
 
-const verifier = new WebhooksValidator();
-
-export async function planCheckoutController(req: Request, res: Response) {
+export async function purchasePlanController(req: Request, res: Response) {
   const { planId } = req.body;
   const userId = req.user!.id;
 
@@ -26,17 +24,17 @@ export async function planCheckoutController(req: Request, res: Response) {
 
   await checkAlreadyPurchased({ userId, planId }); //throws if already purchased
 
-  const token = await checkoutService({ planId, userId });
+  const token = await generateTransactionToken({ planId, userId }); //Generates link
 
   res.json({ token }); // front-end will redirect/open this
 }
 
-// raw body
 
 interface TransactionCustomData {
   userId: number;
   planId: number;
 }
+
 export async function paddleWebhookController(req: Request, res: Response) {
   const signature = (req.headers['paddle-signature'] as string) || '';
   const rawRequestBody: string = req.body.toString();
@@ -60,7 +58,8 @@ export async function paddleWebhookController(req: Request, res: Response) {
         '[PADDLE] Transaction paid: ',
         `id:${data.id} Info:${customData}`
       );
-      await paymentComplete({
+      //PAYMENT COMPLETED.
+      await createPurchase({
         userId: customData.userId,
         planId: customData.planId,
         amount: Number(data.details?.totals?.total) / 100.0,

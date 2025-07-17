@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import {
-  fetchUserInfoFromGoogle,
+  getUserInfoFromGoogle,
   login,
   register,
   getOrCreateGoogleUser,
@@ -12,7 +12,7 @@ import { clearCookieOpts, cookieOpts } from '@src/utils/cookies';
 import querystring from 'node:querystring';
 import { env } from '@src/utils/env';
 
-export const registerController = async (req: Request, res: Response) => {
+export async function registerController(req: Request, res: Response) {
   const { email, username, password } = req.body;
   if (!email || !username || !password) {
     throw new AppError('Email, username, and password are required.', 400);
@@ -32,7 +32,7 @@ export const registerController = async (req: Request, res: Response) => {
   }
 };
 
-export const loginController = async (req: Request, res: Response) => {
+export async function loginController(req: Request, res: Response) {
   const { email, password } = req.body;
   if (!email || !password) {
     throw new AppError('Email, and password are required.', 400);
@@ -56,12 +56,12 @@ export const loginController = async (req: Request, res: Response) => {
   res.cookie('access', result.token, cookieOpts).status(200).json(result.user);
 };
 
-export const logoutController = async (req: Request, res: Response) => {
+export async function logoutController(req: Request, res: Response) {
   res.clearCookie('access', clearCookieOpts);
   res.status(200).json({ message: 'Logged out' });
 };
 
-export const verifyController = async (req: Request, res: Response) => {
+export async function verifyController(req: Request, res: Response) {
   const { token } = req.body;
   if (!token) throw new AppError('Token required', 400);
 
@@ -73,7 +73,7 @@ export const verifyController = async (req: Request, res: Response) => {
   });
 };
 
-export const redirectToGoogle = async (req: Request, res: Response) => {
+export async function redirectToGoogleController(req: Request, res: Response) {
   const qs = querystring.stringify({
     client_id: env.GOOGLE_CLIENT_ID,
     redirect_uri: `${env.API_URL}/auth/google/callback`,
@@ -84,13 +84,13 @@ export const redirectToGoogle = async (req: Request, res: Response) => {
   res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${qs}`);
 };
 
-export const googleCallbackController = async (req: Request, res: Response) => {
+export async function googleCallbackController(req: Request, res: Response) {
   //get the auth code
   const code = req.query.code as string | undefined;
   if (!code) throw new AppError('Missing OAuth code', 400);
 
   //use the code to ask google for the user
-  const { googleId, email, name, picture } = await fetchUserInfoFromGoogle(
+  const { googleId, email, name, picture } = await getUserInfoFromGoogle(
     code
   );
 
