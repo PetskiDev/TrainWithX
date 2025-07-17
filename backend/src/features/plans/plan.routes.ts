@@ -3,6 +3,7 @@ import {
   createPlanController,
   deletePlanController,
   getAllPlansPreview,
+  getPlanReviews,
   getPlanSubSlugContent,
   getPlanSubSlugPreveiw,
 } from './plan.controller';
@@ -18,5 +19,7 @@ router.get('/preview/:subdomain/:slug', getPlanSubSlugPreveiw);
 
 //do some security here.
 router.get('/content/:subdomain/:slug', getPlanSubSlugContent);
+
+router.get('/:planId/reviews', getPlanReviews);
 
 export default router;

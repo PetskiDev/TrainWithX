@@ -14,6 +14,7 @@ import {
   toPlanPreview,
 } from './plan.transformer';
 import { CreatePlanDto } from '@shared/types/plan';
+import { fetchPlanReviews } from '@src/features/reviews/review.service';
 
 /** GET /api/v1/plans */
 export async function getAllPlansPreview(req: Request, res: Response) {
@@ -70,3 +71,17 @@ export async function getPlanSubSlugContent(req: Request, res: Response) {
 
   res.status(200).json(toPaidPlan(plan));
 }
+
+export async function getPlanReviews(req: Request, res: Response) {
+  const planId = Number(req.params.planId);
+
+  if (!planId) {
+    throw new AppError('Invalid Plan Id', 404);
+  }
+
+  const reviews = await fetchPlanReviews(planId);
+
+  res.json(reviews);
+
+}
+

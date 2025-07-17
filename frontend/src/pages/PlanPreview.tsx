@@ -9,6 +9,7 @@ import type { PlanPaidPreveiw } from '@shared/types/plan';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 import { goToCreator } from '@frontend/lib/nav';
 import BuyButton from '@frontend/components/BuyButton';
+import type { CreatorPageReviewDTO } from '@shared/types/review';
 
 const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
   const { slug } = useParams<{
@@ -17,11 +18,13 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
 
   const [planPreveiw, setPlanPreveiw] = useState<PlanPaidPreveiw | null>(null);
   const [creator, setCreator] = useState<CreatorPreviewDTO | null>(null);
+  const [reviews, setReviews] = useState<CreatorPageReviewDTO[] | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   useEffect(() => {
+    if (!subdomain || !slug) return;
     const fetchPlan = async () => {
       try {
         const response = await fetch(
@@ -45,8 +48,8 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
   }, [subdomain, slug]);
 
   useEffect(() => {
+    if (!planPreveiw) return;
     const fetchCreator = async () => {
-      if (!planPreveiw?.creatorId) return;
       try {
         const res = await fetch(`/api/v1/creators/${planPreveiw.creatorId}`);
         if (!res.ok) throw new Error('Creator not found');
@@ -59,6 +62,28 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
 
     fetchCreator();
   }, [planPreveiw]);
+
+  useEffect(() => {
+    if (!planPreveiw) return;
+    const fetchReviews = async () => {
+
+      try {
+        const reviewRes = await fetch(`/api/v1/plans/${planPreveiw.id}/reviews`);
+        if (!reviewRes.ok)
+          throw new Error(`Reviews fetch failed: ${reviewRes.status}`);
+        const reviewData: CreatorPageReviewDTO[] = await reviewRes.json();
+        setReviews(reviewData);
+
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          setError(err.message ?? 'Unknown error');
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchReviews();
+  }, [planPreveiw])
 
   if (loading) {
     return <div className="text-center py-10">Loading...</div>;
@@ -80,6 +105,17 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
       </div>
     );
   }
+  //TODO: in all pages, don't prevent everything from loading, just the components. 
+  if (!reviews) {
+    return (
+      <div className="min-h-screen-navbar bg-background flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-2">Can't load reviews</h2>
+        </div>
+      </div>
+    );
+  }
+
   const plan = planPreveiw!;
 
   const hasDiscount = plan.originalPrice && plan.originalPrice > plan.price;
@@ -267,7 +303,88 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Review Breakdown */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Reviews</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold mb-2">{reviews.length || 0} Reviews</h3>
+
+                  {[5, 4, 3, 2, 1].map((stars) => {
+                    const reviewsForStar = reviews?.filter(r => r.rating === stars).length || 0;
+                    const totalReviews = reviews?.length || 1;
+                    const percentage = (reviewsForStar / totalReviews) * 100;
+
+                    return (
+                      <div key={stars} className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-medium w-12">{stars} Stars</span>
+                        <div className="flex-1 bg-muted rounded-full h-1.5">
+                          <div
+                            className="bg-primary h-1.5 rounded-full transition-all duration-300"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-muted-foreground w-6">({reviewsForStar})</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
           </div>
+        </div>
+
+        <div className="mt-8 text-2xl space-y-6">
+          {reviews.map((review, idx) => (
+            <Card key={idx} className="hover:shadow-lg transition-shadow">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  {/* User Avatar */}
+                  <Avatar className="w-12 h-12 border-2 border-primary/20">
+                    <AvatarImage src={review.userAvatar} alt={review.userUsername} />
+                    <AvatarFallback>
+                      {review.userUsername.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="flex-1">
+                    {/* Review Header */}
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h4 className="font-semibold text-lg">{review.userUsername}</h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(review.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Rating Stars */}
+                      <div className="flex items-center gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${i < review.rating
+                              ? "text-yellow-500 fill-current"
+                              : "text-muted-foreground"
+                              }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Review Text */}
+                    <p className="text-muted-foreground leading-relaxed">
+                      {review.comment}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </div >

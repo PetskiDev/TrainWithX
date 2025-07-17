@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
-import { CreateReviewDTO, ReviewPreviewDTO, UpdateReviewDTO } from '@shared/types/review';
+import { CreateReviewDTO, CreatorPageReviewDTO, ReviewPreviewDTO, UpdateReviewDTO } from '@shared/types/review';
+import { deletePlanWithId } from '@src/features/plans/plan.service';
 import { AppError } from '@src/utils/AppError';
 import { prisma } from '@src/utils/prisma';
 
@@ -200,4 +201,33 @@ export async function deleteReview(userId: number, planId: number) {
 
     await recalculateReviewStats(creatorId, planId, tx);
   });
+}
+
+
+
+export async function fetchPlanReviews(
+  planId: number
+): Promise<CreatorPageReviewDTO[]> {
+  const reviews = await prisma.review.findMany({
+    where: {
+      plan: {
+        id: planId
+      },
+    },
+    include: {
+      plan: { select: { title: true } }, // ensure planId is available
+      user: { select: { username: true, avatarUrl: true } },
+    },
+  });
+
+  return reviews.map((review) => ({
+    rating: review.rating,
+    comment: review.comment ?? '',
+    createdAt: review.createdAt,
+    userId: review.userId,
+    planId: review.planId,
+    planTitle: review.plan.title,
+    userAvatar: review.user.avatarUrl ?? '',
+    userUsername: review.user.username,
+  }));
 }
