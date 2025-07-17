@@ -20,4 +20,7 @@ router.get('/users', getAllUsersAdminController);
 
 router.get('/creator-applications', getCreatorApplicationsController);
 
+//router.patch('users/:id/promote', promoteToCreatorController); //TODO
+
+
 export default router;

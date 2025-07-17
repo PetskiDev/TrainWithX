@@ -6,6 +6,7 @@ import {
   getCreatorReviews as getReviewsOfCreator,
   getReview,
   updateReview,
+  getReviewsOfPlan,
 } from '@src/features/reviews/review.service';
 import { AppError } from '@src/utils/AppError';
 
@@ -60,4 +61,16 @@ export async function getReviewsOfCreatorController(req: Request, res: Response)
   const reviews = await getReviewsOfCreator(creatorId);
 
   res.json(reviews);
+}
+export async function getReviewsOfPlanController(req: Request, res: Response) {
+  const planId = Number(req.params.planId);
+
+  if (!planId) {
+    throw new AppError('Invalid Plan Id', 404);
+  }
+
+  const reviews = await getReviewsOfPlan(planId);
+
+  res.json(reviews);
+
 }

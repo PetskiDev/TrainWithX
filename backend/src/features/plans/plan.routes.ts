@@ -6,20 +6,29 @@ import {
   getPlanSubSlugContent,
   getPlanSubSlugPreveiw,
 } from './plan.controller';
-import { getReviewsOfPlanController } from '../reviews/review.routes';
+import { deleteReviewController, getMyReviewForPlanController, getReviewsOfPlanController } from '../reviews/review.controller';
 import { doAuth } from '@src/middleware/auth';
 
 const router = Router();
 
 router.get('/', getAllPlansPreview);
-router.delete('/:planId', deletePlanController);
 
 router.post('/', doAuth, createPlanController);
+
+//TODO: CHECK IF THE USER IS THE CREATOR OF THE PLAN
+//TODO: Make an admin controller in .admin without that validation
+router.delete('/:planId', doAuth, deletePlanController);
+
 router.get('/preview/:subdomain/:slug', getPlanSubSlugPreveiw);
 
-//do some security here.
+//TODO: check if user HAS PURCHASED plan.
 router.get('/content/:subdomain/:slug', getPlanSubSlugContent);
 
 router.get('/:planId/reviews', getReviewsOfPlanController);
+
+router.get('/:planId/reviews/me', doAuth, getMyReviewForPlanController);
+
+router.delete('/:planId/reviews/me', doAuth, deleteReviewController);
+
 
 export default router;

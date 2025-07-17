@@ -82,7 +82,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
     const fetchCreator = async () => {
       try {
         const res = await fetch(
-          `/api/v1/creators/sub/${planPaid.creatorSubdomain}`
+          `/api/v1/creators/by-subdomain/${planPaid.creatorSubdomain}`
         );
         if (!res.ok) throw new Error('Creator not found');
         const data = await res.json();
@@ -100,7 +100,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
 
     const fetchReview = async () => {
       try {
-        const res = await fetch(`/api/v1/reviews/${planPaid.id}`, {
+        const res = await fetch(`/api/v1/plans/${planPaid.id}/reviews/me`, {
           credentials: 'include',
         });
 
@@ -230,7 +230,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
 
   const handleRemoveReview = async () => {
     try {
-      const response = await fetch(`/api/v1/reviews/${planPaid?.id}`, {
+      const response = await fetch(`/api/v1/plans/${planPaid?.id}/reviews/me`, {
         method: 'DELETE',
         credentials: 'include',
       });

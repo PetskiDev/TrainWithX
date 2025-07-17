@@ -7,7 +7,7 @@ import {
 } from './creator.transformer';
 import { CreatorPostDTO } from '@shared/types/creator';
 import { AppError } from '@src/utils/AppError';
-import { editCreator, getAllCreators, getCreatorById, getCreatorBySub, promoteUserToCreator } from './creator.service';
+import { editCreator, getAllCreators, getCreatorById as getCreatorPreveiwById, getCreatorBySub } from './creator.service';
 
 export async function getAllCreatorsPreviewController(req: Request, res: Response) {
   const creators = await getAllCreators();
@@ -15,13 +15,13 @@ export async function getAllCreatorsPreviewController(req: Request, res: Respons
   res.json(previews);
 }
 
-export async function getCreatorByIdController(req: Request, res: Response) {
+export async function getCreatorPreveiwByIdController(req: Request, res: Response) {
   const id = Number(req.params.id);
   if (!id) {
     res.status(404).json({ error: 'Invalid Id' });
     return;
   }
-  const creator = await getCreatorById(id);
+  const creator = await getCreatorPreveiwById(id);
   if (!creator) {
     res.status(404).json({ error: 'Creator not found' });
     return;
@@ -30,8 +30,8 @@ export async function getCreatorByIdController(req: Request, res: Response) {
   res.json(preveiw);
 }
 
-export async function editCreatorController(req: Request, res: Response) {
-  const creatorId = Number(req.params.creatorId);
+export async function editMyCreatorController(req: Request, res: Response) {
+  const creatorId = Number(req.user?.id);
   const data = req.body as CreatorPostDTO;
   if (!creatorId) {
     throw new AppError('Invalid Creator Id', 404);
@@ -58,25 +58,11 @@ export async function getCreatorBySubController(req: Request, res: Response) {
 
 export async function getMyCreatorController(req: Request, res: Response) {
   const id = Number(req.user?.id);
-  const creator = await getCreatorById(id);
+  const creator = await getCreatorPreveiwById(id);
   if (!creator) {
     throw new AppError('User is not a creator', 401);
   }
   const dto = await transformToCreatorFullDTO(creator);
   res.json(dto);
 };
-export async function promoteToCreatorController(req: Request, res: Response) {
-  const userId = Number(req.params.id);
-  const { subdomain } = req.body;
-
-  if (!userId || !subdomain) {
-    throw new AppError('userId and subdomain are required', 400);
-  }
-
-  const creator = await promoteUserToCreator(userId, subdomain);
-
-  const preview = await transformCreatorToPreview(creator);
-
-  res.status(201).json(preview);
-}
 

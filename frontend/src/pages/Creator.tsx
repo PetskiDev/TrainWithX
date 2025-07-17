@@ -29,7 +29,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/v1/creators/sub/${subdomain}`, {
+        const res = await fetch(`/api/v1/creators/by-subdomain/${subdomain}`, {
           signal: abort.signal,
         });
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
@@ -37,7 +37,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
         setCreator(c);
 
         // Fetch plans for this creator
-        const planRes = await fetch(`/api/v1/creators/sub/${subdomain}/plans`, {
+        const planRes = await fetch(`/api/v1/creators/by-subdomain/${subdomain}/plans`, {
           signal: abort.signal,
         });
         if (!planRes.ok)

@@ -29,7 +29,7 @@ export const BuyButton = ({ planId, text, className }: BuyButtonProps) => {
     setBusy(true);
     try {
       // 1️⃣ get Paddle transaction token from backend
-      const res = await fetch('/api/v1/paddle/checkout', {
+      const res = await fetch('/api/v1/purchases', {
         method: 'POST',
         body: JSON.stringify({ planId }),
         headers: { 'Content-Type': 'application/json' },

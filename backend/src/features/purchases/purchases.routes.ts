@@ -2,13 +2,13 @@
 
 import { Router } from 'express';
 import {
-  purchasePlanController,
+  startPurchaseController,
 } from './purchases.controller';
 import { doAuth } from '@src/middleware/auth';
 
 const router = Router();
 
-router.post('/checkout', doAuth, purchasePlanController);
+router.post('/', doAuth, startPurchaseController);
 
 // Webhook initialized in app for json things. TODO:MOVE IT HERE BECASUE IT WON't HAVE /PADDLE PREFIX
 

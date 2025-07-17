@@ -74,7 +74,7 @@ const BecomeCreator = () => {
     try {
       const payload: SendApplicationDTO = formData;
 
-      const res = await fetch("/api/v1/creators/apply", {
+      const res = await fetch("/api/v1/creator-application", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

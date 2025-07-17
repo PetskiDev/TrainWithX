@@ -4,10 +4,8 @@ import { Request, Response } from 'express';
 import { getAllPlans } from '@src/features/plans/plan.service';
 import { toPlanCreatorData } from '@src/features/plans/plan.transformer';
 import { getAllCreators } from '@src/features/creators/creator.service';
-import { transformToCreatorFullDTO } from '@src/features/creators/creator.transformer';
 import { getAllUsersAdmin } from './admin.service';
-import { getUserById } from '@src/features/users/user.service';
-import { AppError } from '@src/utils/AppError';
+import { transformToCreatorFullDTO } from '@src/features/creators/creator.transformer';
 
 export async function adminDashboardController(req: Request, res: Response) {
   const stats = await getDashboardStats();
@@ -35,4 +33,20 @@ export async function getAllUsersAdminController (req: Request, res: Response) {
   const users = await getAllUsersAdmin();
   res.json(users);
 };
+
+//TODO:
+// export async function promoteToCreatorController(req: Request, res: Response) {
+//   const userId = Number(req.params.id);
+//   const { subdomain } = req.body;
+
+//   if (!userId || !subdomain) {
+//     throw new AppError('userId and subdomain are required', 400);
+//   }
+
+//   const creator = await promoteUserToCreator(userId, subdomain);
+
+//   const preview = await transformCreatorToPreview(creator);
+
+//   res.status(201).json(preview);
+// }
 

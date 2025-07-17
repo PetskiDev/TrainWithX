@@ -1,4 +1,3 @@
-import { promoteToCreatorController } from '../creators/creator.controller';
 import { Router } from 'express';
 import { editMyUsernameController, getMyUserController, uploadAvatarController } from '@src/features/users/user.controller';
 import { doAuth } from '@src/middleware/auth';
@@ -16,7 +15,5 @@ router.post(
     avatarUpload, // Multer middleware
     uploadAvatarController
 );
-
-router.patch('/:id/promote-creator', promoteToCreatorController); //TODO
 
 export default router;

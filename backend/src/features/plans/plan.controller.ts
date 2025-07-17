@@ -15,6 +15,7 @@ import {
   toPlanPreview,
 } from './plan.transformer';
 import { CreatePlanDto } from '@shared/types/plan';
+import { getCreatorById } from '@src/features/creators/creator.service';
 
 
 export async function getAllPlansPreview(req: Request, res: Response) {
@@ -33,17 +34,21 @@ export async function deletePlanController(req: Request, res: Response) {
 
 export async function createPlanController(req: Request, res: Response) {
   const user = req.user!;
+  const isCreator = await getCreatorById(user.id);
+
   const payload = req.body as CreatePlanDto;
-  if (payload.creatorId != user.id && !user.isAdmin) {
+
+  if ((!isCreator || payload.creatorId != user.id) && !user.isAdmin) {
     throw new AppError('Unauthorized to create plan', 401);
   }
+
   const plan = await createPlanService(payload);
 
   res.status(201).json(plan);
 }
 
-/** GET /api/v1/creators/:username/plans */
-export async function getCreatorPlansController(req: Request, res: Response) {
+/** GET /api/v1/creators/by-subdomain/:subdomain/plans */
+export async function getPlansFromCreatorSubController(req: Request, res: Response) {
   const { subdomain } = req.params;
   const plans = await fetchCreatorPlans(subdomain);
   res.json(plans.map(toPlanPreview));

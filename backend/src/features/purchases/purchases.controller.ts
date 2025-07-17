@@ -10,11 +10,10 @@ import {
   EventEntity,
   EventName,
   TransactionNotification,
-  WebhooksValidator,
 } from '@paddle/paddle-node-sdk';
 import { paddle } from '@src/utils/paddle';
 
-export async function purchasePlanController(req: Request, res: Response) {
+export async function startPurchaseController(req: Request, res: Response) {
   const { planId } = req.body;
   const userId = req.user!.id;
 
