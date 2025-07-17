@@ -71,3 +71,15 @@ export async function getBySubdomain(req: Request, res: Response) {
   const preveiw = await transformCreatorToPreview(creator);
   res.json(preveiw);
 }
+
+export async function getCreatorReviews(req: Request, res: Response) {
+  const creatorId = Number(req.params.creatorId);
+
+  if (!creatorId) {
+    throw new AppError('Invalid Creator Id', 404);
+  }
+
+  const reviews = await creatorService.fetchCreatorReviews(creatorId);
+
+  res.json(reviews);
+}

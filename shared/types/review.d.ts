@@ -1,9 +1,14 @@
-export interface ReviewPreviewDTO{
+export interface ReviewPreviewDTO {
   userId: number;
   planId: number;
   comment: string;
   rating: number;
   createdAt: Date;
+}
+export interface CreatorPageReviewDTO extends ReviewPreviewDTO {
+  planTitle: string; //derived
+  userAvatar: string;
+  userUsername: string;
 }
 
 export interface CreateReviewDTO {

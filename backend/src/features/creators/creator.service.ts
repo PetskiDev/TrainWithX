@@ -1,6 +1,7 @@
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
 import { CreatorPostDTO, SendApplicationDTO } from '@shared/types/creator';
+import { CreatorPageReviewDTO, ReviewPreviewDTO } from '@shared/types/review';
 
 export async function fetchAllCreators() {
   return prisma.creator.findMany({
@@ -75,6 +76,35 @@ export async function fetchCreatorBySub(subdomain: string) {
     },
     include: { user: true },
   });
+}
+
+export async function fetchCreatorReviews(
+  creatorId: number
+): Promise<CreatorPageReviewDTO[]> {
+  const reviews = await prisma.review.findMany({
+    where: {
+      plan: {
+        creator: {
+          id: creatorId,
+        },
+      },
+    },
+    include: {
+      plan: { select: { title: true } }, // ensure planId is available
+      user: { select: { username: true, avatarUrl: true } },
+    },
+  });
+
+  return reviews.map((review) => ({
+    rating: review.rating,
+    comment: review.comment ?? '',
+    createdAt: review.createdAt,
+    userId: review.userId,
+    planId: review.planId,
+    planTitle: review.plan.title,
+    userAvatar: review.user.avatarUrl ?? '',
+    userUsername: review.user.username,
+  }));
 }
 
 export async function getNoPlansOwnded(creatorId: number) {
