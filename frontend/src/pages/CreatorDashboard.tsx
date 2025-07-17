@@ -55,7 +55,7 @@ const CreatorDashboard = () => {
     const fetchPlans = async () => {
       try {
         setPlansLoading(true);
-        const res = await fetch(`/api/v1/me/creator/plans`, {
+        const res = await fetch(`/api/v1/creators/me/plans`, {
           signal: controller.signal,
         });
         if (!res.ok) throw new Error(`Failed to fetch plans: ${res.status}`);

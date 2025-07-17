@@ -75,7 +75,7 @@ const CreatorEdit = () => {
         yearsXP: parseFloat(editData.yearsExperience || "0"),
       };
 
-      const response = await fetch(`/api/v1//creators/${creator.id}`, {
+      const response = await fetch(`/api/v1/creators/${creator.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

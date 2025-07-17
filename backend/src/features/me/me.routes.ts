@@ -14,13 +14,6 @@ const router = Router();
 
 router.use(doAuth);
 
-router.get('/creator/plans', getMyCreatedPlansController); // Plans that some creator made
-router.get('/plans', getMyPurchasedPlansController); //PLANS THAT AN USER OWNS
-router.patch('/', editMyUsernameController); //TODO: change to username or smth
-router.post(
-  '/avatar', // must be logged in
-  avatarUpload, // Multer middleware
-  uploadAvatarController
-);
+
 
 export default router;

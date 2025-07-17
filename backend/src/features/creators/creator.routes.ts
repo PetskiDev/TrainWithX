@@ -7,7 +7,7 @@ import {
 } from '@src/features/creators/creator.controller';
 import { getReviewsOfCreatorController } from '../reviews/review.controller';
 import { postCreatorApplicationController } from '../creatorApplication/creatorApplication.controller';
-import { getCreatorPlansController } from '@src/features/plans/plan.controller';
+import { getCreatorPlansController, getMyCreatedPlansController } from '@src/features/plans/plan.controller';
 import { doAuth } from '@src/middleware/auth';
 import { Router } from 'express';
 
@@ -16,6 +16,7 @@ const router = Router();
 router.get('/', getAllCreatorsPreviewController);
 router.post('/apply', doAuth, postCreatorApplicationController);
 router.get('/me', doAuth, getMyCreatorController);
+router.get('/me/plans', doAuth, getMyCreatedPlansController); // Plans that some creator made
 router.get('/:id', getCreatorByIdController);
 router.patch('/:creatorId', doAuth, editCreatorController);
 router.get('/sub/:subdomain', getCreatorBySubController);
