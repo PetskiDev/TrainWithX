@@ -5,8 +5,6 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.get('/', getAllUsersAdminController);
-
 router.get('/:id', getUserByIdAdminController);
 
 router.patch('/:id/promote-creator', promoteToCreatorController); //TODO

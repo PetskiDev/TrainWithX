@@ -26,7 +26,7 @@ export const useAdminDashboardData = () => {
           //TODO BUG ADMIN PANEL REVENUE MISSING: FETCH FROM ADMIN SOURCES, NOT GETTING FULL DATA
           fetch('/api/v1/me'),
           fetch('/api/v1/admin/stats'),
-          fetch('/api/v1/users'),
+          fetch('/api/v1/admin/users'),
           fetch('/api/v1/admin/plans'),
           fetch('/api/v1/admin/creators'),
           fetch('/api/v1/admin/creator-applications'),
