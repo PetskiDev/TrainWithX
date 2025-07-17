@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,10 +19,12 @@ import {
   Star,
   Coffee,
   Send,
+  Pencil,
 } from 'lucide-react';
 import type { PlanPaidPreveiw } from '@shared/types/plan';
 import { useParams } from 'react-router-dom';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
+import type { CreateReviewDTO, ReviewPreviewDTO } from '@shared/types/review';
 import { Textarea } from '@frontend/components/ui/textarea';
 import { toast } from '@frontend/hooks/use-toast';
 
@@ -41,7 +43,16 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
   const [selectedWeek, setSelectedWeek] = useState(1);
   const [videoPlaying, setVideoPlaying] = useState(false);
 
+  const [hasSubmittedReview, setHasSubmittedReview] = useState(false);
+
+  const [isEditingReview, setIsEditingReview] = useState(false);
+  const [existingReview, setExistingReview] = useState<ReviewPreviewDTO>();
+
+  const reviewSectionRef = useRef<HTMLDivElement | null>(null);
+
+
   useEffect(() => {
+    if (!subdomain || !slug) return;
     const fetchPlan = async () => {
       try {
         const response = await fetch(
@@ -64,9 +75,11 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
     }
   }, [subdomain, slug]);
 
+
   useEffect(() => {
+    if (!planPaid?.creatorId) return;
+
     const fetchCreator = async () => {
-      if (!planPaid?.creatorId) return;
       try {
         const res = await fetch(
           `/api/v1/creators/sub/${planPaid.creatorSubdomain}`
@@ -82,6 +95,47 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
     fetchCreator();
   }, [planPaid]);
 
+  useEffect(() => {
+    if (!planPaid?.id) return;
+
+    const fetchReview = async () => {
+      try {
+        const res = await fetch(`/api/v1/reviews/${planPaid.id}`, {
+          credentials: 'include',
+        });
+
+        if (res.status === 404) {
+          setHasSubmittedReview(false);
+          return;
+        }
+
+        if (!res.ok) throw new Error('Failed to fetch review');
+
+        const data: ReviewPreviewDTO = await res.json();
+        setExistingReview({
+          rating: data.rating,
+          comment: data.comment,
+          createdAt: data.createdAt,
+          planId: -1,
+          userId: -1, //no need for these I didn't have created at
+        });
+        setReviewRating(data.rating);
+        setReviewText(data.comment);
+        setHasSubmittedReview(true);
+
+      } catch (err) {
+        console.error('Error fetching review:', err);
+      }
+    };
+
+    fetchReview();
+  }, [planPaid?.id]);
+
+
+  if (!planPaid) {
+    return <div className="text-center py-10">Canno't load plan</div>;
+  }
+
   if (loading) {
     return <div className="text-center py-10">Loading...</div>;
   }
@@ -89,9 +143,8 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
   if (error) {
     return <div className="text-center text-red-500 py-10">Error: {error}</div>;
   }
-  if (!planPaid) {
-    return <div className="text-center py-10">Canno't load plan</div>;
-  }
+
+
 
   const planContent = planPaid!;
 
@@ -108,25 +161,43 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
     setVideoPlaying(true);
     // Here you would handle video playback
   };
-  const handleSubmitReview = async () => {
+
+  const handleCancelEdit = () => {
+    setReviewRating(0);
+    setReviewText("");
+    setIsEditingReview(false);
+  };
+
+  const handleEditReview = () => {
+    if (!existingReview) return;
+    setIsEditingReview(true);
+    setReviewRating(existingReview.rating);
+    setReviewText(existingReview.comment);
+  };
+
+  const handleSubmitAndEdit = async () => {
     if (reviewRating === 0 || !reviewText.trim()) return;
+    const payload: CreateReviewDTO = {
+      planId: planPaid.id,
+      comment: reviewText.trim(),
+      rating: reviewRating,
+    }
+    const method = isEditingReview ? 'PUT' : 'POST';
 
     try {
       const response = await fetch('/api/v1/reviews', {
-        method: 'POST',
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          planId: planPaid.id, // ensure `plan.id` is accessible
-          rating: reviewRating,
-          comment: reviewText.trim(),
-        }),
+        body: JSON.stringify(payload),
+        credentials: 'include', // to send cookies for auth, if required
+
       });
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to submit review');
+        throw new Error(error.message || `Failed to ${isEditingReview ? 'update' : 'submit'} review`);
       }
       toast({
         title: 'Review Submitted',
@@ -136,8 +207,51 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
       setReviewRating(0);
       setReviewText('');
 
+
+      setExistingReview({
+        rating: payload.rating,
+        comment: payload.comment ?? '',
+        createdAt: new Date(), // or await response.json().createdAt if returned
+        planId: -1,
+        userId: -1, // Optional: fill in actual userId if you store it
+      });
+
+      setIsEditingReview(false);
+      setHasSubmittedReview(true);
     } catch (err: any) {
       console.error('Error submitting review:', err.message);
+      toast({
+        title: 'Error',
+        description: err.message || 'Something went wrong.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleRemoveReview = async () => {
+    try {
+      const response = await fetch(`/api/v1/reviews/${planPaid?.id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to delete review');
+      }
+
+      toast({
+        title: 'Review Removed',
+        description: 'Your review has been successfully deleted.',
+      });
+
+      setExistingReview(undefined);
+      setHasSubmittedReview(false);
+      setReviewRating(0);
+      setReviewText('');
+      setIsEditingReview(false);
+    } catch (err: any) {
+      console.error('Error removing review:', err);
       toast({
         title: 'Error',
         description: err.message || 'Something went wrong.',
@@ -175,9 +289,18 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setActiveTab('add-review')}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setActiveTab('add-review');
+                  setTimeout(() => {
+                    reviewSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+                  }, 0); // Delay ensures the section is rendered before scroll
+                }}
+              >
                 <Star className="h-4 w-4 mr-2" />
-                Add Review
+                {hasSubmittedReview ? 'View Review' : 'Add Review'}
               </Button>
               <Button variant="outline" size="sm">
                 <Share2 className="h-4 w-4 mr-2" />
@@ -249,13 +372,13 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
         </div>
 
         {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <Tabs value={activeTab} onValueChange={setActiveTab} ref={reviewSectionRef}>
           <TabsList className="mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="workouts">Workouts</TabsTrigger>
             <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
             <TabsTrigger value="community">Community</TabsTrigger>
-            <TabsTrigger value="add-review">Add Review</TabsTrigger>
+            <TabsTrigger value="add-review">{hasSubmittedReview ? 'View Review' : 'Add Review'}</TabsTrigger>
 
           </TabsList>
 
@@ -587,69 +710,137 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
           </TabsContent>
           <TabsContent value="add-review">
             <div className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Add Your Review</CardTitle>
-                  <p className="text-muted-foreground">
-                    Share your experience with this program to help others
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    {/* Rating Section */}
-                    <div>
-                      <h3 className="font-medium mb-3">Your Rating</h3>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            onClick={() => setReviewRating(star)}
-                            className="p-1 hover:scale-110 transition-transform"
-                          >
+              {/* Existing Review Display */}
+              {hasSubmittedReview && existingReview && !isEditingReview && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Your Review</CardTitle>
+                    <p className="text-muted-foreground">
+                      Submitted on {new Date(existingReview?.createdAt)?.toLocaleDateString()}
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      {/* Display Rating */}
+                      <div>
+                        <h3 className="font-medium mb-2">Your Rating</h3>
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
                             <Star
-                              className={`h-6 w-6 ${star <= reviewRating
+                              key={star}
+                              className={`h-5 w-5 ${star <= existingReview.rating
                                 ? 'fill-yellow-500 text-yellow-500'
                                 : 'text-muted-foreground'
                                 }`}
                             />
-                          </button>
-                        ))}
-                      </div>
-                      {reviewRating > 0 && (
-                        <p className="text-sm text-muted-foreground mt-2">
-                          You rated this program {reviewRating} out of 5 stars
+                          ))}
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {existingReview.rating} out of 5 stars
                         </p>
-                      )}
-                    </div>
+                      </div>
 
-                    {/* Review Text */}
-                    <div>
-                      <h3 className="font-medium mb-3">Your Review</h3>
-                      <Textarea
-                        placeholder="Tell others about your experience with this program. What did you like? What results did you achieve?"
-                        value={reviewText}
-                        onChange={(e) => setReviewText(e.target.value)}
-                        className="min-h-[120px]"
-                      />
-                      <p className="text-sm text-muted-foreground mt-2">
-                        {reviewText.length}/500 characters
-                      </p>
-                    </div>
+                      {/* Display Review Text */}
+                      <div>
+                        <h3 className="font-medium mb-2">Your Review</h3>
+                        <p className="text-muted-foreground bg-muted/30 p-3 rounded-lg">
+                          {existingReview.comment}
+                        </p>
+                      </div>
 
-                    {/* Submit Button */}
-                    <div className="flex justify-end">
-                      <Button
-                        onClick={handleSubmitReview}
-                        disabled={reviewRating === 0 || !reviewText.trim()}
-                        className="gap-2"
-                      >
-                        <Send className="h-4 w-4" />
-                        Submit Review
-                      </Button>
+                      <div className="flex justify-end gap-2">
+                        <Button onClick={handleRemoveReview} variant="outline" className="gap-2 text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                          Remove Review
+                        </Button>
+                        <Button onClick={handleEditReview} variant="outline" className="gap-2">
+                          <Pencil className="h-4 w-4" />
+                          Edit Review
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Add/Edit Review Form */}
+              {(!hasSubmittedReview || isEditingReview) && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>
+                      {isEditingReview ? 'Edit Your Review' : 'Add Your Review'}
+                    </CardTitle>
+                    <p className="text-muted-foreground">
+                      {isEditingReview
+                        ? 'Update your experience with this program'
+                        : 'Share your experience with this program to help others'
+                      }
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-6">
+                      {/* Rating Section */}
+                      <div>
+                        <h3 className="font-medium mb-3">Your Rating</h3>
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              onClick={() => setReviewRating(star)}
+                              className="p-1 hover:scale-110 transition-transform"
+                            >
+                              <Star
+                                className={`h-6 w-6 ${star <= reviewRating
+                                  ? 'fill-yellow-500 text-yellow-500'
+                                  : 'text-muted-foreground'
+                                  }`}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                        {reviewRating > 0 && (
+                          <p className="text-sm text-muted-foreground mt-2">
+                            You rated this program {reviewRating} out of 5 stars
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Review Text */}
+                      <div>
+                        <h3 className="font-medium mb-3">Your Review</h3>
+                        <Textarea
+                          placeholder="Tell others about your experience with this program. What did you like? What results did you achieve?"
+                          value={reviewText}
+                          onChange={(e) => setReviewText(e.target.value)}
+                          className="min-h-[120px]"
+                        />
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {reviewText.length}/500 characters
+                        </p>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex justify-end gap-2">
+                        {isEditingReview && (
+                          <Button
+                            onClick={handleCancelEdit}
+                            variant="outline"
+                          >
+                            Cancel
+                          </Button>
+                        )}
+                        <Button
+                          onClick={handleSubmitAndEdit}
+                          disabled={reviewRating === 0 || !reviewText.trim()}
+                          className="gap-2"
+                        >
+                          <Send className="h-4 w-4" />
+                          {isEditingReview ? 'Update Review' : 'Submit Review'}
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Guidelines Card */}
               <Card>

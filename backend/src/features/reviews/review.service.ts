@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { CreateReviewDTO, UpdateReviewDTO } from '@shared/types/review';
+import { CreateReviewDTO, ReviewPreviewDTO, UpdateReviewDTO } from '@shared/types/review';
 import { AppError } from '@src/utils/AppError';
 import { prisma } from '@src/utils/prisma';
 
@@ -72,6 +72,36 @@ async function recalculateReviewStats(
     },
   });
 }
+
+export async function getReview(userId: number, planId: number): Promise<ReviewPreviewDTO> {
+  const review = await prisma.review.findUnique({
+    where: {
+      userId_planId: {
+        userId,
+        planId,
+      },
+    },
+    select: {
+      rating: true,
+      comment: true,
+      createdAt: true,
+    },
+  });
+
+  if (!review) {
+    throw new AppError('User has no review!', 404);
+  }
+
+  return {
+    rating: review.rating,
+    comment: review.comment ?? '',
+    createdAt: review.createdAt,
+    planId,
+    userId,
+  };
+}
+
+
 
 export async function createReview(userId: number, dto: CreateReviewDTO) {
   await enforceHasPurchased({ userId, planId: dto.planId }); // do not let user reveiew not owned plan
