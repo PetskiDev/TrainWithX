@@ -24,7 +24,7 @@ export const useAdminDashboardData = () => {
       const [dashUserRes, statsRes, usersRes, plansRes, creatorsRes, appsRes] =
         await Promise.all([
           //TODO BUG ADMIN PANEL REVENUE MISSING: FETCH FROM ADMIN SOURCES, NOT GETTING FULL DATA
-          fetch('/api/v1/me'),
+          fetch('/api/v1/users/me'),
           fetch('/api/v1/admin/stats'),
           fetch('/api/v1/admin/users'),
           fetch('/api/v1/admin/plans'),

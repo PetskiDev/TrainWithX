@@ -3,6 +3,7 @@ import {
   getCreatorByIdController,
   getCreatorBySubController,
   editCreatorController,
+  getMyCreatorController,
 } from '@src/features/creators/creator.controller';
 import { getReviewsOfCreatorController } from '../reviews/review.controller';
 import { postCreatorApplicationController } from '../creatorApplication/creatorApplication.controller';
@@ -14,6 +15,7 @@ const router = Router();
 
 router.get('/', getAllCreatorsPreviewController);
 router.post('/apply', doAuth, postCreatorApplicationController);
+router.get('/me', doAuth, getMyCreatorController);
 router.get('/:id', getCreatorByIdController);
 router.patch('/:creatorId', doAuth, editCreatorController);
 router.get('/sub/:subdomain', getCreatorBySubController);

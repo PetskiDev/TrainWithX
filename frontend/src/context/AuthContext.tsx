@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch('/api/v1/me', { credentials: 'include' });
+        const res = await fetch('/api/v1/users/me', { credentials: 'include' });
         if (!res.ok) throw new Error();
         const data: UserDto = await res.json();
         setUser(data);
@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return user; // just to check after
   };
   const refreshUser = async () => {
-    const res = await fetch('/api/v1/me', { credentials: 'include' });
+    const res = await fetch('/api/v1/users/me', { credentials: 'include' });
     const updatedUser = await res.json();
     setUser(updatedUser);
   };

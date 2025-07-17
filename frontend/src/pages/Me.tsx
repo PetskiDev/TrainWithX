@@ -85,7 +85,7 @@ const Me = () => {
   const handleSaveName = async () => {
     const newUsername = editedName;
     try {
-      const res = await fetch('/api/v1/me', {
+      const res = await fetch('/api/v1/users/me', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -14,8 +14,6 @@ const router = Router();
 
 router.use(doAuth);
 
-router.get('/', getMyUserController);
-router.get('/creator', getMyCreatorController);
 router.get('/creator/plans', getMyCreatedPlansController); // Plans that some creator made
 router.get('/plans', getMyPurchasedPlansController); //PLANS THAT AN USER OWNS
 router.patch('/', editMyUsernameController); //TODO: change to username or smth

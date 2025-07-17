@@ -1,11 +1,11 @@
-import { getUserByIdAdminController } from '../admin/admin.controller';
 import { promoteToCreatorController } from '../creators/creator.controller';
-import { getAllUsersAdminController } from '../admin/admin.controller';
 import { Router } from 'express';
+import { getMyUserController } from '@src/features/users/user.controller';
+import { doAuth } from '@src/middleware/auth';
 
 const router = Router();
 
-router.get('/:id', getUserByIdAdminController);
+router.get('/me', doAuth, getMyUserController);
 
 router.patch('/:id/promote-creator', promoteToCreatorController); //TODO
 

@@ -35,13 +35,4 @@ export async function getAllUsersAdminController (req: Request, res: Response) {
   const users = await getAllUsersAdmin();
   res.json(users);
 };
-export async function getUserByIdAdminController(req: Request, res: Response) {
-  const id = Number(req.params.id);
-  if (!id) {
-    throw new AppError('ID not found', 404);
-  }
-  const user = await getUserById(id);
-  res.json(user);
-}
-
 

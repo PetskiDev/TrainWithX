@@ -31,7 +31,7 @@ const CreatorDashboard = () => {
     const controller = new AbortController();
     const fetchCreator = async () => {
       try {
-        const res = await fetch(`/api/v1/me/creator`, {
+        const res = await fetch(`/api/v1/creators/me`, {
           signal: controller.signal,
         });
         if (!res.ok) throw new Error(`Failed to fetch creator: ${res.status}`);
