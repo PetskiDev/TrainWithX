@@ -2,7 +2,7 @@ import {
   checkAlreadyPurchased,
   generateTransactionToken,
   handlePaymentComplete as createPurchase,
-} from '@src/features/paddle/paddle.service';
+} from '@src/features/purchases/purchases.service';
 import { AppError } from '@src/utils/AppError';
 import { Request, Response } from 'express';
 import { env } from '@src/utils/env';

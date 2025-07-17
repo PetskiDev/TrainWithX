@@ -2,7 +2,7 @@ import userRouter from './features/users/user.routes';
 import authRouter from './features/auth/auth.routes';
 import creatorRouter from './features/creators/creator.routes';
 import planRouter from './features/plans/plan.routes';
-import paddleRouter from './features/paddle/paddle.routes';
+import paddleRouter from './features/purchases/purchases.routes';
 import meRouter from '@src/features/me/me.routes';
 import adminRouter from '@src/features/admin/admin.routes';
 import reviewRouter from '@src/features/reviews/review.routes';
@@ -10,7 +10,7 @@ import reviewRouter from '@src/features/reviews/review.routes';
 import { Router } from 'express';
 import { nukeDB } from '@src/utils/nukeDB';
 import express from 'express';
-import { paddleWebhookController } from '@src/features/paddle/paddle.controller';
+import { paddleWebhookController } from '@src/features/purchases/purchases.controller';
 const router = Router();
 router.post(
   '/paddle/webhook',

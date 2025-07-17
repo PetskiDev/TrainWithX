@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import {
   purchasePlanController,
-} from './paddle.controller';
+} from './purchases.controller';
 import { doAuth } from '@src/middleware/auth';
 
 const router = Router();
