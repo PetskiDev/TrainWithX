@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Users, TrendingUp, FileText, Shield, UserCheck, Plus, Eye, Edit, Trash2, Crown, BarChart3, DollarSign, CheckCircle, XCircle, ChevronDown, Ban, X } from "lucide-react";
+import { Search, Users, TrendingUp, FileText, Shield, UserCheck, Plus, Eye, Edit, Trash2, Crown, BarChart3, DollarSign, CheckCircle, XCircle, ChevronDown, Ban } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -219,7 +219,7 @@ const AdminDashboard = () => {
         throw new Error(error.message || 'Approval failed');
       }
 
-      const data = await res.json();
+      //const data = await res.json();
 
       setApprovedIds(prev => new Set(prev).add(application.id));
 
