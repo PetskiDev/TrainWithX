@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Users, TrendingUp, FileText, Shield, UserCheck, Plus, Eye, Edit, Trash2, Crown, BarChart3, DollarSign, CheckCircle, XCircle, ChevronDown, Ban } from "lucide-react";
+import { Search, Users, TrendingUp, FileText, Shield, UserCheck, Plus, Eye, Edit, Trash2, Crown, BarChart3, DollarSign, CheckCircle, XCircle, ChevronDown, Ban, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,9 @@ import type { UserDto } from "@shared/types/user";
 import type { PlanWithRevenue } from "@shared/types/plan";
 import type { CreatorApplicationDTO } from "@shared/types/creator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Avatar } from "@frontend/components/ui/avatar";
+import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { SiCheckmarx } from "react-icons/si";
 
 
 
@@ -32,6 +35,8 @@ const AdminDashboard = () => {
   const [promotionSubdomain, setPromotionSubdomain] = useState<string>("");
   const [userToPromote, setUserToPromote] = useState<UserDto | null>(null);
 
+  const [approvedIds, setApprovedIds] = useState<Set<number>>(new Set()); //for creators approved
+  const [rejectedIds, setRejectedIds] = useState<Set<number>>(new Set()); //for creators rejected
 
   const { toast } = useToast();
   if (!user?.isAdmin) {
@@ -39,7 +44,7 @@ const AdminDashboard = () => {
   }
   if (loading || !stats) return <>Loading data</>;
 
-
+  const filteredApplications = applications.filter(x => x.status === 'pending');
   const filteredAndSortedUsers = users
     .filter(user =>
       user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -199,19 +204,69 @@ const AdminDashboard = () => {
     // In a real app, you'd make an API call here
   };
 
-  const handleApproveCreator = (request: CreatorApplicationDTO) => {
-    toast({
-      title: "Creator Request Approved",
-      description: `${request.fullName} has been approved as a creator.`,
-    });
+  const handleApproveCreator = async (application: CreatorApplicationDTO) => {
+    try {
+      const res = await fetch(`/api/v1/admin/creator-applications/${application.id}/approve`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Approval failed');
+      }
+
+      const data = await res.json();
+
+      setApprovedIds(prev => new Set(prev).add(application.id));
+
+      toast({
+        title: 'Creator Request Approved',
+        description: `${application.fullName} has been approved as a creator.`,
+      });
+
+      // Optionally refetch or update state
+    } catch (err: any) {
+      toast({
+        title: 'Error',
+        description: err.message,
+        variant: 'destructive',
+      });
+    }
   };
 
-  const handleRejectCreator = (request: CreatorApplicationDTO) => {
-    toast({
-      title: "Creator Request Rejected",
-      description: `${request.fullName}'s creator request has been rejected.`,
-      variant: "destructive",
-    });
+  const handleRejectCreator = async (application: CreatorApplicationDTO) => {
+    try {
+      const res = await fetch(`/api/v1/admin/creator-applications/${application.id}/reject`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Rejecton failed');
+      }
+
+      setRejectedIds(prev => new Set(prev).add(application.id));
+
+      toast({
+        title: 'Creator Request rejected sucessfuly',
+        description: `${application.fullName} has been rejected as a creator.`,
+      });
+
+    } catch (err: any) {
+      toast({
+        title: 'Error',
+        description: err.message,
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
@@ -302,7 +357,7 @@ const AdminDashboard = () => {
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="users">User Management</TabsTrigger>
             <TabsTrigger value="plans">Plan Management</TabsTrigger>
-            <TabsTrigger value="approve-creators">Approve Creators</TabsTrigger>
+            <TabsTrigger value="pending-creators">Pending Creators</TabsTrigger>
             <TabsTrigger value="analytics">Creators</TabsTrigger>
           </TabsList>
 
@@ -534,98 +589,132 @@ const AdminDashboard = () => {
           </TabsContent>
 
           {/* Approve Creators */}
-          <TabsContent value="approve-creators" className="space-y-6">
+          <TabsContent value="pending-creators" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Approve Creator Requests</CardTitle>
+                <CardTitle>Pending Creator Requests</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {applications.length > 0 ? (
-                    applications.map((application) => (
-                      <Card key={application.id} className="p-6">
-                        <div className="space-y-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex items-center gap-4">
-                              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                                <span className="text-lg font-medium">{application.fullName.split(' ').map(n => n[0]).join('')}</span>
-                              </div>
-                              <div>
-                                <h3 className="font-semibold text-lg">{application.fullName}</h3>
-                                <p className="text-muted-foreground">{application.email}</p>
-                                <p className="text-sm text-muted-foreground">Requested on {new Date(application.createdAt).toLocaleDateString()}</p>
-                              </div>
-                            </div>
-                            <Badge variant="outline">Pending Review</Badge>
-                          </div>
-
-                          <div className="grid md:grid-cols-2 gap-4">
-                            <div>
-                              <p className="font-medium text-sm mb-1">Wanted Subdomain:</p>
-                              <p className="text-sm text-muted-foreground">{application.subdomain}.trainwithx.com</p>
-                            </div>
-                            <div>
-                              <p className="font-medium text-sm mb-1">Specialization:</p>
-                              <p className="text-sm text-muted-foreground">{application.specialization}</p>
-                            </div>
-                            <div>
-                              <p className="font-medium text-sm mb-1">Experience:</p>
-                              <p className="text-sm text-muted-foreground">{application.experience}</p>
-                            </div>
-                            <div>
-                              <p className="font-medium text-sm mb-1">Certifications:</p>
-                              <p className="text-sm text-muted-foreground">{application.certifications || "None provided"}</p>
-                            </div>
-                          </div>
-
-                          <div className="space-y-3">
-                            <div>
-                              <p className="font-medium text-sm mb-1">Professional Bio:</p>
-                              <p className="text-sm text-muted-foreground">{application.bio}</p>
-                            </div>
-                            {application.socialMedia && (
-                              <div>
-                                <p className="font-medium text-sm mb-1">Social Media:</p>
-                                <p className="text-sm text-muted-foreground whitespace-pre-line">{application.socialMedia}</p>
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="border-t pt-4">
-                            <div className="flex gap-3 items-end">
-                              <div className="flex-1">
-                                <label className="text-sm font-medium mb-2 block">Set Subdomain:</label>
-                                <div className="relative">
-                                  <Input
-                                    placeholder={application.subdomain}
-                                    defaultValue={application.subdomain}
-                                    className="pr-32"
-                                  />
-                                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">
-                                    .trainwithx.com
-                                  </div>
+                  {filteredApplications.length > 0 ? (
+                    filteredApplications.map((application) => {
+                      const isApproved = application.status === 'approved' || approvedIds.has(application.id);
+                      const isRejected = rejectedIds.has(application.id);
+                      return (
+                        <Card key={application.id} className="p-6">
+                          <div className="space-y-4">
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-center gap-4">
+                                <Avatar className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <AvatarImage src={application.avatarUrl} alt={application.username} />
+                                  <AvatarFallback>
+                                    {application.username.split(' ').map(n => n[0]).join('')}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <h3 className="font-semibold text-lg">{application.fullName}</h3>
+                                  <p className="text-muted-foreground">{application.email}</p>
+                                  <p className="text-sm text-muted-foreground">Requested on {new Date(application.createdAt).toLocaleDateString()}</p>
                                 </div>
                               </div>
-                              <Button
-                                onClick={() => handleApproveCreator(application)}
-                                className="min-w-32"
-                              >
-                                <UserCheck className="h-4 w-4 mr-2" />
-                                Approve
-                              </Button>
-                              <Button
-                                onClick={() => handleRejectCreator(application)}
-                                variant="outline"
-                                className="min-w-32"
-                              >
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Reject
-                              </Button>
+                              <Badge variant="outline">Pending Review</Badge>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div>
+                                <p className="font-medium text-sm mb-1">Wanted Subdomain:</p>
+                                <p className="text-sm text-muted-foreground">{application.subdomain}.trainwithx.com</p>
+                              </div>
+                              <div>
+                                <div className="space-y-2">
+                                  <p>Specialties</p>
+                                  {/* Selected specialties as tags */}
+                                  {application.specialties.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                      {application.specialties.map((specialty) => (
+                                        <Badge
+                                          key={specialty}
+                                          variant="secondary"
+                                          className="flex items-center gap-1"
+                                        >
+                                          {specialty}
+                                        </Badge>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm mb-1">Experience:</p>
+                                <p className="text-sm text-muted-foreground">{application.experience}</p>
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm mb-1">Certifications:</p>
+                                <p className="text-sm text-muted-foreground">{application.certifications || "None provided"}</p>
+                              </div>
+                            </div>
+
+                            <div className="space-y-3">
+                              <div>
+                                <p className="font-medium text-sm mb-1">Professional Bio:</p>
+                                <p className="text-sm text-muted-foreground">{application.bio}</p>
+                              </div>
+                              {application.socialMedia && (
+                                <div>
+                                  <p className="font-medium text-sm mb-1">Social Media:</p>
+                                  <p className="text-sm text-muted-foreground whitespace-pre-line">{application.socialMedia}</p>
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="border-t pt-4">
+                              <div className="flex gap-3 items-end">
+                                <div className="flex-1">
+                                  <label className="text-sm font-medium mb-2 block">Set Subdomain:</label>
+                                  <div className="relative">
+                                    <Input
+                                      placeholder={application.subdomain}
+                                      defaultValue={application.subdomain}
+                                      className="pr-32"
+                                      disabled={approvedIds.has(application.id)}
+                                    />
+                                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">
+                                      .trainwithx.com
+                                    </div>
+                                  </div>
+                                </div>
+                                {isApproved ? (
+                                  <Button disabled className="min-w-32" variant="secondary">
+                                    <SiCheckmarx className="h-4 w-4 mr-2" />
+                                    Approved
+                                  </Button>
+                                ) : isRejected ? null : (
+                                  <Button
+                                    onClick={() => handleApproveCreator(application)}
+                                    className="min-w-32"
+                                  >
+                                    <UserCheck className="h-4 w-4 mr-2" />
+                                    Approve
+                                  </Button>
+                                )}
+
+                                {!isApproved && (
+                                  <Button
+                                    onClick={() => handleRejectCreator(application)}
+                                    variant={isRejected ? "destructive" : "outline"}
+                                    className="min-w-32"
+                                    disabled={isRejected}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    Reject
+                                  </Button>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </Card>
-                    ))
+                        </Card>
+                      )
+                    })
                   ) : (
                     <div className="text-center py-12">
                       <UserCheck className="h-16 w-16 mx-auto text-muted-foreground mb-4" />

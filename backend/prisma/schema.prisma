@@ -109,7 +109,7 @@ model CreatorApplication {
   fullName       String
   email          String
   subdomain      String            @unique
-  specialization String
+  specialties    String[]
   experience     String
   bio            String
   certifications String?

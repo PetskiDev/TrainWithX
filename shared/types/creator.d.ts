@@ -19,17 +19,7 @@ export interface CreatorFullDTO extends CreatorPreviewDTO {
   revenueThisMonth: number;
 }
 
-export interface SendApplicationDTO {
-  fullName: string;
-  subdomain: string;
-  specialization: string;
-  experience: string;
-  bio: string;
-  certifications?: string;
-  socialMedia?: string;
-  agreeToTerms: boolean;
-  email: string;
-}
+
 
 export interface CreatorPostDTO {
   username?: string;
@@ -38,7 +28,24 @@ export interface CreatorPostDTO {
   yearsXP?: Decimal;
 }
 
+export interface SendApplicationDTO {
+  email: string;
+  fullName: string;
+  subdomain: string;
+  specialties: string[];
+  experience: Decimal;
+  bio: string;
+  certifications?: string;
+  socialMedia?: string;
+  agreeToTerms: boolean;
+}
+
+
 export interface CreatorApplicationDTO extends SendApplicationDTO {
   id: number;
   createdAt: Date;
+  userId: number;
+  avatarUrl?: string; //derived from suer
+  username: string; //derived
+  status: 'pending' | 'approved' | 'rejected';
 }

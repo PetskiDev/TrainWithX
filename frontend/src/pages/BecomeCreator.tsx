@@ -11,6 +11,24 @@ import { TrainWithXLogo } from "@/components/TrainWithXLogo";
 import { useAuth } from "@frontend/context/AuthContext";
 import type { SendApplicationDTO } from "@shared/types/creator";
 import { goPublic } from "@frontend/lib/nav";
+import { Badge } from "@frontend/components/ui/badge";
+import { Plus, X } from "lucide-react";
+
+
+const availableSpecialties = [
+  "Strength Training",
+  "Cardio & Endurance",
+  "Yoga & Flexibility",
+  "Pilates",
+  "CrossFit",
+  "Bodybuilding",
+  "Powerlifting",
+  "Calisthenics",
+  "Martial Arts",
+  "Nutrition",
+  "Physical Therapy",
+  "Sports Performance"
+];
 
 const BecomeCreator = () => {
   const { user } = useAuth();
@@ -18,14 +36,17 @@ const BecomeCreator = () => {
   const [formData, setFormData] = useState<SendApplicationDTO>({
     fullName: "",
     subdomain: "",
-    specialization: "",
-    experience: "",
+    specialties: [],
+    experience: 0,
     bio: "",
     certifications: "",
     socialMedia: "",
     agreeToTerms: false,
     email: "",
   });
+  const [customSpecialty, setCustomSpecialty] = useState("");
+
+
   useEffect(() => {
     if (user?.email) {
       setFormData(prev => ({ ...prev, email: user.email }));
@@ -97,19 +118,45 @@ const BecomeCreator = () => {
         ...payload,
         fullName: "",
         subdomain: "",
-        specialization: "",
-        experience: "",
+        specialties: [],
+        experience: 0,
         bio: "",
         certifications: "",
         socialMedia: "",
         agreeToTerms: false,
       });
+      setCustomSpecialty("");
+
     } catch (error: any) {
       toast({
         title: 'Error',
         description: error.message,
         variant: 'destructive',
       });
+    }
+  };
+
+
+  const addSpecialty = (specialty: string) => {
+    if (!formData.specialties.includes(specialty)) {
+      setFormData(prev => ({
+        ...prev,
+        specialties: [...prev.specialties, specialty]
+      }));
+    }
+  };
+
+  const removeSpecialty = (specialty: string) => {
+    setFormData(prev => ({
+      ...prev,
+      specialties: prev.specialties.filter(s => s !== specialty)
+    }));
+  };
+
+  const addCustomSpecialty = () => {
+    if (customSpecialty.trim() && !formData.specialties.includes(customSpecialty.trim())) {
+      addSpecialty(customSpecialty.trim());
+      setCustomSpecialty("");
     }
   };
   const handleInputChange = (field: string, value: string) => {
@@ -167,25 +214,67 @@ const BecomeCreator = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="specialization">Specialization *</Label>
-                <Select onValueChange={(value) => handleInputChange("specialization", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your specialization" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="strength">Strength Training</SelectItem>
-                    <SelectItem value="cardio">Cardio & Endurance</SelectItem>
-                    <SelectItem value="yoga">Yoga & Flexibility</SelectItem>
-                    <SelectItem value="pilates">Pilates</SelectItem>
-                    <SelectItem value="crossfit">CrossFit</SelectItem>
-                    <SelectItem value="bodybuilding">Bodybuilding</SelectItem>
-                    <SelectItem value="powerlifting">Powerlifting</SelectItem>
-                    <SelectItem value="calisthenics">Calisthenics</SelectItem>
-                    <SelectItem value="martial-arts">Martial Arts</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Specialties *</Label>
+
+                {/* Selected specialties as tags */}
+                {formData.specialties.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {formData.specialties.map((specialty) => (
+                      <Badge
+                        key={specialty}
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
+                        {specialty}
+                        <X
+                          className="h-3 w-3 cursor-pointer hover:text-destructive"
+                          onClick={() => removeSpecialty(specialty)}
+                        />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Available specialties */}
+                <div className="space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {availableSpecialties
+                      .filter(specialty => !formData.specialties.includes(specialty))
+                      .map((specialty) => (
+                        <Badge
+                          key={specialty}
+                          variant="outline"
+                          className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
+                          onClick={() => addSpecialty(specialty)}
+                        >
+                          <Plus className="h-3 w-3 mr-1" />
+                          {specialty}
+                        </Badge>
+                      ))}
+                  </div>
+
+                  {/* Add custom specialty */}
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Add custom specialty..."
+                      value={customSpecialty}
+                      onChange={(e) => setCustomSpecialty(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomSpecialty())}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addCustomSpecialty}
+                      disabled={!customSpecialty.trim()}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               </div>
+
 
               <div className="space-y-2">
                 <Label htmlFor="experience">Years of Experience *</Label>
@@ -194,10 +283,10 @@ const BecomeCreator = () => {
                     <SelectValue placeholder="Select your experience level" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1-2">1-2 years</SelectItem>
-                    <SelectItem value="3-5">3-5 years</SelectItem>
-                    <SelectItem value="6-10">6-10 years</SelectItem>
-                    <SelectItem value="10+">10+ years</SelectItem>
+                    <SelectItem value="2">1-2 years</SelectItem>
+                    <SelectItem value="4">3-5 years</SelectItem>
+                    <SelectItem value="8">6-10 years</SelectItem>
+                    <SelectItem value="10">10+ years</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
