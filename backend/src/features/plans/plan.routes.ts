@@ -22,7 +22,7 @@ router.delete('/:planId', doAuth, deletePlanController);
 router.get('/preview/:subdomain/:slug', getPlanSubSlugPreveiw);
 
 //TODO: check if user HAS PURCHASED plan.
-router.get('/content/:subdomain/:slug', getPlanSubSlugContent);
+router.get('/content/:subdomain/:slug', doAuth, getPlanSubSlugContent);
 
 router.get('/:planId/reviews', getReviewsOfPlanController);
 

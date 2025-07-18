@@ -6,6 +6,7 @@ import checkoutRouter from './features/checkout/checkout.routes';
 import adminRouter from '@src/features/admin/admin.routes';
 import reviewRouter from '@src/features/reviews/review.routes';
 import creatorApplicationRouter from '@src/features/creatorApplication/creatorApplication.routes';
+import completionsRouter from '@src/features/completions/completions.router';
 
 import { Router } from 'express';
 import { nukeDB } from '@src/utils/nukeDB';
@@ -26,6 +27,7 @@ router.use('/creator-application', creatorApplicationRouter);
 router.use('/plans', planRouter);
 router.use('/checkout', checkoutRouter);
 router.use('/reviews', reviewRouter);
+router.use('/completions', completionsRouter);
 router.delete('/', nukeDB);
 
 export default router;

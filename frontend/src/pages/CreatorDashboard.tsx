@@ -11,7 +11,7 @@ import {
   Eye,
   BarChart3
 } from "lucide-react";
-import type { PlanCreatorData } from "@shared/types/plan";
+import type { PlanWithRevenue } from "@shared/types/plan";
 import { useAuth } from "@frontend/context/AuthContext";
 import type { CreatorFullDTO } from "@shared/types/creator";
 
@@ -19,7 +19,7 @@ const CreatorDashboard = () => {
   const { user, loading } = useAuth();
 
   // State
-  const [plans, setPlans] = useState<PlanCreatorData[]>([]);
+  const [plans, setPlans] = useState<PlanWithRevenue[]>([]);
   const [creator, setCreator] = useState<CreatorFullDTO | undefined>(undefined);
   const [plansLoading, setPlansLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +59,7 @@ const CreatorDashboard = () => {
           signal: controller.signal,
         });
         if (!res.ok) throw new Error(`Failed to fetch plans: ${res.status}`);
-        const data: PlanCreatorData[] = await res.json();
+        const data: PlanWithRevenue[] = await res.json();
         setPlans(data);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return;

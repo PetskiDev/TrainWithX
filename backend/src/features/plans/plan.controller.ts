@@ -16,6 +16,8 @@ import {
 } from './plan.transformer';
 import { CreatePlanDto } from '@shared/types/plan';
 import { getCreatorById } from '@src/features/creators/creator.service';
+import { getCompletedSet } from '@src/features/completions/completions.service';
+import { checkUserPurchasedPlan } from '@src/features/checkout/checkout.service';
 
 
 export async function getAllPlansPreview(req: Request, res: Response) {
@@ -64,12 +66,21 @@ export async function getPlanSubSlugPreveiw(req: Request, res: Response) {
 }
 
 export async function getPlanSubSlugContent(req: Request, res: Response) {
+  const user = req.user!;
   let { subdomain, slug } = req.params;
+
   slug = slug.toLowerCase();
   const plan = await getPlanFromSubWithSlug({ subdomain, slug });
   if (!plan) throw new AppError('Plan Not found', 404);
 
-  res.status(200).json(toPaidPlan(plan));
+  const purchased = await checkUserPurchasedPlan({ userId: user.id, planId: plan.id })
+  if (!purchased) {
+    throw new AppError("You don't own the plan", 403);
+  }
+
+  const completedSet = await getCompletedSet({ userId: user.id, planId: plan.id });
+
+  res.status(200).json(toPaidPlan(plan, completedSet));
 }
 
 export async function getMyCreatedPlansController(req: Request, res: Response) {

@@ -153,9 +153,40 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
   const completedWorkouts = 404; //TODO FETCH
   const progress = planContent.totalWorkouts ?? 10 / completedWorkouts; //TODO
 
-  const markWorkoutComplete = (dayId: number) => {
-    console.log(`Marking workout ${dayId} as complete`);
-    // Here you would update the workout completion status
+  const markWorkoutComplete = async (weekId: number, dayId: number) => {
+    try {
+      const res = await fetch('/api/v1/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ planId: planPaid.id, weekId, dayId }),
+        credentials: 'include',
+      });
+
+      if (!res.ok) throw new Error('Failed to mark workout complete');
+
+      const data = await res.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      updateWeekDayCompleted(weekId, dayId);
+
+      toast({
+        title: "Workout Completed",
+        description: `You’ve completed Day ${dayId} of Week ${weekId}! 💪`,
+        variant: "default",
+      });
+
+      console.log('Workout marked complete:', data);
+    } catch (err: any) {
+      toast({
+        title: "Error",
+        description: err.message || "Something went wrong while marking the workout.",
+        variant: "destructive",
+      });
+    }
   };
   const playIntroVideo = () => {
     setVideoPlaying(true);
@@ -173,6 +204,22 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
     setIsEditingReview(true);
     setReviewRating(existingReview.rating);
     setReviewText(existingReview.comment);
+  };
+
+  const updateWeekDayCompleted = (weekId: number, dayId: number) => {
+    if (!planPaid) return;
+
+    const updatedWeeks = planPaid.weeks.map((week) => {
+      if (week.id !== weekId) return week;
+
+      const updatedDays = week.days.map((day) =>
+        day.id === dayId ? { ...day, completed: true } : day
+      );
+
+      return { ...week, days: updatedDays };
+    });
+
+    setPlanPaid({ ...planPaid, weeks: updatedWeeks });
   };
 
   const handleSubmitAndEdit = async () => {
@@ -563,9 +610,9 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                                 ) : (
                                   <Button
                                     variant={true ? 'outline' : 'default'}
-                                    onClick={() => markWorkoutComplete(day.id)}
+                                    onClick={() => markWorkoutComplete(currentWeek.id, day.id)}
                                   >
-                                    {true ? 'Completed' : 'Start'}
+                                    {day.completed ? 'Completed' : 'Start'}
                                   </Button>
                                 )}
                               </div>

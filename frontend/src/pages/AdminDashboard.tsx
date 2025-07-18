@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAdminDashboardData } from "@frontend/hooks/useAdminDashboardData";
 import { getUserRole } from "@frontend/lib/role";
 import type { UserDto } from "@shared/types/user";
-import type { PlanCreatorData } from "@shared/types/plan";
+import type { PlanWithRevenue } from "@shared/types/plan";
 import type { CreatorApplicationDTO } from "@shared/types/creator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 
@@ -163,7 +163,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleDeletePlan = async (plan: PlanCreatorData) => {
+  const handleDeletePlan = async (plan: PlanWithRevenue) => {
     try {
       const res = await fetch(`/api/v1/plans/${plan.id}`, {
         method: "DELETE",
@@ -190,7 +190,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const handlePublishPlan = (plan: PlanCreatorData) => {
+  const handlePublishPlan = (plan: PlanWithRevenue) => {
     const action = plan.isPublished ? 'Unpublished' : 'Published';
     toast({
       title: `Plan ${action}`,

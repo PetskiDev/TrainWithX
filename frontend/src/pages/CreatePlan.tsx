@@ -165,6 +165,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
       title: `Day ${(week?.days.length || 0) + 1}`,
       type: 'workout',
       exercises: [],
+      completed: false,
     };
 
     updateWeek(weekId, 'days', [...(week?.days || []), newDay]);

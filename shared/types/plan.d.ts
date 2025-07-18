@@ -34,7 +34,7 @@ export interface PlanContentJSON {
 
 export interface PlanPaidPreveiw extends PlanPreview, PlanContentJSON {}
 
-export interface PlanCreatorData extends PlanPreview {
+export interface PlanWithRevenue extends PlanPreview {
   revenue: number;
 }
 
@@ -77,6 +77,7 @@ export interface PlanDay {
   title: string;
   duration?: string; // Only for workouts
   exercises?: Exercise[]; // Optional, only if type === 'workout'
+  completed: boolean;
 }
 
 export interface Exercise {

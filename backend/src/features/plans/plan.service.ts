@@ -1,7 +1,7 @@
 // backend/src/features/plans/plan.service.ts
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
-import { CreatePlanDto, PlanContentJSON, PlanCreatorData, PlanPreview } from '@shared/types/plan';
+import { CreatePlanDto, PlanContentJSON, PlanWithRevenue, PlanPreview } from '@shared/types/plan';
 import { createDiscountFor, createProductWithPrice } from '@src/utils/paddle';
 import { toPlanCreatorData, toPlanPreview } from '@src/features/plans/plan.transformer';
 import { Prisma } from '@prisma/client';
@@ -203,7 +203,7 @@ export async function getPlansOwnedByUser(
 }
 export async function getPlansMadeByCreator(
   creatorId: number
-): Promise<PlanCreatorData[]> {
+): Promise<PlanWithRevenue[]> {
   const plans = await prisma.plan.findMany({
     where: { creatorId },
     orderBy: { createdAt: 'desc' },
@@ -213,7 +213,7 @@ export async function getPlansMadeByCreator(
           user: true,
         },
       },
-      purchases: true, // In case you need number of purchases/sales per plan
+      purchases: true,
     },
   });
   return plans.map(toPlanCreatorData);

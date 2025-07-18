@@ -1,5 +1,5 @@
 import {
-  checkAlreadyPurchased,
+  checkUserPurchasedPlan,
   generateTransactionToken,
   handlePaymentComplete as createPurchase,
 } from '@src/features/checkout/checkout.service';
@@ -21,7 +21,11 @@ export async function startPurchaseController(req: Request, res: Response) {
     throw new AppError('PlanId is required', 400);
   }
 
-  await checkAlreadyPurchased({ userId, planId }); //throws if already purchased
+  const purchased = await checkUserPurchasedPlan({ userId, planId }); //throws if already purchased
+  
+  if (purchased) {
+    throw new AppError('Plan Already Purchased', 400);
+  }
 
   const token = await generateTransactionToken({ planId, userId }); //Generates link
 

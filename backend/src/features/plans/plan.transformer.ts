@@ -1,10 +1,10 @@
 // backend/src/features/plans/plan.transformer.ts
-import { Plan, Creator, User, Purchase } from '@prisma/client';
+import { Plan, Creator, User, Purchase, Completion } from '@prisma/client';
 import {
   PlanPreview,
   PlanPaidPreveiw,
   PlanContentJSON,
-  PlanCreatorData,
+  PlanWithRevenue,
   PlanWeekInfo,
 } from '@shared/types/plan';
 
@@ -58,7 +58,8 @@ export function toPaidPlan(
   plan: Plan & {
     creator: Creator & { user: User };
     purchases: Purchase[];
-  }
+  },
+  completedSet: Set<string> // Keys like `${weekId}-${dayId}`
 ): PlanPaidPreveiw {
   const content = plan.content as unknown as PlanContentJSON | undefined; // TODO USE ZOD TO VALIDATE
   return {
@@ -84,6 +85,7 @@ export function toPaidPlan(
           title: day.title,
           duration: day.duration ?? undefined,
           exercises: day.exercises ?? [],
+          completed: completedSet.has(`${week.id}-${day.id}`)
         })),
       })) ?? [],
   };
@@ -94,7 +96,7 @@ export function toPlanCreatorData(
     creator: Creator & { user: User };
     purchases: Purchase[];
   }
-): PlanCreatorData {
+): PlanWithRevenue {
   return {
     ...toPlanPreview(plan),
     revenue: plan.purchases.reduce((sum, p) => sum + Number(p.amount), 0),

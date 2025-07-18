@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { AdminInfoDTO } from '@shared/types/admin';
 import type { UserDto } from '@shared/types/user';
-import type { PlanCreatorData } from '@shared/types/plan';
+import type { PlanWithRevenue } from '@shared/types/plan';
 import type {
   CreatorApplicationDTO,
   CreatorFullDTO,
@@ -13,7 +13,7 @@ export const useAdminDashboardData = () => {
   const [user, setUser] = useState<UserDto>();
   const [stats, setStats] = useState<AdminInfoDTO>();
   const [users, setUsers] = useState<UserDto[]>([]);
-  const [plans, setPlans] = useState<PlanCreatorData[]>([]);
+  const [plans, setPlans] = useState<PlanWithRevenue[]>([]);
   const [creators, setCreators] = useState<CreatorFullDTO[]>([]);
 
   const [applications, setApplications] = useState<CreatorApplicationDTO[]>([]);
@@ -38,7 +38,7 @@ export const useAdminDashboardData = () => {
       const dashUser: UserDto = await dashUserRes.json();
       const statsData: AdminInfoDTO = await statsRes.json();
       const usersData: UserDto[] = await usersRes.json();
-      const plansData: PlanCreatorData[] = await plansRes.json();
+      const plansData: PlanWithRevenue[] = await plansRes.json();
       const creatorsData: CreatorFullDTO[] = await creatorsRes.json();
       const appsData: CreatorApplicationDTO[] = await appsRes.json();
 

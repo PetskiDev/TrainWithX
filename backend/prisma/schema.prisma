@@ -24,6 +24,7 @@ model User {
   emailVerificationToken EmailVerificationToken[]
   creatorApplication     CreatorApplication?
   reviews                Review[]
+  completions            Completion[]
 }
 
 model Creator {
@@ -47,29 +48,30 @@ enum Difficulty {
 }
 
 model Plan {
-  id               Int         @id @default(autoincrement())
-  paddleProductId  String      @unique
-  paddlePriceId    String      @unique
+  id               Int          @id @default(autoincrement())
+  paddleProductId  String       @unique
+  paddlePriceId    String       @unique
   title            String
-  slug             String      @unique @db.VarChar(50)
+  slug             String       @unique @db.VarChar(50)
   description      String
-  features         String[]    @default([])
+  features         String[]     @default([])
   coverImage       String?
   difficulty       Difficulty?
-  avgRating        Decimal     @default(0) @db.Decimal(3, 2)
-  noReviews        Int         @default(0)
-  isPublished      Boolean     @default(false)
-  price            Decimal     @db.Decimal(10, 2)
-  currency         String      @default("USD")
-  originalPrice    Decimal?    @db.Decimal(10, 2)
+  avgRating        Decimal      @default(0) @db.Decimal(3, 2)
+  noReviews        Int          @default(0)
+  isPublished      Boolean      @default(false)
+  price            Decimal      @db.Decimal(10, 2)
+  currency         String       @default("USD")
+  originalPrice    Decimal?     @db.Decimal(10, 2)
   paddleDiscountId String?
   image            String?
   content          Json?
-  createdAt        DateTime    @default(now())
+  createdAt        DateTime     @default(now())
   creatorId        Int
-  creator          Creator     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creator          Creator      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   purchases        Purchase[]
   reviews          Review[]
+  completions      Completion[]
 }
 
 model Purchase {
@@ -132,8 +134,25 @@ model Review {
   plan Plan @relation(fields: [planId], references: [id], onDelete: Cascade)
 
   @@unique([userId, planId])
-
   @@index([planId])
   @@index([userId])
   @@index([planId, userId])
+}
+
+model Completion {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  plan   Plan @relation(fields: [planId], references: [id])
+  planId Int
+
+  weekId Int
+  dayId  Int
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, weekId, dayId])
+  @@index([userId, planId])
 }

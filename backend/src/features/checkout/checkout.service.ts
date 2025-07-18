@@ -42,7 +42,7 @@ export async function handlePaymentComplete({
   });
 }
 
-export async function checkAlreadyPurchased({
+export async function checkUserPurchasedPlan({
   planId,
   userId,
 }: {
@@ -52,10 +52,9 @@ export async function checkAlreadyPurchased({
   const purchase = await prisma.purchase.findUnique({
     where: { userId_planId: { userId, planId } },
   });
-  if (purchase) {
-    throw new AppError('Plan Already Purchased', 400);
-  }
+  return !!purchase;
 }
+
 export async function enforceHasPurchased({
   userId, planId,
 }: {
