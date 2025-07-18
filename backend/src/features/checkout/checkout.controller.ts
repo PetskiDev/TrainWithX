@@ -2,7 +2,7 @@ import {
   checkAlreadyPurchased,
   generateTransactionToken,
   handlePaymentComplete as createPurchase,
-} from '@src/features/purchases/purchases.service';
+} from '@src/features/checkout/checkout.service';
 import { AppError } from '@src/utils/AppError';
 import { Request, Response } from 'express';
 import { env } from '@src/utils/env';

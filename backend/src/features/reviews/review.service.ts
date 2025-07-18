@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { CreateReviewDTO, CreatorPageReviewDTO, ReviewPreviewDTO, UpdateReviewDTO } from '@shared/types/review';
 import { getCreatorIdForPlan } from '@src/features/plans/plan.service';
-import { enforceHasPurchased } from '../purchases/purchases.service';
+import { enforceHasPurchased } from '../checkout/checkout.service';
 import { AppError } from '@src/utils/AppError';
 import { prisma } from '@src/utils/prisma';
 

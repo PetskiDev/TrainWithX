@@ -3,7 +3,7 @@
 import { Router } from 'express';
 import {
   startPurchaseController,
-} from './purchases.controller';
+} from './checkout.controller';
 import { doAuth } from '@src/middleware/auth';
 
 const router = Router();

@@ -2,7 +2,7 @@ import userRouter from './features/users/user.routes';
 import authRouter from './features/auth/auth.routes';
 import creatorRouter from './features/creators/creator.routes';
 import planRouter from './features/plans/plan.routes';
-import purchasesRouter from './features/purchases/purchases.routes';
+import checkoutRouter from './features/checkout/checkout.routes';
 import adminRouter from '@src/features/admin/admin.routes';
 import reviewRouter from '@src/features/reviews/review.routes';
 import creatorApplicationRouter from '@src/features/creatorApplication/creatorApplication.routes';
@@ -10,7 +10,7 @@ import creatorApplicationRouter from '@src/features/creatorApplication/creatorAp
 import { Router } from 'express';
 import { nukeDB } from '@src/utils/nukeDB';
 import express from 'express';
-import { paddleWebhookController } from '@src/features/purchases/purchases.controller';
+import { paddleWebhookController } from '@src/features/checkout/checkout.controller';
 const router = Router();
 router.post(
   '/webhooks/paddle',
@@ -24,7 +24,7 @@ router.use('/users', userRouter);
 router.use('/creators', creatorRouter);
 router.use('/creator-application', creatorApplicationRouter);
 router.use('/plans', planRouter);
-router.use('/purchases', purchasesRouter);
+router.use('/checkout', checkoutRouter);
 router.use('/reviews', reviewRouter);
 router.delete('/', nukeDB);
 
