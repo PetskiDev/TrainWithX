@@ -1,10 +1,10 @@
 // backend/src/features/plans/plan.service.ts
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
-import { CreatePlanDto, PlanContentJSON, PlanWithRevenue, PlanPreview } from '@shared/types/plan';
+import { CreatePlanDto, PlanContentJSON, PlanWithRevenue, PlanPreview, PlanWeek, PlanPreviewWithProgress } from '@shared/types/plan';
 import { createDiscountFor, createProductWithPrice } from '@src/utils/paddle';
 import { toPlanCreatorData, toPlanPreview } from '@src/features/plans/plan.transformer';
-import { Prisma } from '@prisma/client';
+import { Plan, Prisma } from '@prisma/client';
 
 export async function getAllPlans() {
   return prisma.plan.findMany({
@@ -58,10 +58,7 @@ export async function createPlanService(newPlan: CreatePlanDto) {
   let discountId = await createDiscountFor(newPlan);
 
   const { slug, goals, tags, weeks, introVideo, ...previewData } = newPlan;
-  const totalWorkouts = weeks.reduce(
-    (acc, week) => acc + week.days.filter((d) => d.type === 'workout').length,
-    0
-  );
+
 
   const totalWeeks = weeks.length;
   const newContent: PlanContentJSON = {
@@ -179,19 +176,17 @@ export async function countSalesByCreatorId(creatorId: number) {
   });
   return sales;
 }
-export async function getPlansOwnedByUser(
-  userId: number
-): Promise<PlanPreview[]> {
+
+
+//TODO: OPTIMIZE THIS SHIT. BUT IT IS ONLY USED IF SOMEONE BUYS. AHHAHAH TAKE THIS. I WILL HAVE MORE ENERGY THEN
+//SQL via JOIN + GROUP BY.
+export async function getPlansOwnedByUser(userId: number): Promise<PlanPreviewWithProgress[]> {
   const purchases = await prisma.purchase.findMany({
     where: { userId },
     include: {
       plan: {
         include: {
-          creator: {
-            include: {
-              user: true,
-            },
-          },
+          creator: { include: { user: true } },
           purchases: true,
         },
       },
@@ -199,8 +194,42 @@ export async function getPlansOwnedByUser(
     orderBy: { timestamp: 'desc' },
   });
 
-  return purchases.map((purchase) => toPlanPreview(purchase.plan));
+  const planIds = purchases.map((p) => p.plan.id);
+
+  const completions = await prisma.completion.findMany({
+    where: {
+      userId,
+      planId: { in: planIds },
+    },
+    select: { planId: true },
+  });
+
+  const completionsMap = new Map<number, number>();
+  for (const c of completions) {
+    completionsMap.set(c.planId, (completionsMap.get(c.planId) || 0) + 1);
+  }
+
+  return purchases.map((purchase) => {
+    const plan = purchase.plan;
+    const content = plan.content as unknown as PlanContentJSON | null;
+
+    let totalWorkouts = 0;
+    if (content && Array.isArray(content.weeks)) {
+      totalWorkouts = content.weeks
+        .flatMap((w) => w.days)
+        .filter((d) => d.type === 'workout').length;
+    }
+
+    const completed = completionsMap.get(plan.id) || 0;
+    const progress = totalWorkouts > 0 ? completed / totalWorkouts : 0;
+
+    return {
+      ...toPlanPreview(plan),
+      progress,
+    };
+  });
 }
+
 export async function getPlansMadeByCreator(
   creatorId: number
 ): Promise<PlanWithRevenue[]> {
@@ -230,3 +259,19 @@ export async function getCreatorIdForPlan(
   return plan.creatorId;
 }
 
+
+
+function calculateProgress(plan: Plan): number {
+  try {
+    const content = plan.content as PlanContentJSON | null;
+    if (!content || !Array.isArray(content.weeks)) return 0;
+
+    const allDays = content.weeks.flatMap((w: any) => w.days);
+    const workoutDays = allDays.filter((d: any) => d.type === 'workout');
+    const completed = workoutDays.filter((d: any) => d.completed).length;
+
+    return workoutDays.length === 0 ? 0 : completed / workoutDays.length;
+  } catch (e) {
+    return 0;
+  }
+}

@@ -22,6 +22,10 @@ export interface PlanPreview {
   weeksInfo: PlanWeekInfo[];
 }
 
+export interface PlanPreviewWithProgress extends PlanPreview {
+  progress: number; // 0 to 1 (or use percentage if preferred)
+}
+
 //paid stuff in the json
 export interface PlanContentJSON {
   // or just `string` if not strict
@@ -32,7 +36,7 @@ export interface PlanContentJSON {
   weeks: PlanWeek[];
 }
 
-export interface PlanPaidPreveiw extends PlanPreview, PlanContentJSON {}
+export interface PlanPaidPreveiw extends PlanPreview, PlanContentJSON { }
 
 export interface PlanWithRevenue extends PlanPreview {
   revenue: number;

@@ -16,7 +16,7 @@ import {
   Settings,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext'; // 👉 adjust the import path if different
-import type { PlanPreview } from '@shared/types/plan';
+import type { PlanPreviewWithProgress } from '@shared/types/plan';
 import { Link } from 'react-router-dom';
 import { Label } from '@radix-ui/react-label';
 import BecomeCreatorSection from '@frontend/components/BecomeCreatorSection';
@@ -35,7 +35,7 @@ const Me = () => {
   );
 
   // Plans state
-  const [plans, setPlans] = useState<PlanPreview[]>([]);
+  const [plans, setPlans] = useState<PlanPreviewWithProgress[]>([]);
   const [plansLoading, setPlansLoading] = useState<boolean>(true);
 
   const [uploading, setUploading] = useState(false);
@@ -55,7 +55,7 @@ const Me = () => {
           signal: controller.signal,
         });
         if (!res.ok) throw new Error(`Failed to fetch plans: ${res.status}`);
-        const data: PlanPreview[] = await res.json();
+        const data: PlanPreviewWithProgress[] = await res.json();
         setPlans(data);
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return; // fetch aborted

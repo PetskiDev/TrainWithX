@@ -22,7 +22,7 @@ import {
 import { User, Settings, LogOut, Menu } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
-import { goPublic, goToDashboard } from '@frontend/lib/nav';
+import { goPublic } from '@frontend/lib/nav';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -145,9 +145,13 @@ const Navbar = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {(user.isCreator || user.isAdmin) && <DropdownMenuItem onClick={() => goToDashboard(user)}>
+                  {(user.isAdmin) && <DropdownMenuItem onClick={() => goPublic('/admin')}>
                     <User className="mr-2 h-4 w-4" />
-                    {user.isAdmin ? 'Admin Dashboard' : 'Creator Dashboard'}
+                    Admin Dashboard
+                  </DropdownMenuItem>}
+                  {(user.isCreator) && <DropdownMenuItem onClick={() => goPublic('/me/creator')}>
+                    <User className="mr-2 h-4 w-4" />
+                    Creator Dashboard
                   </DropdownMenuItem>}
                   <DropdownMenuItem onClick={() => goPublic('/me')}>
                     <User className="mr-2 h-4 w-4" />

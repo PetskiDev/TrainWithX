@@ -153,6 +153,6 @@ model Completion {
 
   createdAt DateTime @default(now())
 
-  @@unique([userId, weekId, dayId])
+  @@unique([userId, planId, weekId, dayId])
   @@index([userId, planId])
 }

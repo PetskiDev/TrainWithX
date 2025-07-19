@@ -50,6 +50,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
 
   const reviewSectionRef = useRef<HTMLDivElement | null>(null);
 
+  const [completed, setCompleted] = useState<number>(0);
 
   useEffect(() => {
     if (!subdomain || !slug) return;
@@ -63,6 +64,12 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
         }
         const data: PlanPaidPreveiw = await response.json();
         setPlanPaid(data);
+
+        const completedWorkouts = data.weeks
+          .flatMap((w) => w.days)
+          .filter((d) => d.type === 'workout' && d.completed).length;
+
+        setCompleted(completedWorkouts)
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -150,8 +157,9 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
 
   const currentWeek = planContent.weeks.find((w) => w.id === selectedWeek);
 
-  const completedWorkouts = 404; //TODO FETCH
-  const progress = planContent.totalWorkouts ?? 10 / completedWorkouts; //TODO
+
+  const progress = planPaid.totalWorkouts > 0 ? Math.round((completed / planPaid.totalWorkouts) * 100) : 0;
+
 
   const markWorkoutComplete = async (weekId: number, dayId: number) => {
     try {
@@ -172,6 +180,8 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
         throw new Error(data.error);
       }
       updateWeekDayCompleted(weekId, dayId);
+
+      setCompleted((prev) => prev + 1);
 
       toast({
         title: "Workout Completed",
@@ -397,7 +407,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                   <div>
                     <p className="text-sm text-muted-foreground">Completed</p>
                     <p className="text-2xl font-bold">
-                      {completedWorkouts}/{planContent.totalWorkouts}
+                      {completed}/{planContent.totalWorkouts}
                     </p>
                   </div>
                   <CheckCircle className="h-5 w-5 text-green-500" />
@@ -716,15 +726,12 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                       <div className="flex items-center justify-between mb-2">
                         <span>Workouts Completed</span>
                         <span className="font-semibold">
-                          {completedWorkouts}/{planContent.totalWorkouts}
+                          {completed}/{planContent.totalWorkouts}
                         </span>
                       </div>
                       <Progress
                         value={
-                          (completedWorkouts /
-                            (planContent.totalWorkouts ?? 2)) *
-                          100
-                        }
+                          (completed / planContent.totalWorkouts) * 100}
                       />
                     </div>
                   </div>
