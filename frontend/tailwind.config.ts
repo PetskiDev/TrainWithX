@@ -103,7 +103,7 @@ export default {
         '.container': {
           width: '90%',
         },
-        '@media (max-width: 459px)': {
+        '@media (max-width: 479px)': {
           '.container': {
             width: '97%',
           },

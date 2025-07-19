@@ -31,9 +31,6 @@ export function toPlanPreview(
     slug: plan.slug,
     price: Number(plan.price),
     coverImage: plan.coverImage ?? undefined,
-    creatorId: plan.creator.id,
-    creatorUsername: plan.creator.user.username,
-    creatorSubdomain: plan.creator.subdomain,
     description: plan.description,
     originalPrice:
       plan.originalPrice !== null ? Number(plan.originalPrice) : undefined,
@@ -51,6 +48,12 @@ export function toPlanPreview(
       ) ?? 0,
     avgRating: plan.avgRating,
     noReviews: plan.noReviews,
+
+    creatorId: plan.creator.id,
+    creatorUsername: plan.creator.user.username,
+    creatorSubdomain: plan.creator.subdomain,
+    creatorAvatarUrl: plan.creator.user.avatarUrl ?? '',
+    creatorXp: plan.creator.yearsXP ?? 0,
   };
 }
 

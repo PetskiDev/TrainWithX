@@ -1,5 +1,5 @@
 import type { PlanPreview } from '@shared/types/plan';
-import { PlanCard } from './PlanCard';
+import PlanCardNew from '@frontend/components/PlanCardNew';
 
 interface Props {
   plans: PlanPreview[];
@@ -21,9 +21,9 @@ function PlansGrid({ plans }: Props) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       {plans.map((plan) => (
-        <PlanCard key={plan.id} plan={plan} />
+        <PlanCardNew key={plan.id} plan={plan} showCreator />
       ))}
     </div>
   );

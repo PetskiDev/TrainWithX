@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ArrowLeft, Play, Clock, Users, Star, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Play, Clock, Users, Star, CheckCircle, Shield, Download } from 'lucide-react';
 import type { PlanPaidPreveiw } from '@shared/types/plan';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 import { goToCreator } from '@frontend/lib/nav';
@@ -386,6 +386,53 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
             </Card>
           ))}
         </div>
+        <Card className="shadow-xl border-2">
+          <CardContent className="p-8">
+            {/* Pricing */}
+            <div className="text-center mb-6">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <span className="text-4xl font-bold text-primary">${plan.price}</span>
+                {hasDiscount && (
+                  <>
+                    <span className="text-xl text-red-500 line-through font-medium">${plan.originalPrice}</span>
+                    <Badge className="bg-red-500 hover:bg-red-500 text-white font-semibold">
+                      -{discountPercentage}% OFF
+                    </Badge>
+                  </>
+                )}
+              </div>
+              {hasDiscount && (
+                <p className="text-green-600 font-semibold mb-2">
+                  You save ${(plan.originalPrice! - plan.price).toFixed(0)}!
+                </p>
+              )}
+              <p className="text-sm text-muted-foreground">One-time payment • Lifetime access</p>
+            </div>
+
+            {/* CTA Button */}
+            <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl text-lg mb-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]">
+              <div className="flex items-center justify-center gap-2">
+                <span>Start Your Transformation</span>
+                <Play className="h-5 w-5" />
+              </div>
+            </Button>
+
+            {/* Trust Signals */}
+            <div className="space-y-3 text-center text-sm text-muted-foreground">
+              <div className="flex items-center justify-center gap-4">
+                <div className="flex items-center gap-1">
+                  <Shield className="h-4 w-4 text-green-500" />
+                  <span>Secure payment</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Download className="h-4 w-4 text-blue-500" />
+                  <span>Instant access</span>
+                </div>
+              </div>
+              <p>✓ 30-day money-back guarantee</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div >
   );

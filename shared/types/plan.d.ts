@@ -11,8 +11,6 @@ export interface PlanPreview {
   isPublished: boolean;
   avgRating: Decimal;
   noReviews: number;
-  creatorUsername: string;
-  creatorSubdomain: string;
   totalWorkouts: number;
   duration: number;
   features: string[];
@@ -20,6 +18,12 @@ export interface PlanPreview {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   sales: number;
   weeksInfo: PlanWeekInfo[];
+
+  //needed in most places. Calculated in transformer
+  creatorUsername: string;
+  creatorSubdomain: string;
+  creatorAvatarUrl: string;
+  creatorXp: Decimal;
 }
 
 export interface PlanPreviewWithProgress extends PlanPreview {
@@ -58,6 +62,8 @@ export type CreatePlanDto = Omit<
   | 'noReviews'
   | 'duration'
   | 'features'
+  | 'creatorAvatarUrl'
+  | 'creatorXp'
 >; //TODO SEPERATE THIS INTO DIFFERENT DATA TYPE AND MAKE DIFFERENT HIEARACHY. THOSE ARE ALL AFTER-CALCULATED VALUES WHICH STRART OFF AT 0 BY DEFAULT
 
 export interface PlanWeek {
