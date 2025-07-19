@@ -3,7 +3,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { PlanCard } from '@/components/PlanCard';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Calendar,
@@ -20,6 +19,8 @@ import type { PlanPreviewWithProgress } from '@shared/types/plan';
 import { Link } from 'react-router-dom';
 import { Label } from '@radix-ui/react-label';
 import BecomeCreatorSection from '@frontend/components/BecomeCreatorSection';
+import { PlanOwnedCard } from '@frontend/components/PlanOwnedCard';
+
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Component
@@ -69,12 +70,6 @@ const Me = () => {
     return () => controller.abort();
   }, [user]);
 
-  // ──────────────────────────────────────────────────────────────────────────────
-  // Handlers
-  // ──────────────────────────────────────────────────────────────────────────────
-  const handlePlanClick = (planId: number) => {
-    console.log('Opening plan:', planId);
-  };
 
   const handleEditName = () => {
     if (!user) return;
@@ -304,7 +299,7 @@ const Me = () => {
 
 
           {/* ──────────────── Stats Cards ──────────────── */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <Card>
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
@@ -372,10 +367,9 @@ const Me = () => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {plans.map((plan) => (
-                    <PlanCard
+                    <PlanOwnedCard
                       key={plan.id}
                       plan={plan}
-                      onPlanClick={handlePlanClick}
                     />
                   ))}
                 </div>

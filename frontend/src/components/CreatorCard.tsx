@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
-import { Users, Star } from 'lucide-react';
+import { Star, ShoppingCart } from 'lucide-react';
 
 export const CreatorCard = ({
   username,
@@ -41,7 +41,7 @@ export const CreatorCard = ({
       <CardContent className="text-center space-y-4">
         <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1">
-            <Users className="h-4 w-4" />
+            <ShoppingCart className="h-4 w-4" />
             <span>{totalSales}</span>
           </div>
           <div className="flex items-center gap-1">
