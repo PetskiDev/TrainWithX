@@ -18,7 +18,7 @@ export interface PlanPreview {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   sales: number;
   weeksInfo: PlanWeekInfo[];
-
+  tags: string[];
   //needed in most places. Calculated in transformer
   creatorUsername: string;
   creatorSubdomain: string;
@@ -36,7 +36,6 @@ export interface PlanContentJSON {
   introVideo?: string;
   totalWeeks: number;
   goals: string[];
-  tags: string[];
   weeks: PlanWeek[];
 }
 
@@ -61,7 +60,6 @@ export type CreatePlanDto = Omit<
   | 'avgRating'
   | 'noReviews'
   | 'duration'
-  | 'features'
   | 'creatorAvatarUrl'
   | 'creatorXp'
 >; //TODO SEPERATE THIS INTO DIFFERENT DATA TYPE AND MAKE DIFFERENT HIEARACHY. THOSE ARE ALL AFTER-CALCULATED VALUES WHICH STRART OFF AT 0 BY DEFAULT

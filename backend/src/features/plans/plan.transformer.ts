@@ -48,6 +48,8 @@ export function toPlanPreview(
       ) ?? 0,
     avgRating: plan.avgRating,
     noReviews: plan.noReviews,
+    tags: plan.tags,
+
 
     creatorId: plan.creator.id,
     creatorUsername: plan.creator.user.username,
@@ -75,7 +77,6 @@ export function toPaidPlan(
         0
       ) ?? 0,
     goals: content?.goals ?? [],
-    tags: content?.tags ?? [],
     weeks:
       content?.weeks.map((week) => ({
         id: week.id,

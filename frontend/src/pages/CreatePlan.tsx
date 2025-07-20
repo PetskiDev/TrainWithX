@@ -22,6 +22,11 @@ import type {
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 import { useAuth } from '@frontend/context/AuthContext';
 import { goPublic } from '@frontend/lib/nav';
+import { Badge } from '@frontend/components/ui/badge';
+
+
+const availableTags = ["Strength Training", "Fat Loss", "Home Workout", "Gym"];
+
 
 const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
   const isEditing = !!init;
@@ -32,6 +37,8 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
   const [allCreators, setAllCreators] = useState<CreatorPreviewDTO[] | null>(
     null
   );
+  const [customTag, setCustomTag] = useState("");
+
   const [planData, setPlanData] = useState<CreatePlanDto>({
     title: '',
     description: '',
@@ -43,6 +50,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
     tags: [],
     weeks: [],
     creatorId: -1, //Handle below
+    features: [],
   });
 
   const [activeTab, setActiveTab] = useState('basic');
@@ -266,25 +274,39 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
     }));
   };
 
-  const addTag = () => {
+
+  const addFeature = () => {
     setPlanData((prev) => ({
       ...prev,
-      tags: [...prev.tags, ''],
+      features: [...prev.features, ''],
     }));
   };
 
-  const updateTag = (index: number, value: string) => {
+  const updateFeature = (index: number, value: string) => {
     setPlanData((prev) => ({
       ...prev,
-      tags: prev.tags.map((tag, i) => (i === index ? value : tag)),
+      features: prev.features.map((feature, i) => (i === index ? value : feature)),
     }));
   };
+
+  const removeFeature = (index: number) => {
+    setPlanData((prev) => ({
+      ...prev,
+      features: prev.features.filter((_, i) => i !== index),
+    }));
+  };
+
+  const addTag = (tag: string) => {
+    if (!tag.trim()) return;
+    setPlanData({ ...planData, tags: [...planData.tags, tag.trim()] });
+    setCustomTag("");
+  };
+
 
   const removeTag = (index: number) => {
-    setPlanData((prev) => ({
-      ...prev,
-      tags: prev.tags.filter((_, i) => i !== index),
-    }));
+    const newTags = [...planData.tags];
+    newTags.splice(index, 1);
+    setPlanData({ ...planData, tags: newTags });
   };
 
   const handlePreview = () => {
@@ -512,7 +534,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
                 <CardContent className="space-y-4">
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">
-                      What will users achieve with this plan?
+                      What will users achieve with this plan? (this section is available when the user purchases the plan)
                     </p>
                     <Button size="sm" onClick={addGoal}>
                       <Plus className="h-4 w-4 mr-2" />
@@ -546,45 +568,113 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
                 </CardContent>
               </Card>
 
-              {/* Tags Section */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Plan Tags</CardTitle>
+                  <CardTitle>Plan Features</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">
-                      Tags help users discover your plan
+                      Selling point of this plan. (This is listed on the plan purchase card)
                     </p>
-                    <Button size="sm" onClick={addTag}>
+                    <Button size="sm" onClick={addFeature}>
                       <Plus className="h-4 w-4 mr-2" />
-                      Add Tag
+                      Add Feature
                     </Button>
                   </div>
 
-                  {planData.tags.map((tag, index) => (
+                  {planData.features.map((feature, index) => (
                     <div key={index} className="flex gap-2">
                       <Input
-                        value={tag}
-                        onChange={(e) => updateTag(index, e.target.value)}
-                        placeholder="e.g., strength, beginner, home-workout"
+                        value={feature}
+                        onChange={(e) => updateFeature(index, e.target.value)}
+                        placeholder="e.g., 4-week progressive overload program"
                         className="flex-1"
                       />
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => removeTag(index)}
+                        onClick={() => removeFeature(index)}
                       >
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
                   ))}
 
-                  {planData.tags.length === 0 && (
+                  {planData.features.length === 0 && (
                     <p className="text-sm text-muted-foreground text-center py-4">
-                      No tags added yet. Click "Add Tag" to get started.
+                      No features added yet. Click "Add Feature" to get started.
                     </p>
                   )}
+                </CardContent>
+              </Card>
+
+              {/* Tags Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Plan Tags</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Label>Tags help users discover your plan</Label>
+
+                  {/* Selected tags as badges */}
+                  {planData.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {planData.tags.map((tag, index) => (
+                        <Badge
+                          key={tag}
+                          variant="secondary"
+                          className="flex items-center gap-1"
+                        >
+                          {tag}
+                          <X
+                            className="h-3 w-3 cursor-pointer hover:text-destructive"
+                            onClick={() => removeTag(index)}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+
+
+                  {/* Suggested tags */}
+                  <div className="flex flex-wrap gap-2">
+                    {availableTags
+                      .filter((tag) => !planData.tags.includes(tag))
+                      .map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="outline"
+                          className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
+                          onClick={() => addTag(tag)}
+                        >
+                          <Plus className="h-3 w-3 mr-1" />
+                          {tag}
+                        </Badge>
+                      ))}
+                  </div>
+
+                  {/* Add custom tag input */}
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Add custom tag..."
+                      value={customTag}
+                      onChange={(e) => setCustomTag(e.target.value)}
+                      onKeyPress={(e) =>
+                        e.key === "Enter" && (e.preventDefault(), addTag(customTag))
+                      }
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => addTag(customTag)}
+                      disabled={!customTag.trim()}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
 

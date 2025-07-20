@@ -54,6 +54,7 @@ model Plan {
   title            String
   slug             String       @unique @db.VarChar(50)
   description      String
+  tags             String[]     @default([])
   features         String[]     @default([])
   coverImage       String?
   difficulty       Difficulty?

@@ -33,7 +33,7 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
   }
 
   return (
-    <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-0 shadow-sm flex flex-col flex-space-between h-full">
+    <Card className="relative group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-0 shadow-sm flex flex-col flex-space-between h-full">
       <div className="relative">
         <div className="aspect-video overflow-hidden">
           <img
@@ -52,14 +52,48 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
         </div>
       </div>
 
-      <CardContent className="relative flex-grow flex flex-col justify-between space-y-5">
 
-        <div className="relative space-y-5 pt-5">
-          {/* Tags */}
+      <CardContent className="relative flex-grow flex flex-col justify-between">
+        {/* Tags */}
+        {/* Show max 3, if still more, overflow */}
+        {plan.tags.length > 0 && (
+          <div className="absolute -top-8 left-0 right-0 px-4 flex items-center gap-2 overflow-hidden">
+            <div className="flex gap-2 overflow-hidden max-w-full">
+              {(() => {
+                const maxTagsToShow = Math.min(3, plan.tags.length)
+                const tagsToShow = plan.tags.slice(0, maxTagsToShow)
+                const remainingCount = plan.tags.length - maxTagsToShow
 
+                return (
+                  <>
+                    {tagsToShow.map((tag, index) => (
+                      <Badge
+                        key={index}
+                        variant="outline"
+                        className="bg-secondary text-xs px-2 py-0.5 whitespace-nowrap flex-shrink-0"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                    {remainingCount > 0 && (
+                      <Badge
+                        variant="outline"
+                        className="bg-secondary text-xs px-2 py-0.5 whitespace-nowrap flex-shrink-0"
+                      >
+                        +{remainingCount}
+                      </Badge>
+                    )}
+                  </>
+                )
+              })()}
+            </div>
+          </div>
+        )}
+
+        <div className="relative space-y-4 py-3">
 
           {/* Title */}
-          <h3 className="font-semibold text-xl leading-tight line-clamp-3 group-hover:text-primary transition-colors">
+          <h3 className="font-semibold text-xl leading-normal line-clamp-3 group-hover:text-primary transition-colors">
             {plan.title}
           </h3>
 
@@ -102,13 +136,13 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
 
 
         </div>
-        <div className="space-y-5">
+        <div className="space-y-4">
           {/* Rating */}
 
-          <div className="flex items-center gap-4 text-base text-muted-foreground">
+          <div className="flex items-center gap-4 text-base text-muted-foreground mt-2">
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-medium text-foreground">{plan.avgRating}</span>
+              <span className="font-medium text-foreground">{Number(plan.avgRating).toFixed(1)}</span>
               <span>({plan.noReviews})</span>
             </div>
             <div className="flex items-center gap-1 text-base text-muted-foreground">

@@ -57,13 +57,12 @@ export async function createPlanService(newPlan: CreatePlanDto) {
 
   let discountId = await createDiscountFor(newPlan);
 
-  const { slug, goals, tags, weeks, introVideo, ...previewData } = newPlan;
+  const { slug, goals, weeks, introVideo, ...previewData } = newPlan;
 
 
   const totalWeeks = weeks.length;
   const newContent: PlanContentJSON = {
     goals,
-    tags,
     weeks,
     introVideo,
     totalWeeks,
