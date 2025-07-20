@@ -48,6 +48,15 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
       {/* Avatar positioned over cover */}
       <div className="relative flex items-end gap-3 px-5 -mt-8">
 
+        {/* Instagram logo */}
+        {creator.instagram && (<a
+          href={`https://instagram.com/${creator.instagram}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center justify-center w-10 h-10 absolute top-11 right-5 z-[1000] text-muted-foreground hover:text-foreground transition [@media(max-width:370px)]:-top-3 [@media(max-width:370px)]:text-white">
+          <SiInstagram className="w-5 h-5" />
+        </a>)}
 
         <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
           <AvatarImage src={creator.avatarUrl || "/placeholder.svg"} alt={creator.username} />
@@ -64,15 +73,7 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
           <p className="text-sm text-muted-foreground">{creator.subdomain}.trainwithx.com</p>
         </div>
 
-        {/* Instagram logo */}
-        <a
-          href={`https://instagram.com/${''}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute top-12 right-5"
-        >
-          <SiInstagram className="w-5 h-5" />
-        </a>
+
       </div>
 
       <CardContent className="p-5 pt-3 flex-grow flex flex-col justify-between">

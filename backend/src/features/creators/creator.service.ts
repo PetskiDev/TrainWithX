@@ -55,6 +55,7 @@ export async function promoteUserToCreator(application: CreatorApplication, tx: 
         yearsXP: application.experience,
         bio: application.bio,
         specialties: application.specialties,
+        instagram: application.instagram,
       },
       include: { user: true },
     }).then(async (creator) => {

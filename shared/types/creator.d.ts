@@ -12,6 +12,7 @@ export interface CreatorPreviewDTO {
   coverUrl?: string;
   avatarUrl?: string;
   profileViews: number;
+  instagram?: String;
 }
 
 export interface CreatorFullDTO extends CreatorPreviewDTO {
@@ -38,6 +39,7 @@ export interface SendApplicationDTO {
   certifications?: string;
   socialMedia?: string;
   agreeToTerms: boolean;
+  instagram?: string;
 }
 
 

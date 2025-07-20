@@ -33,6 +33,7 @@ model Creator {
   subdomain     String   @unique @db.VarChar(50)
   yearsXP       Decimal  @db.Decimal(3, 1)
   coverUrl      String?
+  instagram     String?
   avgRating     Decimal  @default(0) @db.Decimal(5, 1)
   noReviews     Int      @default(0)
   specialties   String[] @default([])
@@ -111,6 +112,7 @@ model CreatorApplication {
   email          String
   subdomain      String            @unique
   specialties    String[]
+  instagram      String?
   experience     String
   bio            String
   certifications String?

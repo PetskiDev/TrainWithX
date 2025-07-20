@@ -63,6 +63,7 @@ export async function submitCreatorApplication(
     avatarUrl: app.user.avatarUrl ?? undefined,
     username: app.user.username,
     status: app.status,
+    instagram: app.instagram ?? undefined,
   }));
 }
 

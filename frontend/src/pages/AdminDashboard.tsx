@@ -18,6 +18,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Avatar } from "@frontend/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SiCheckmarx } from "react-icons/si";
+import { Link } from "react-router-dom";
 
 
 
@@ -615,7 +616,12 @@ const AdminDashboard = () => {
                                   <h3 className="font-semibold text-lg">{application.fullName}</h3>
                                   <p className="text-muted-foreground">{application.email}</p>
                                   <p className="text-sm text-muted-foreground">Requested on {new Date(application.createdAt).toLocaleDateString()}</p>
+
+                                  <p className="font-medium text-sm mb-1">Instagram: <Link className="underline text-blue-600" to={`https://instagram.com/${application.instagram}`}>@{application.instagram}</Link></p>
+
                                 </div>
+
+
                               </div>
                               <Badge variant="outline">Pending Review</Badge>
                             </div>
@@ -652,6 +658,7 @@ const AdminDashboard = () => {
                                 <p className="font-medium text-sm mb-1">Certifications:</p>
                                 <p className="text-sm text-muted-foreground">{application.certifications || "None provided"}</p>
                               </div>
+
                             </div>
 
                             <div className="space-y-3">

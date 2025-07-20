@@ -71,9 +71,6 @@ export const PlanOwnedCard = ({ plan }: { plan: PlanPreviewWithProgress }) => {
             </CardHeader>
 
             <CardContent className="pt-0 flex-grow">
-                <p className="text-sm text-muted-foreground line-clamp-3">
-                    {description}
-                </p>
             </CardContent>
 
             <CardFooter className="pt-0 flex flex-col gap-5">

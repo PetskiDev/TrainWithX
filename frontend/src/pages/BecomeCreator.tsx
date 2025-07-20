@@ -16,7 +16,6 @@ import { Plus, X } from "lucide-react";
 
 
 const availableSpecialties = [
-  'All',
   "Strength Training",
   "Bodybuilding & Hypertrophy",
   "HIIT",
@@ -283,19 +282,37 @@ const BecomeCreator = () => {
               </div>
 
 
-              <div className="space-y-2">
-                <Label htmlFor="experience">Years of Experience *</Label>
-                <Select onValueChange={(value) => handleInputChange("experience", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your experience level" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="2">1-2 years</SelectItem>
-                    <SelectItem value="4">3-5 years</SelectItem>
-                    <SelectItem value="8">6-10 years</SelectItem>
-                    <SelectItem value="10">10+ years</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Instagram Handle */}
+                <div className="space-y-2">
+                  <Label htmlFor="instagram">Instagram</Label>
+                  <div className="relative">
+                    <Input
+                      id="instagram"
+                      value={formData.instagram}
+                      onChange={(e) => handleInputChange("instagram", e.target.value.replace(/^@/, ""))}
+                      placeholder="yourhandle"
+                      className="pl-7"
+                    />
+                    <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">@</span>
+                  </div>
+                </div>
+
+                {/* Years of Experience */}
+                <div className="space-y-2">
+                  <Label htmlFor="experience">Years of Experience *</Label>
+                  <Select onValueChange={(value) => handleInputChange("experience", value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your experience level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="2">1–2 years</SelectItem>
+                      <SelectItem value="4">3–5 years</SelectItem>
+                      <SelectItem value="8">6–10 years</SelectItem>
+                      <SelectItem value="10">10+ years</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div className="space-y-2">

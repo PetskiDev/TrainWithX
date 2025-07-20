@@ -166,7 +166,7 @@ const CreatorDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Total Revenue</p>
-                  <p className="text-2xl font-bold">${totalRevenue.toLocaleString()}</p>
+                  <p className="text-2xl font-bold">${totalRevenue.toLocaleString()} </p>
                 </div>
                 <div className="p-3 bg-green-500/10 rounded-full">
                   <DollarSign className="h-5 w-5 text-green-500" />
