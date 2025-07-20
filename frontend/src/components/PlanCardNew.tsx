@@ -45,7 +45,7 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
           />
 
           {hasDiscount && (
-            <Badge className="absolute top-3 right-3 bg-red-500 hover:bg-red-500 text-white font-semibold text-sm px-3">
+            <Badge className="absolute top-3 right-3 bg-red-500 hover:bg-red-500 text-white font-semibold text-sm text px-3">
               -{discountPercentage}%
             </Badge>
           )}
@@ -164,7 +164,7 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
               <div className="flex items-top gap-2">
                 <span className="text-3xl font-bold text-primary">${plan.price}</span>
                 {hasDiscount && (
-                  <span className="text-md text-muted-foreground line-through">
+                  <span className="text-xl text-red-400 line-through">
                     ${plan.originalPrice}
                   </span>
                 )}

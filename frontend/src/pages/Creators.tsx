@@ -1,10 +1,42 @@
 // src/pages/Creators.tsx
-import { useEffect, useState } from 'react';
-import { CreatorCard } from '@/components/CreatorCard';
+import { useEffect, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Filter, Search, SortAsc } from 'lucide-react';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 import { goToCreator } from '@frontend/lib/nav';
+import CreatorCard from '@frontend/components/CreatorCard';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@frontend/components/ui/select';
+
+const specialties = [
+  'All',
+  "Strength Training",
+  "Bodybuilding & Hypertrophy",
+  "HIIT",
+  "Fat Loss",
+  "Cardio & Endurance",
+  "Powerlifting",
+  "CrossFit",
+  "Home Workouts",
+  "Calisteni",
+  "Calisthenics",
+  "Pilates",
+  "Yoga",
+  "Running",
+  "Bodyweight",
+  "Rehab & Recovery",
+  "Women's Fitness",
+  "Beginner Friendly",
+  "Martial Arts",
+]
+
+const sortOptions = [
+  { label: "Most Sales", value: "sales" },
+  { label: "Highest Rating", value: "rating" },
+  { label: "Most Experience", value: "experience" },
+  { label: "Most Plans", value: "plans" },
+  { label: "A–Z", value: "alphabetical" }
+]
+
 
 const Creators = () => {
   // loading / data / error state
@@ -13,6 +45,49 @@ const Creators = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [searchTerm, setSearchTerm] = useState('');
+
+  const [sortBy, setSortBy] = useState("sales")
+  const [selectedCategory, setSelectedCategory] = useState("All")
+
+  const filteredAndSortedCreators = useMemo(() => {
+    const filtered = creators.filter((creator) => {
+      const search = searchTerm.toLowerCase()
+
+      const matchesSearch =
+        creator.username.toLowerCase().includes(search) ||
+        creator.subdomain.toLowerCase().includes(search) ||
+        creator.bio.toLowerCase().includes(search) ||
+        creator.specialties.some(specialty =>
+          specialty.toLowerCase().includes(search)
+        )
+
+      const matchesCategory =
+        selectedCategory === "All" ||
+        creator.specialties.some(specialty =>
+          specialty.toLowerCase().includes(selectedCategory.toLowerCase())
+        ) || creator.specialties.some(specialty =>
+          selectedCategory.toLowerCase().includes(specialty.toLowerCase())
+        );
+      return matchesSearch && matchesCategory
+    })
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "sales":
+          return b.totalSales - a.totalSales
+        case "rating":
+          return b.avgRating - a.avgRating
+        case "experience":
+          return b.yearsXP - a.yearsXP
+        case "plans":
+          return b.plansCount - a.plansCount
+        case "alphabetical":
+        default:
+          return a.username.localeCompare(b.username)
+
+      }
+    })
+    return filtered
+  }, [creators, searchTerm, selectedCategory, sortBy])
 
   useEffect(() => {
     const abort = new AbortController();
@@ -36,12 +111,6 @@ const Creators = () => {
     return () => abort.abort();
   }, []);
 
-  const filteredCreators = creators.filter(
-    (c) =>
-      c.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      c.bio.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   const handleCreatorClick = (subdomain: string) => {
     goToCreator({ subdomain });
   };
@@ -50,22 +119,63 @@ const Creators = () => {
     <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header & search */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">Fitness Creators</h1>
-          <p className="text-muted-foreground text-lg mb-6">
+
+        <div className="mb-6 text-center">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Fitness Creators</h1>
+          <p className="text-gray-600">
             Discover amazing fitness creators and their expert training programs
           </p>
 
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              type="text"
-              placeholder="Search creators..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+          <div className="mt-4 bg-white rounded-lg shadow-sm p-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search creators..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+
+              {/* Category Filter */}
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger>
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="awefweawfe" />
+                </SelectTrigger>
+                <SelectContent>
+                  {specialties.map((specialty) => (
+                    <SelectItem key={specialty} value={specialty}>
+                      {specialty}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Sort */}
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger>
+                  <SortAsc className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Results Count */}
+              <div className="flex items-center text-sm text-gray-600">
+                {filteredAndSortedCreators.length} creator{filteredAndSortedCreators.length !== 1 ? "s" : ""} found
+              </div>
+            </div>
           </div>
+
         </div>
 
         {/* Content */}
@@ -80,18 +190,18 @@ const Creators = () => {
 
         {!loading && !error && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredCreators.map((creator) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {filteredAndSortedCreators.map((creator) => (
                 <div
                   key={creator.id}
                   onClick={() => handleCreatorClick(creator.subdomain)}
                 >
-                  <CreatorCard {...creator} />
+                  <CreatorCard creator={creator} />
                 </div>
               ))}
             </div>
 
-            {filteredCreators.length === 0 && (
+            {filteredAndSortedCreators.length === 0 && (
               <div className="flex flex-col items-center justify-center py-12">
                 <h3 className="text-xl font-semibold text-muted-foreground mb-2">
                   No creators found

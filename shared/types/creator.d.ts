@@ -11,10 +11,10 @@ export interface CreatorPreviewDTO {
   bio: string;
   coverUrl?: string;
   avatarUrl?: string;
+  profileViews: number;
 }
 
 export interface CreatorFullDTO extends CreatorPreviewDTO {
-  profileViews: number;
   totalRevenue: number;
   revenueThisMonth: number;
 }

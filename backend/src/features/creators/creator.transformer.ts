@@ -24,6 +24,7 @@ export async function transformCreatorToPreview(
     specialties: creator.specialties,
     avgRating: creator.avgRating,
     noReviews: creator.noReviews,
+    profileViews: Math.floor(Math.random() * 1000000),
   };
 }
 
@@ -66,7 +67,6 @@ export async function transformToCreatorFullDTO(
 
   return {
     ...preview,
-    profileViews: 123, // TODO: replace with real analytics
     totalRevenue: Number(revenueResult._sum.amount ?? 0),
     revenueThisMonth: Number(revenueThisMonth._sum.amount ?? 0),
   };

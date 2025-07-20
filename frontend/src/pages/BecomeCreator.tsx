@@ -16,19 +16,26 @@ import { Plus, X } from "lucide-react";
 
 
 const availableSpecialties = [
+  'All',
   "Strength Training",
+  "Bodybuilding & Hypertrophy",
+  "HIIT",
+  "Fat Loss",
   "Cardio & Endurance",
-  "Yoga & Flexibility",
-  "Pilates",
-  "CrossFit",
-  "Bodybuilding",
   "Powerlifting",
+  "CrossFit",
+  "Home Workouts",
+  "Calisteni",
   "Calisthenics",
+  "Pilates",
+  "Yoga",
+  "Running",
+  "Bodyweight",
+  "Rehab & Recovery",
+  "Women's Fitness",
+  "Beginner Friendly",
   "Martial Arts",
-  "Nutrition",
-  "Physical Therapy",
-  "Sports Performance"
-];
+]
 
 const BecomeCreator = () => {
   const { user } = useAuth();
