@@ -17,7 +17,7 @@ import {
 import { useAuth } from '@/context/AuthContext'; // 👉 adjust the import path if different
 import type { PlanPreviewWithProgress } from '@shared/types/plan';
 import { Link } from 'react-router-dom';
-import { Label } from '@radix-ui/react-label';
+import { Label } from '@/components/ui/label';
 import BecomeCreatorSection from '@frontend/components/BecomeCreatorSection';
 import { PlanOwnedCard } from '@frontend/components/PlanOwnedCard';
 

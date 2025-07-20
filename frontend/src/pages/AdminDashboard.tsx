@@ -16,7 +16,7 @@ import type { PlanWithRevenue } from "@shared/types/plan";
 import type { CreatorApplicationDTO } from "@shared/types/creator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Avatar } from "@frontend/components/ui/avatar";
-import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SiCheckmarx } from "react-icons/si";
 
 
@@ -776,11 +776,12 @@ const AdminDashboard = () => {
                       <TableRow key={creator.id}>
                         <TableCell className="text-left">
                           <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                              <span className="text-sm font-medium">
+                            <Avatar className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                              <AvatarImage src={creator.avatarUrl} alt={creator.username} />
+                              <AvatarFallback>
                                 {creator.username.split(' ').map(n => n[0]).join('')}
-                              </span>
-                            </div>
+                              </AvatarFallback>
+                            </Avatar>
                             <div>
                               <p className="font-medium">{creator.username}</p>
                             </div>

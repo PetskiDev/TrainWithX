@@ -1,4 +1,4 @@
-import { Star, Clock, Dumbbell, Users } from "lucide-react"
+import { Star, Clock, Dumbbell, Users, Shield } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -126,7 +126,7 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
           {/* Price and CTA - Always at bottom */}
 
           <div className="border-t">
-            <div className="flex items-center justify-between h-16 mt-2">
+            <div className="flex items-center justify-between h-12 mt-2">
               <div className="flex items-top gap-2">
                 <span className="text-3xl font-bold text-primary">${plan.price}</span>
                 {hasDiscount && (
@@ -152,7 +152,7 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
               <div className="flex items-center justify-between">
                 <span className="text-lg">Start Training Now</span>
                 <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold">${plan.price}</span>
+                  <span className="text-xl font-bold">{' '}</span>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
@@ -160,9 +160,15 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
               </div>
             </Button>
 
-            <div className="text-center">
-              <span className="text-sm text-muted-foreground">✓ Instant access</span>
+            <div className="mt-1 flex text-sm items-center justify-between text-center">
+              <div className="flex items-center gap-1">
+                <Shield className="h-4 w-4 text-green-500" />
+                <span>Secure payment</span>
+              </div>
+              <span className="text-muted-foreground">✓ Instant access</span>
+
             </div>
+
           </div>
         </div>
       </CardContent>

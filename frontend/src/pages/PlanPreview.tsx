@@ -337,7 +337,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
           </div>
         </div>
 
-        <div className="mt-8 text-2xl space-y-6">
+        <div className="my-8 text-2xl space-y-6">
           {reviews.map((review, idx) => (
             <Card key={idx} className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
@@ -410,7 +410,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
             </div>
 
             {/* CTA Button */}
-            <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl text-lg mb-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]">
+            <Button className="w-full gradient-bg from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl text-lg mb-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]">
               <div className="flex items-center justify-center gap-2">
                 <span>Start Your Transformation</span>
                 <Play className="h-5 w-5" />
