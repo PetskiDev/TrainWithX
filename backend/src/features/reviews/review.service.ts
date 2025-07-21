@@ -52,6 +52,7 @@ export async function getReview(userId: number, planId: number): Promise<ReviewP
       },
     },
     select: {
+      id: true,
       rating: true,
       comment: true,
       createdAt: true,
@@ -63,6 +64,7 @@ export async function getReview(userId: number, planId: number): Promise<ReviewP
   }
 
   return {
+    id: review.id,
     rating: review.rating,
     comment: review.comment ?? '',
     createdAt: review.createdAt,
@@ -190,6 +192,7 @@ export async function getReviewsOfPlan(
   });
 
   return reviews.map((review) => ({
+    id: review.id,
     rating: review.rating,
     comment: review.comment ?? '',
     createdAt: review.createdAt,
@@ -218,6 +221,7 @@ export async function getCreatorReviews(
   });
 
   return reviews.map((review) => ({
+    id: review.id,
     rating: review.rating,
     comment: review.comment ?? '',
     createdAt: review.createdAt,

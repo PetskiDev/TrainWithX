@@ -11,7 +11,6 @@ export const PlanOwnedCard = ({ plan }: { plan: PlanPreviewWithProgress }) => {
 
     const {
         title,
-        description,
         difficulty,
         creatorUsername,
         progress,

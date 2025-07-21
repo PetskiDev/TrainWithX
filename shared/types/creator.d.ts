@@ -13,6 +13,7 @@ export interface CreatorPreviewDTO {
   avatarUrl?: string;
   profileViews: number;
   instagram?: String;
+  joinedAt: Date;
 }
 
 export interface CreatorFullDTO extends CreatorPreviewDTO {

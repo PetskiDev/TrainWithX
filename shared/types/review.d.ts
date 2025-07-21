@@ -1,4 +1,5 @@
 export interface ReviewPreviewDTO {
+  id: number;
   userId: number;
   planId: number;
   comment: string;

@@ -10,6 +10,7 @@ import type { CreatorPreviewDTO } from '@shared/types/creator';
 import { goToCreator } from '@frontend/lib/nav';
 import BuyButton from '@frontend/components/BuyButton';
 import type { CreatorPageReviewDTO } from '@shared/types/review';
+import { RatingBreakdownCard } from '@frontend/components/RatingBreakdownCard';
 
 const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
   const { slug } = useParams<{
@@ -305,41 +306,13 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
             </Card>
 
             {/* Review Breakdown */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Reviews</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">{reviews.length || 0} Reviews</h3>
-
-                  {[5, 4, 3, 2, 1].map((stars) => {
-                    const reviewsForStar = reviews?.filter(r => r.rating === stars).length || 0;
-                    const totalReviews = reviews?.length || 1;
-                    const percentage = (reviewsForStar / totalReviews) * 100;
-
-                    return (
-                      <div key={stars} className="flex items-center gap-2 mb-2">
-                        <span className="text-xs font-medium w-12">{stars} Stars</span>
-                        <div className="flex-1 bg-muted rounded-full h-1.5">
-                          <div
-                            className="bg-primary h-1.5 rounded-full transition-all duration-300"
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
-                        <span className="text-xs text-muted-foreground w-6">({reviewsForStar})</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
-            </Card>
+            <RatingBreakdownCard reviews={reviews}/>
           </div>
         </div>
 
         <div className="my-8 text-2xl space-y-6">
-          {reviews.map((review, idx) => (
-            <Card key={idx} className="hover:shadow-lg transition-shadow">
+          {reviews.map((review) => (
+            <Card key={review.id} className="hover:shadow-lg transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
                   {/* User Avatar */}

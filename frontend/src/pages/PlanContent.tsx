@@ -120,6 +120,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
 
         const data: ReviewPreviewDTO = await res.json();
         setExistingReview({
+          id: data.id,
           rating: data.rating,
           comment: data.comment,
           createdAt: data.createdAt,
@@ -266,6 +267,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
 
 
       setExistingReview({
+        id: -1,
         rating: payload.rating,
         comment: payload.comment ?? '',
         createdAt: new Date(), // or await response.json().createdAt if returned
