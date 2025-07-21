@@ -17,7 +17,6 @@ const specialties = [
   "Powerlifting",
   "CrossFit",
   "Home Workouts",
-  "Calisteni",
   "Calisthenics",
   "Pilates",
   "Yoga",

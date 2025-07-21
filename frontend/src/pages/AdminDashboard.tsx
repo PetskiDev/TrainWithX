@@ -654,10 +654,6 @@ const AdminDashboard = () => {
                                 <p className="font-medium text-sm mb-1">Experience:</p>
                                 <p className="text-sm text-muted-foreground">{application.experience}</p>
                               </div>
-                              <div>
-                                <p className="font-medium text-sm mb-1">Certifications:</p>
-                                <p className="text-sm text-muted-foreground">{application.certifications || "None provided"}</p>
-                              </div>
 
                             </div>
 

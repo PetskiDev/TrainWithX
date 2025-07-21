@@ -37,6 +37,8 @@ model Creator {
   avgRating     Decimal  @default(0) @db.Decimal(5, 1)
   noReviews     Int      @default(0)
   specialties   String[] @default([])
+  certifications String[] @default([])
+  achievements String[] @default([])
   becomeCreator DateTime @default(now())
   user          User     @relation(fields: [id], references: [id], onDelete: Cascade)
   plans         Plan[]
@@ -115,7 +117,6 @@ model CreatorApplication {
   instagram      String?
   experience     String
   bio            String
-  certifications String?
   socialMedia    String?
   agreeToTerms   Boolean
   user           User              @relation(fields: [userId], references: [id])

@@ -1,6 +1,6 @@
 // src/pages/Creator.tsx
 import { useEffect, useRef, useState } from 'react';
-import { Star, Eye, TrendingUp, BookOpen, Calendar, Award, Users, MessageCircle, Share2, ArrowLeft, Dumbbell } from "lucide-react"
+import { Star, Eye, TrendingUp, BookOpen, Calendar, Award, Users, MessageCircle, ArrowLeft, Dumbbell } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -70,10 +70,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
     return () => abort.abort();
   }, [subdomain]);
 
-  // ───────────── Helpers ─────────────
-  const handleContactClick = () => {
-    window.location.href = `mailto:${creator?.username}@example.com`;
-  };
+
 
   // ───────────── Render logic ─────────────
   if (loading)
@@ -212,7 +209,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-5 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
                   <span>{creator.yearsXP} years experience</span>
@@ -335,7 +332,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                 </div>
 
                 {/* Certifications */}
-                {/* {creator.certifications.length > 0 && (
+                {creator.certifications.length > 0 && (
                   <div>
                     <h4 className="font-semibold mb-3">Certifications</h4>
                     <div className="space-y-2">
@@ -347,10 +344,10 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                       ))}
                     </div>
                   </div>
-                )} */}
+                )}
 
                 {/* Achievements */}
-                {/* {creator.achievements.length > 0 && (
+                {creator.achievements.length > 0 && (
                   <div>
                     <h4 className="font-semibold mb-3">Achievements</h4>
                     <div className="space-y-2">
@@ -362,7 +359,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                       ))}
                     </div>
                   </div>
-                )} */}
+                )}
               </CardContent>
             </Card>
           </div>

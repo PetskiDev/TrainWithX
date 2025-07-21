@@ -27,6 +27,8 @@ export async function transformCreatorToPreview(
     profileViews: Math.floor(Math.random() * 1000000),
     instagram: creator.instagram ?? undefined,
     joinedAt: creator.becomeCreator,
+    achievements: creator.achievements,
+    certifications: creator.certifications,
   };
 }
 

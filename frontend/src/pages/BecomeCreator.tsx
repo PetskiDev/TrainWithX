@@ -24,7 +24,6 @@ const availableSpecialties = [
   "Powerlifting",
   "CrossFit",
   "Home Workouts",
-  "Calisteni",
   "Calisthenics",
   "Pilates",
   "Yoga",
@@ -45,7 +44,6 @@ const BecomeCreator = () => {
     specialties: [],
     experience: 0,
     bio: "",
-    certifications: "",
     socialMedia: "",
     agreeToTerms: false,
     email: "",
@@ -127,7 +125,6 @@ const BecomeCreator = () => {
         specialties: [],
         experience: 0,
         bio: "",
-        certifications: "",
         socialMedia: "",
         agreeToTerms: false,
       });
@@ -324,17 +321,6 @@ const BecomeCreator = () => {
                   onChange={(e) => handleInputChange("bio", e.target.value)}
                   className="min-h-[120px]"
                   required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="certifications">Certifications & Qualifications</Label>
-                <Textarea
-                  id="certifications"
-                  placeholder="List your relevant certifications (e.g., NASM-CPT, ACSM, etc.)"
-                  value={formData.certifications}
-                  onChange={(e) => handleInputChange("certifications", e.target.value)}
-                  className="min-h-[80px]"
                 />
               </div>
 

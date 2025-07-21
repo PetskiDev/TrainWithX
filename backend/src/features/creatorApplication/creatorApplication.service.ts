@@ -53,7 +53,6 @@ export async function submitCreatorApplication(
     specialties: app.specialties,
     experience: app.experience,
     bio: app.bio,
-    certifications: app.certifications || '',
     socialMedia: app.socialMedia || '',
     agreeToTerms: app.agreeToTerms,
     email: app.email,

@@ -12,6 +12,8 @@ export interface CreatorPreviewDTO {
   coverUrl?: string;
   avatarUrl?: string;
   profileViews: number;
+  certifications: String[];
+  achievements: String[];
   instagram?: String;
   joinedAt: Date;
 }
@@ -37,7 +39,6 @@ export interface SendApplicationDTO {
   specialties: string[];
   experience: Decimal;
   bio: string;
-  certifications?: string;
   socialMedia?: string;
   agreeToTerms: boolean;
   instagram?: string;
