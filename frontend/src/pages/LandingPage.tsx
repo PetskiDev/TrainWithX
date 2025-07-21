@@ -8,10 +8,12 @@ import {
 } from '@/components/ui/card';
 import { Users, Search, Star, Shield, Zap } from 'lucide-react';
 import { TrainWithXLogo } from '@/components/TrainWithXLogo';
-import { goPublic } from '@frontend/lib/nav';
 import BecomeCreatorSection from '@frontend/components/BecomeCreatorSection';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 const LandingPage = () => {
+  const { goPublic } = useSmartNavigate();
+
   return (
     <div className="min-h-screen-navbar">
       {/* Hero Section */}

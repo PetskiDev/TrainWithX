@@ -1,11 +1,13 @@
-import { goPublic } from "@frontend/lib/nav";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, Globe, Check } from "lucide-react";
 import { TrainWithXLogo } from "@/components/TrainWithXLogo";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { SiInstagram, SiX, SiYoutube } from 'react-icons/si'
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
 
 export function Footer() {
+    const { goPublic } = useSmartNavigate();
+  
   return <footer className="bg-muted/30 border-t py-16">
     <div className="container mx-auto px-4">
       <div className="grid md:grid-cols-4 gap-8 mb-8">

@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, PlayCircle } from "lucide-react";
 import type { PlanPreviewWithProgress } from "@shared/types/plan";
-import { goToCreator } from "@frontend/lib/nav";
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
 
 
 export const PlanOwnedCard = ({ plan }: { plan: PlanPreviewWithProgress }) => {
+    const { goToCreator } = useSmartNavigate();
 
     const {
         title,

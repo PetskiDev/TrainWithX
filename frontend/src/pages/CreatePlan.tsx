@@ -21,14 +21,16 @@ import type {
 } from '@shared/types/plan';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 import { useAuth } from '@frontend/context/AuthContext';
-import { goPublic } from '@frontend/lib/nav';
 import { Badge } from '@frontend/components/ui/badge';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 
 const availableTags = ["Strength Training", "Fat Loss", "Home Workout", "Gym"];
 
 
 const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
+  const { goPublic } = useSmartNavigate();
+
   const isEditing = !!init;
   const { user } = useAuth();
 

@@ -7,12 +7,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ArrowLeft, Play, Clock, Users, Star, CheckCircle, Shield, Download } from 'lucide-react';
 import type { PlanPaidPreveiw } from '@shared/types/plan';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
-import { goToCreator } from '@frontend/lib/nav';
 import BuyButton from '@frontend/components/BuyButton';
 import type { CreatorPageReviewDTO } from '@shared/types/review';
 import { RatingBreakdownCard } from '@frontend/components/RatingBreakdownCard';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
+  const { goToCreator } = useSmartNavigate();
+
   const { slug } = useParams<{
     slug: string;
   }>();
@@ -306,7 +308,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
             </Card>
 
             {/* Review Breakdown */}
-            <RatingBreakdownCard reviews={reviews}/>
+            <RatingBreakdownCard reviews={reviews} />
           </div>
         </div>
 

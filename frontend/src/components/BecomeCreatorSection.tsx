@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { goPublic } from "@frontend/lib/nav";
 import type { FC } from "react";
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
 
 interface BecomeCreatorProps {
   className?: string;
 }
 
 export const BecomeCreatorSection: FC<BecomeCreatorProps> = ({ className = "" }) => {
+  const { goPublic } = useSmartNavigate();
+
   return (
     <div className={`text-center bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-12 mb-16 ${className}`}>
       <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gradient">

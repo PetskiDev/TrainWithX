@@ -10,9 +10,9 @@ import { useToast } from "@/hooks/use-toast";
 import { TrainWithXLogo } from "@/components/TrainWithXLogo";
 import { useAuth } from "@frontend/context/AuthContext";
 import type { SendApplicationDTO } from "@shared/types/creator";
-import { goPublic } from "@frontend/lib/nav";
 import { Badge } from "@frontend/components/ui/badge";
 import { Plus, X } from "lucide-react";
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
 
 
 const availableSpecialties = [
@@ -36,6 +36,8 @@ const availableSpecialties = [
 ]
 
 const BecomeCreator = () => {
+  const { goPublic } = useSmartNavigate();
+
   const { user } = useAuth();
   const { toast } = useToast();
   const [formData, setFormData] = useState<SendApplicationDTO>({
@@ -92,7 +94,6 @@ const BecomeCreator = () => {
         description: "Please agree to the terms and conditions",
         variant: "destructive",
       });
-      console.log("TOS")
       return;
     }
 

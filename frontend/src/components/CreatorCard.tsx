@@ -3,12 +3,14 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { goToCreator } from "@frontend/lib/nav"
 import type { CreatorPreviewDTO } from "@shared/types/creator"
 import { SiInstagram } from "react-icons/si"
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate"
 
 
 export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO }) {
+  const { goToCreator } = useSmartNavigate();
+
   const handleViewProfile = () => {
     goToCreator({ subdomain: creator.subdomain });
   }

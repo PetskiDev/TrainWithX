@@ -7,7 +7,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import type { PlanPreview } from '@shared/types/plan';
 import { Button } from '@frontend/components/ui/button';
-import { goToCreator } from '@frontend/lib/nav';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 type Props = {
   plan: PlanPreview; // add optional description
@@ -15,6 +15,8 @@ type Props = {
 };
 
 export const PlanCard = ({ plan, onPlanClick }: Props) => {
+  const { goToCreator } = useSmartNavigate();
+
   const {
     id,
     title,

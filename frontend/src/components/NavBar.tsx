@@ -22,9 +22,11 @@ import {
 import { User, Settings, LogOut, Menu } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
-import { goPublic } from '@frontend/lib/nav';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 const Navbar = () => {
+  const { goPublic } = useSmartNavigate();
+
   const { user, logout } = useAuth();
   const location = useLocation();
   const [isSheetOpen, setIsSheetOpen] = useState(false);

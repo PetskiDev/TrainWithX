@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { goPublic } from '@frontend/lib/nav';
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
 
 export default function NotFoundPage() {
+  const { goPublic } = useSmartNavigate();
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       <h1 className="text-6xl font-extrabold text-primary mb-4">404</h1>

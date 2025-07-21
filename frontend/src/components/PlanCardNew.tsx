@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import type { PlanPreview } from "@shared/types/plan"
 import { Button } from "@frontend/components/ui/button"
-import { goToCreator } from "@frontend/lib/nav"
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate"
 
 
 interface PlanCardProps {
@@ -19,6 +19,8 @@ const difficultyColors = {
 }
 
 export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps) {
+  const { goToCreator } = useSmartNavigate();
+
   if (!plan) return null // nothing to render yet
 
   // const safeTags = ['tag1', 'TODO'];

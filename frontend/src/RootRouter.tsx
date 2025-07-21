@@ -54,7 +54,6 @@ function CreatorRoutes({ sub }: { sub: string | null }) {
 }
 
 export default function RootRouter() {
-  console.log('ROUTER');
   const sub = getCreatorSubdomain();
   return sub ? <CreatorRoutes sub={sub} /> : <PublicRoutes />;
 }

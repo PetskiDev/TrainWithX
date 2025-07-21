@@ -3,9 +3,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Filter, Search, SortAsc } from 'lucide-react';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
-import { goToCreator } from '@frontend/lib/nav';
 import CreatorCard from '@frontend/components/CreatorCard';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@frontend/components/ui/select';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 const specialties = [
   'All',
@@ -38,6 +38,8 @@ const sortOptions = [
 
 
 const Creators = () => {
+  const { goToCreator } = useSmartNavigate();
+
   // loading / data / error state
   const [creators, setCreators] = useState<CreatorPreviewDTO[]>([]);
   const [loading, setLoading] = useState(true);

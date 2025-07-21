@@ -5,8 +5,8 @@ import { Filter, Search, SortAsc } from 'lucide-react';
 
 import type { PlanPreview } from '@shared/types/plan';
 import PlansGrid from '@frontend/components/PlansGrid';
-import { goPublic } from '@frontend/lib/nav';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 
 //TODO: fetch this
@@ -23,6 +23,8 @@ const sortOptions = [
 
 
 const PlansPage = () => {
+  const { goPublic } = useSmartNavigate();
+
   const [plans, setPlans] = useState<PlanPreview[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
