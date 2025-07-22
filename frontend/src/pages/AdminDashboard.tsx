@@ -535,7 +535,7 @@ const AdminDashboard = () => {
                   <TableBody>
                     {filteredAndSortedPlans.map((plan) => (
                       <TableRow key={plan.id}>
-                        <TableCell className="text-left font-medium">{plan.title}</TableCell>
+                        <TableCell className="text-left font-medium w-64">{plan.title}</TableCell>
                         <TableCell className="text-left">{plan.creatorUsername}</TableCell>
                         <TableCell className="text-center">
                           <Badge variant={plan.isPublished ? 'default' : 'secondary'}>
@@ -787,6 +787,7 @@ const AdminDashboard = () => {
                             </Avatar>
                             <div>
                               <p className="font-medium">{creator.username}</p>
+                              <p className="text-xs">{creator.subdomain}.trainwithx.com</p>
                             </div>
                           </div>
                         </TableCell>
