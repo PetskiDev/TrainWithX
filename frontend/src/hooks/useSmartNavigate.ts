@@ -5,14 +5,17 @@ export const useSmartNavigate = () => {
     const base = import.meta.env.VITE_BASE_DOMAIN!;
     const currentHost = window.location.host;
 
-    const goPublic = (path: string = '/') => {
+    const goPublic = (path: string = '/', newTab: boolean = false) => {
         const targetHost = base;
         const isSameHost = currentHost === targetHost;
-
+        const url = `${window.location.protocol}//${targetHost}${path}`;
+        if (newTab) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+            return;
+        }
         if (isSameHost) {
             navigate(path);
         } else {
-            const url = `${window.location.protocol}//${targetHost}${path}`;
             window.location.assign(url);
         }
     };

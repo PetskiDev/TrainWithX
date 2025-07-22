@@ -19,10 +19,13 @@ import { Avatar } from "@frontend/components/ui/avatar";
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SiCheckmarx } from "react-icons/si";
 import { Link } from "react-router-dom";
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
 
 
 
 const AdminDashboard = () => {
+  const { goPublic, goToCreator } = useSmartNavigate();
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const [planSearchQuery, setPlanSearchQuery] = useState("");
@@ -548,10 +551,18 @@ const AdminDashboard = () => {
                         <TableCell className="text-center">${plan.revenue.toFixed(2)}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
-                            <Button variant="ghost" size="sm">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => goToCreator({ subdomain: plan.creatorSubdomain, path: `/${plan.slug}`, newTab: true })}
+                            >
                               <Eye className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="sm">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => goPublic(`/plans/edit/${plan.id}`, true)}
+                            >
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button

@@ -14,9 +14,11 @@ import {
 import type { PlanWithRevenue } from "@shared/types/plan";
 import { useAuth } from "@frontend/context/AuthContext";
 import type { CreatorFullDTO } from "@shared/types/creator";
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
 
 const CreatorDashboard = () => {
   const { user, loading } = useAuth();
+  const { goPublic } = useSmartNavigate();
 
   // State
   const [plans, setPlans] = useState<PlanWithRevenue[]>([]);
@@ -225,6 +227,12 @@ const CreatorDashboard = () => {
               {plans.map((plan) => (
                 <div key={plan.id} className="relative group overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow">
                   <PlanCard plan={plan} onPlanClick={handlePlanClick} />
+                  <Button
+                    onClick={() => goPublic(`/plans/edit/${plan.id}`)}
+                    className="absolute top-3 right-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow"
+                  >
+                    ✏️ Edit
+                  </Button>
                   <div className="absolute top-3 left-3 flex items-center gap-2 bg-gradient-to-r from-green-100 to-green-200 border border-green-400 text-green-800 text-sm font-medium px-3 py-1.5 rounded-md shadow-sm">
                     💰 <span>${plan.revenue.toLocaleString()}</span>
                   </div>

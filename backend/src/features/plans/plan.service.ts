@@ -13,6 +13,17 @@ export async function getAllPlans() {
   });
 }
 
+export async function getPlanById(planId: number) {
+  const plan = await prisma.plan.findUnique({
+    where: { id: planId },
+    include: {
+      creator: { include: { user: true } },
+      purchases: true,
+    },
+  });
+  return plan;
+}
+
 export async function deletePlanWithId(planId: number) {
   await prisma.plan.delete({ where: { id: planId } });
 }
@@ -45,15 +56,12 @@ export async function createPlanService(newPlan: CreatePlanDto) {
 
   let discountId = await createDiscountFor(newPlan);
 
-  const { slug, goals, weeks, introVideo, ...previewData } = newPlan;
+  const { slug, goals, weeks, ...previewData } = newPlan;
 
-
-  const totalWeeks = weeks.length;
   const newContent: PlanContentJSON = {
     goals,
     weeks,
-    introVideo,
-    totalWeeks,
+    totalWeeks: weeks.length,
   };
 
   try {
@@ -82,6 +90,47 @@ export async function createPlanService(newPlan: CreatePlanDto) {
     throw err;
   }
 }
+
+
+export async function updatePlanService(
+  planId: number,
+  updatedPlan: CreatePlanDto
+) {
+  const { slug, goals, weeks, ...rest } = updatedPlan;
+
+  const content = {
+    goals,
+    weeks,
+    totalWeeks: weeks.length,
+  };
+  
+  try {
+    const updated = await prisma.plan.update({
+      where: { id: planId },
+      data: {
+        slug: slug.toLowerCase(),
+        ...rest,
+        content: JSON.parse(JSON.stringify(content)),
+      },
+      include: {
+        purchases: true,
+        creator: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    return updated;
+  } catch (err: any) {
+    if (err.code === 'P2002') {
+      throw new AppError('You already have a plan with this slug', 409);
+    }
+    throw err;
+  }
+}
+
 
 export async function createPlanPaddleDb(dto: CreatePlanDto) {
   const { product, price } = await createProductWithPrice({
@@ -234,10 +283,14 @@ export async function getPlansMadeByCreator(
   });
   return plans.map(toPlanCreatorData);
 }
+
 export async function getCreatorIdForPlan(
   planId: number,
-  tx: Prisma.TransactionClient) {
-  const plan = await tx.plan.findUnique({
+  tx?: Prisma.TransactionClient
+): Promise<number> {
+  const client = tx ?? prisma;
+
+  const plan = await client.plan.findUnique({
     where: { id: planId },
     select: { creatorId: true },
   });

@@ -9,13 +9,14 @@ import Creators from '@frontend/pages/Creators';
 import Creator from '@frontend/pages/Creator';
 import { getCreatorSubdomain } from '@frontend/lib/getCreatorSubdomain';
 import PlanContentPage from '@frontend/pages/PlanContent';
-import CreatePlan from '@frontend/pages/CreatePlan';
 import PlanPreview from '@frontend/pages/PlanPreview';
 import CreatorDashboard from '@frontend/pages/CreatorDashboard';
 import BecomeCreator from '@frontend/pages/BecomeCreator';
 import EmailVerificationPage from '@frontend/pages/EmailVerificationPage';
 import AdminDashboard from '@frontend/pages/AdminDashboard';
 import CreatorEdit from '@frontend/pages/CreatorEdit';
+import CreatePlanPage from '@frontend/pages/CreatePlanPage';
+import EditPlanPage from '@frontend/pages/EditPlanPage';
 
 function PublicRoutes() {
   return (
@@ -24,6 +25,7 @@ function PublicRoutes() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/plans" element={<PlansPage />} />
+        <Route path="/plans/edit/:planId" element={<EditPlanPage />} />
         <Route path="/creators" element={<Creators />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -32,7 +34,7 @@ function PublicRoutes() {
         <Route path="/me" element={<Me />} />
         <Route path="/me/creator" element={<CreatorDashboard />} />
         <Route path="/me/creator/edit" element={<CreatorEdit />} />
-        <Route path="/me/creator/create-plan" element={<CreatePlan />} />
+        <Route path="/me/creator/create-plan" element={<CreatePlanPage />} />
         <Route path="*" element={<NotFoundPage />} /> {/* 404 */}
       </Routes>
     </>

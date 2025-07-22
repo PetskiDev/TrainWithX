@@ -23,15 +23,16 @@ import type { CreatorPreviewDTO } from '@shared/types/creator';
 import { useAuth } from '@frontend/context/AuthContext';
 import { Badge } from '@frontend/components/ui/badge';
 import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
+import { toast } from '@frontend/hooks/use-toast';
 
 
 const availableTags = ["Strength Training", "Fat Loss", "Home Workout", "Gym"];
 
 
-const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
-  const { goPublic } = useSmartNavigate();
+const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: number }) => {
+  const { goPublic, goToCreator } = useSmartNavigate();
 
-  const isEditing = !!init;
+  const isEditing = !!init && planId;
   const { user } = useAuth();
 
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +43,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
   const [customTag, setCustomTag] = useState("");
 
   const [planData, setPlanData] = useState<CreatePlanDto>({
+    creatorId: -1, //fetched below
     title: '',
     description: '',
     difficulty: 'beginner',
@@ -51,7 +53,6 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
     goals: [],
     tags: [],
     weeks: [],
-    creatorId: -1, //Handle below
     features: [],
   });
 
@@ -78,6 +79,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
     const fetchCreator = async () => {
       if (!user) return;
       try {
+        //TODO: Change to me?
         const res = await fetch(`/api/v1/creators/${user.id}`, {
           credentials: 'include',
         });
@@ -102,6 +104,13 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
 
     fetchCreator();
   }, [user, init]);
+
+  //hydrate form
+  useEffect(() => {
+    if (init) {
+      setPlanData(init);
+    }
+  }, [init]);
 
   if (!user) {
     return (
@@ -319,7 +328,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
   const handleSave = async () => {
     try {
       const endpoint = isEditing
-        ? `/api/v1/plans/${planData.slug}`
+        ? `/api/v1/plans/${planId}`
         : `/api/v1/plans`;
 
       const method = isEditing ? 'PUT' : 'POST';
@@ -330,22 +339,31 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-
         body: JSON.stringify(planData),
       });
 
       if (!res.ok) {
-        throw new Error(`Failed to ${isEditing ? 'update' : 'create'} plan `);
+        const errorData = await res.json();
+        // Use backend-sent error message if available
+        throw new Error(errorData?.error || `Failed to ${isEditing ? 'update' : 'create'} plan`);
       }
 
       const saved = await res.json();
-      console.log(`${isEditing ? 'Updated' : 'Created'} plan:`, saved);
-
-      goPublic('/plans');
-      // Optional: redirect or show toast
-    } catch (err) {
+      toast({
+        title: `Plan ${isEditing ? 'updated' : 'created'} successfully`,
+        description: `"${saved.title}" has been saved.`,
+      });
+      const c = allCreators?.find(a => a.id == planData.creatorId);
+      if (!c) goPublic('/me/creator');
+      goToCreator({ subdomain: c!.subdomain, path: `/${planData.slug}` });
+    } catch (err: any) {
       console.error('Error saving plan:', err);
-      setError(String(err));
+      toast({
+        title: 'Error',
+        description: err.message || 'Something went wrong while saving the plan.',
+        variant: 'destructive',
+      });
+      setError(err instanceof Error ? err.message : 'Something went wrong.');
     }
   };
 
@@ -485,7 +503,7 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
 
                 {/* Creator Selection - Admin Only */}
 
-                {user.isAdmin && (
+                {!isEditing && user.isAdmin && (
                   <div className="space-y-2 pt-6 border-t">
                     <Label htmlFor="selectedCreator">
                       Assign to Creator (Admin Only)
@@ -912,4 +930,4 @@ const CreatePlan = ({ init }: { init?: CreatePlanDto }) => {
   );
 };
 
-export default CreatePlan;
+export default CreateOrEditPlan;

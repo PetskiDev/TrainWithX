@@ -8,6 +8,9 @@ import {
   deletePlanWithId,
   getPlansMadeByCreator,
   getPlansOwnedByUser,
+  getCreatorIdForPlan,
+  updatePlanService,
+  getPlanById,
 } from './plan.service';
 import { AppError } from '@src/utils/AppError';
 import {
@@ -49,6 +52,33 @@ export async function createPlanController(req: Request, res: Response) {
   res.status(201).json(plan);
 }
 
+export async function editPlanController(req: Request, res: Response) {
+  const user = req.user!;
+  const planId = Number(req.params.planId);
+
+  if (isNaN(planId)) {
+    throw new AppError('Invalid Plan ID', 400);
+  }
+
+  // Fetch existing plan to validate ownership
+  const creatorOfPlan = await getCreatorIdForPlan(planId);
+
+  // Check authorization: must be admin or owner of the plan
+  const isOwner = creatorOfPlan === user.id;
+
+  if (!user.isAdmin && !isOwner) {
+    throw new AppError('Unauthorized to edit this plan', 403);
+  }
+
+  const payload = req.body as CreatePlanDto;
+
+  // Update the plan using a proper service
+  const updatedPlan = await updatePlanService(planId, payload);
+
+  res.status(200).json(updatedPlan);
+}
+
+
 /** GET /api/v1/creators/by-subdomain/:subdomain/plans */
 export async function getPlansFromCreatorSubController(req: Request, res: Response) {
   const { subdomain } = req.params;
@@ -80,6 +110,29 @@ export async function getPlanSubSlugContent(req: Request, res: Response) {
 
   const completedSet = await getCompletedSet({ userId: user.id, planId: plan.id });
 
+  res.status(200).json(toPaidPlan(plan, completedSet));
+}
+
+//for admin/creator (TODO: split to admin, okay for now)
+export async function getPlanContentByIdController(req: Request, res: Response) {
+  const user = req.user!;
+  const planId = Number(req.params.planId);
+  if (isNaN(planId)) throw new AppError('Invalid Plan ID', 400);
+
+  const plan = await getPlanById(planId);
+
+  if (!plan) throw new AppError('Plan not found', 404);
+
+  const isAdmin = user.isAdmin;
+  const isCreatorOwner = plan.creatorId === user.id;
+
+  const hasAccess = isAdmin || isCreatorOwner;
+
+  if (!hasAccess) {
+    throw new AppError("You don't have access to this plan", 403);
+  }
+  // No completions returned for admin/creator views
+  const completedSet = new Set<string>();
   res.status(200).json(toPaidPlan(plan, completedSet));
 }
 

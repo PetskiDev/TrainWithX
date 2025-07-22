@@ -57,7 +57,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
     const fetchPlan = async () => {
       try {
         const response = await fetch(
-          `/api/v1/plans/content/${subdomain}/${slug}`
+          `/api/v1/plans/${subdomain}/${slug}/content`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

@@ -45,24 +45,20 @@ export interface PlanWithRevenue extends PlanPreview {
   revenue: number;
 }
 
-//FIX THIS AS NEW TYPE IMMIDIATELY
-export type CreatePlanDto = Omit<
-  PlanPaidPreveiw,
-  | 'id'
-  | 'creatorUsername'
-  | 'creatorSubdomain'
-  | 'totalWeeks'
-  | 'totalWorkouts'
-  | 'sales'
-  | 'createdAt'
-  | 'isPublished'
-  | 'weeksInfo'
-  | 'avgRating'
-  | 'noReviews'
-  | 'duration'
-  | 'creatorAvatarUrl'
-  | 'creatorXp'
->; //TODO SEPERATE THIS INTO DIFFERENT DATA TYPE AND MAKE DIFFERENT HIEARACHY. THOSE ARE ALL AFTER-CALCULATED VALUES WHICH STRART OFF AT 0 BY DEFAULT
+
+export type CreatePlanDto = {
+  title: string;
+  slug: string;
+  price: number;
+  description: string;
+  originalPrice?: number;
+  creatorId: number;
+  tags: string[];
+  features: string[];
+  goals: string[];
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  weeks: PlanWeek[];
+}
 
 export interface PlanWeek {
   id: number;
