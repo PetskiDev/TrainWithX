@@ -32,7 +32,7 @@ export async function getCreatorPreveiwByIdController(req: Request, res: Respons
 
 export async function editMyCreatorController(req: Request, res: Response) {
   const creatorId = Number(req.user?.id);
-  const data = req.body as CreatorPostDTO;
+  const data = req.body as Partial<CreatorPostDTO>;
   if (!creatorId) {
     throw new AppError('Invalid Creator Id', 404);
   }

@@ -20,21 +20,42 @@ export async function getCreatorById(id: number) {
   });
 }
 
-export async function editCreator(creatorId: number, data: CreatorPostDTO) {
-  //TODO, EDIT NAME IT WOULD BE PROBABLY IN CREATOR
-  return prisma.creator.update({
-    where: {
-      id: creatorId,
-    },
-    data: {
-      specialties: data.specialties,
-      yearsXP: data.yearsXP,
-      bio: data.bio,
-    },
-    include: {
-      user: true,
-    },
-  });
+export async function editCreator(creatorId: number, data: Partial<CreatorPostDTO>) {
+  const { username, ...creatorData } = data;
+  try {
+    return await prisma.creator.update({
+      where: { id: creatorId },
+      data: {
+        ...creatorData,
+        ...(username && {
+          user: {
+            update: {
+              username,
+            },
+          },
+        }),
+      },
+      include: {
+        user: true,
+      },
+    });
+  } catch (err) {
+    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+      const target = err.meta?.target as string[] | undefined;
+      console.log(target);
+      if (target?.includes('username')) {
+        throw new AppError('Username is already taken.', 409);
+      }
+
+      if (target?.includes('subdomain')) {
+        throw new AppError('Subdomain is already taken.', 409);
+      }
+
+      // Fallback
+      throw new AppError('Unique constraint failed.', 409);
+    }
+    throw err;
+  }
 }
 
 export async function getCreatorBySub(subdomain: string) {

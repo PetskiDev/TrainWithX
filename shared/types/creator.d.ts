@@ -12,9 +12,9 @@ export interface CreatorPreviewDTO {
   coverUrl?: string;
   avatarUrl?: string;
   profileViews: number;
-  certifications: String[];
-  achievements: String[];
-  instagram?: String;
+  certifications: string[];
+  achievements: string[];
+  instagram?: string;
   joinedAt: Date;
 }
 
@@ -24,12 +24,17 @@ export interface CreatorFullDTO extends CreatorPreviewDTO {
 }
 
 
-
+//in frontend, all are present fetched.
+//in backend we use Partial of this to recieve and edit
 export interface CreatorPostDTO {
-  username?: string;
-  bio?: string;
-  specialties?: string[];
-  yearsXP?: Decimal;
+  username: string;
+  bio: string;
+  subdomain: string;
+  instagram?: string;
+  yearsXP: Decimal;
+  specialties: string[];
+  certifications: string[];
+  achievements: string[];
 }
 
 export interface SendApplicationDTO {
