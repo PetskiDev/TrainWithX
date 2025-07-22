@@ -36,18 +36,6 @@ export async function fetchCreatorPlans(subdomain: string) {
   return creator.plans;
 }
 
-export async function fetchPlanBySlug(slug: string) {
-  const plan = await prisma.plan.findFirst({
-    where: {
-      slug,
-    },
-    include: { creator: { include: { user: true } } },
-  });
-
-  if (!plan) throw new AppError('Plan not found', 404);
-  return plan;
-}
-
 export async function createPlanService(newPlan: CreatePlanDto) {
   const { product, price } = await createProductWithPrice({
     name: newPlan.title,
@@ -89,7 +77,7 @@ export async function createPlanService(newPlan: CreatePlanDto) {
     });
   } catch (err: any) {
     if (err.code === 'P2002') {
-      throw new AppError('Slug already in use', 409);
+      throw new AppError('You have already made a plan with this slug', 409);
     }
     throw err;
   }
