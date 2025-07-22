@@ -353,9 +353,18 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
         title: `Plan ${isEditing ? 'updated' : 'created'} successfully`,
         description: `"${saved.title}" has been saved.`,
       });
-      const c = allCreators?.find(a => a.id == planData.creatorId);
-      if (!c) goPublic('/me/creator');
-      goToCreator({ subdomain: c!.subdomain, path: `/${planData.slug}` });
+      if (user.isAdmin) {
+        const c = allCreators?.find(a => a.id == planData.creatorId);
+        goToCreator({ subdomain: c!.subdomain, path: `/${planData.slug}` });
+
+      }
+      else if (creator) {
+        goToCreator({ subdomain: creator.subdomain, path: `/${planData.slug}` });
+      }
+      else {
+        console.error("SHOULD NOT HAPPEN");
+      }
+
     } catch (err: any) {
       console.error('Error saving plan:', err);
       toast({
@@ -476,7 +485,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                     <Input
                       id="originalPrice"
                       type="number"
-                      value={planData.originalPrice || ''}
+                      value={planData.originalPrice || undefined}
                       onChange={(e) =>
                         updateBasicInfo(
                           'originalPrice',

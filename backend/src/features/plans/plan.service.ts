@@ -2,7 +2,7 @@
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
 import { CreatePlanDto, PlanContentJSON, PlanWithRevenue, PlanPreview, PlanWeek, PlanPreviewWithProgress } from '@shared/types/plan';
-import { createDiscountFor, createProductWithPrice } from '@src/utils/paddle';
+import { paddle, syncPaddleForPlan } from '@src/utils/paddle';
 import { toPlanCreatorData, toPlanPreview } from '@src/features/plans/plan.transformer';
 import { Plan, Prisma } from '@prisma/client';
 
@@ -48,15 +48,9 @@ export async function fetchCreatorPlans(subdomain: string) {
 }
 
 export async function createPlanService(newPlan: CreatePlanDto) {
-  const { product, price } = await createProductWithPrice({
-    name: newPlan.title,
-    description: newPlan.description,
-    inputPrice: newPlan.originalPrice ? newPlan.originalPrice : newPlan.price,
-  });
-
-  let discountId = await createDiscountFor(newPlan);
-
   const { slug, goals, weeks, ...previewData } = newPlan;
+
+  const { paddleProductId, paddlePriceId, paddleDiscountId } = await syncPaddleForPlan(newPlan);
 
   const newContent: PlanContentJSON = {
     goals,
@@ -69,9 +63,9 @@ export async function createPlanService(newPlan: CreatePlanDto) {
       data: {
         slug: slug.toLowerCase(),
         ...previewData,
-        paddleProductId: product.id,
-        paddlePriceId: price.id,
-        paddleDiscountId: discountId,
+        paddleProductId,
+        paddlePriceId,
+        paddleDiscountId,
         content: JSON.parse(JSON.stringify(newContent)),
       },
       include: {
@@ -96,20 +90,42 @@ export async function updatePlanService(
   planId: number,
   updatedPlan: CreatePlanDto
 ) {
-  const { slug, goals, weeks, ...rest } = updatedPlan;
+  const { slug, goals, weeks, originalPrice, ...rest } = updatedPlan;
 
   const content = {
     goals,
     weeks,
     totalWeeks: weeks.length,
   };
-  
+
   try {
+    const existingPlan = await prisma.plan.findUnique({
+      where: { id: planId },
+    });
+
+    if (!existingPlan) {
+      throw new AppError('Plan not found', 404);
+    }
+
+    const { paddleProductId, paddlePriceId, paddleDiscountId } =
+      await syncPaddleForPlan(updatedPlan, {
+        paddleProductId: existingPlan.paddleProductId,
+        paddlePriceId: existingPlan.paddlePriceId,
+        price: Number(existingPlan.price),
+        originalPrice: existingPlan.originalPrice !== undefined
+          ? Number(existingPlan.originalPrice)
+          : undefined,
+      });
+
     const updated = await prisma.plan.update({
       where: { id: planId },
       data: {
         slug: slug.toLowerCase(),
+        originalPrice: originalPrice ?? null,//forcefully remove it, undefineds are ingnored
         ...rest,
+        paddleProductId,
+        paddlePriceId,
+        paddleDiscountId: paddleDiscountId ?? null, //forcefully remove it, undefineds are ingnored
         content: JSON.parse(JSON.stringify(content)),
       },
       include: {
@@ -126,46 +142,6 @@ export async function updatePlanService(
   } catch (err: any) {
     if (err.code === 'P2002') {
       throw new AppError('You already have a plan with this slug', 409);
-    }
-    throw err;
-  }
-}
-
-
-export async function createPlanPaddleDb(dto: CreatePlanDto) {
-  const { product, price } = await createProductWithPrice({
-    name: dto.title,
-    description: dto.description,
-    inputPrice: dto.originalPrice ? dto.originalPrice : dto.price,
-  });
-
-  let discountId = await createDiscountFor(dto);
-
-  try {
-    return await prisma.plan.create({
-      data: {
-        creatorId: dto.creatorId,
-        paddleProductId: product.id, //TEMP, FIRST MUST CREATE PADDLE PRODUCT.
-        paddlePriceId: price.id,
-        title: dto.title,
-        description: dto.description,
-        slug: dto.slug,
-        price: dto.price,
-        originalPrice: dto.originalPrice, // may be undefined
-        paddleDiscountId: discountId,
-        coverImage: '',
-      },
-      include: {
-        creator: {
-          include: {
-            user: true,
-          },
-        },
-      },
-    });
-  } catch (err: any) {
-    if (err.code === 'P2002') {
-      throw new AppError('Slug already in use', 409);
     }
     throw err;
   }

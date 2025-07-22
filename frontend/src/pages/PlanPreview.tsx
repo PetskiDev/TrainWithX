@@ -385,13 +385,10 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
             </div>
 
             {/* CTA Button */}
-            <Button className="w-full gradient-bg from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl text-lg mb-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]">
-              <div className="flex items-center justify-center gap-2">
-                <span>Start Your Transformation</span>
-                <Play className="h-5 w-5" />
-              </div>
-            </Button>
-
+            <BuyButton planId={plan.id} text='Start Your Transformation'
+              className='w-full gradient-bg from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl text-lg mb-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]'
+            >
+            </BuyButton>
             {/* Trust Signals */}
             <div className="space-y-3 text-center text-sm text-muted-foreground">
               <div className="flex items-center justify-center gap-4">
