@@ -7,7 +7,7 @@ import {
 } from './creator.transformer';
 import { CreatorPostDTO } from '@shared/types/creator';
 import { AppError } from '@src/utils/AppError';
-import { editCreator, getAllCreators, getCreatorById as getCreatorPreveiwById, getCreatorBySub } from './creator.service';
+import { editCreator, getAllCreators, getCreatorById as getCreatorPreveiwById, getCreatorBySub, storeCreatorCover } from './creator.service';
 
 export async function getAllCreatorsPreviewController(req: Request, res: Response) {
   const creators = await getAllCreators();
@@ -43,6 +43,16 @@ export async function editMyCreatorController(req: Request, res: Response) {
   const preveiw = await transformCreatorToPreview(creator);
   res.json(preveiw);
 }
+
+export async function uploadCreatorCoverController(req: Request, res: Response) {
+  const creatorId = Number(req.user?.id);
+  if (!creatorId) throw new AppError('Unauthenticated', 401);
+  if (!req.file) throw new AppError('No file uploaded', 400);
+
+  const coverUrl = await storeCreatorCover(creatorId, req.file);
+  res.status(200).json({ coverUrl });
+}
+
 
 export async function getCreatorBySubController(req: Request, res: Response) {
   let { subdomain } = req.params;

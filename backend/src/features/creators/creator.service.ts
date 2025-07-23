@@ -4,6 +4,7 @@ import { CreatorApplication, Prisma, PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AppError } from '@src/utils/AppError';
 import app from '@src/app';
+import { storeInUploads } from '@src/utils/imageUploader';
 
 export async function getAllCreators() {
   return prisma.creator.findMany({
@@ -95,3 +96,31 @@ export async function promoteUserToCreator(application: CreatorApplication, tx: 
     throw err;
   }
 }
+
+export const storeCreatorCover = async (
+  creatorId: number,
+  file: Express.Multer.File
+): Promise<string> => {
+
+  const creator = await prisma.creator.findUnique({
+    where: { id: creatorId },
+    select: { coverUrl: true },
+  });
+
+  const newUrl = await storeInUploads({
+    userId: creatorId,
+    file,
+    folder: 'creator-covers',
+    width: 2400,
+    height: 800,
+    oldFileUrl: creator?.coverUrl ?? undefined,
+  });
+
+
+  await prisma.creator.update({
+    where: { id: creatorId },
+    data: { coverUrl: newUrl },
+  });
+
+  return newUrl;
+};

@@ -52,7 +52,7 @@ export const PlanCard = ({ plan, onPlanClick }: Props) => {
           onError={(e) => {
             const img = e.target as HTMLImageElement;
             img.onerror = null;
-            img.src = '/plan_images/default.jpg';
+            img.src = '/default.jpg';
           }}
         />
         {hasDiscount && (

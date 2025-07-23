@@ -39,7 +39,7 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
       <div className="relative">
         <div className="aspect-video overflow-hidden">
           <img
-            src={plan.coverImage || `/plan_images/default.jpg`}
+            src={plan.coverImage || `/default.jpg`}
             alt={plan.title}
             width={350}
             height={200}
@@ -104,7 +104,7 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
           {showCreator && (
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src={plan.creatorAvatarUrl || "/placeholder.svg"} alt={plan.creatorUsername} />
+                <AvatarImage src={plan.creatorAvatarUrl} alt={plan.creatorUsername} />
                 <AvatarFallback className="text-xs">{plan.creatorUsername.slice(0, 2).toUpperCase()}</AvatarFallback>
               </Avatar>
               <span className="text-lg text-muted-foreground">{plan.creatorUsername}</span>

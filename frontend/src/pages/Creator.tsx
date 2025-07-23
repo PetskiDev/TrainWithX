@@ -153,15 +153,14 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
       {/* Hero Section */}
       <div className="relative">
         {/* Cover Image */}
-        <div className="relative h-64 md:h-80 overflow-hidden">
+        <div className="relative h-52 md:h-80 lg:h-88 [@media(min-width:1600px)]:h-[25rem] overflow-hidden">
           <img
             src={
-              creator.coverUrl ||
-              `/placeholder.svg?height=320&width=1200&query=fitness trainer cover ${creator.username}`
+              creator.coverUrl || '/default.jpg' 
             }
             alt={`${creator.username} cover`}
             width={1200}
-            height={320}
+            height={400}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
@@ -186,7 +185,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
             <div className="flex flex-col md:hidden gap-4">
               <div className="flex items-center gap-4 -mt-12">
                 <Avatar className="h-24 w-24 border-4 border-white shadow-xl bg-background">
-                  <AvatarImage src={creator.avatarUrl || "/placeholder.svg"} alt={creator.username} />
+                  <AvatarImage src={creator.avatarUrl} alt={creator.username} />
                   <AvatarFallback className="text-xl font-bold bg-primary text-primary-foreground">
                     {creator.username.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
@@ -249,7 +248,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
             <div className="hidden md:flex flex-col lg:flex-row justify-between items-center gap-6">
               <div className="flex items-end gap-6 -mt-16">
                 <Avatar className="h-32 w-32 border-4 border-white shadow-xl bg-background">
-                  <AvatarImage src={creator.avatarUrl || "/placeholder.svg"} alt={creator.username} />
+                  <AvatarImage src={creator.avatarUrl} alt={creator.username} />
                   <AvatarFallback className="text-3xl font-bold bg-primary text-primary-foreground">
                     {creator.username.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
@@ -485,7 +484,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                 <div key={review.id} className="border-b pb-6 last:border-b-0">
                   <div className="flex items-start gap-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={review.userAvatar || "/placeholder.svg"} alt={review.userUsername} />
+                      <AvatarImage src={review.userAvatar} alt={review.userUsername} />
                       <AvatarFallback>
                         {review.userUsername
                           .split(" ")

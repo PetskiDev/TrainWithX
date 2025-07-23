@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-import { Star, Eye, TrendingUp, BookOpen, Calendar, Award, Users, ArrowLeft, Edit, Save, X, Plus } from "lucide-react"
+import { Star, Eye, TrendingUp, BookOpen, Calendar, Award, Users, ArrowLeft, Edit, Save, X, Plus, Loader2 } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -11,10 +11,13 @@ import { Label } from "@/components/ui/label"
 import type { CreatorPostDTO, CreatorPreviewDTO } from "@shared/types/creator"
 import { toast } from "@frontend/hooks/use-toast"
 import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate"
+import { useAuth } from "@frontend/context/AuthContext"
 
 
 
 const CreatorEdit = () => {
+  const { refreshUser } = useAuth();
+
   const { goToCreator } = useSmartNavigate();
   const [creator, setCreator] = useState<CreatorPreviewDTO | null>(null)
   const [loading, setLoading] = useState(true)
@@ -26,8 +29,12 @@ const CreatorEdit = () => {
   const [editingSpecialties, setEditingSpecialties] = useState(false)
   const [editingCertifications, setEditingCertifications] = useState(false)
   const [editingAchievements, setEditingAchievements] = useState(false)
+
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [editingProfile, setEditingProfile] = useState(false)
   const [editingImages, setEditingImages] = useState(false)
+  const [uploading, setUploading] = useState(false)
 
   // Form states
   const [formData, setFormData] = useState<CreatorPostDTO>({
@@ -45,11 +52,9 @@ const CreatorEdit = () => {
   const [newCertification, setNewCertification] = useState("")
   const [newAchievement, setNewAchievement] = useState("")
 
-  // Add these new state variables at the top with other useState declarations
-  // const [uploadingAvatar, setUploadingAvatar] = useState(false)
-  // const [uploadingCover, setUploadingCover] = useState(false)
-  // const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  // const [coverPreview, setCoverPreview] = useState<string | null>(null)
+
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const [coverPreview, setCoverPreview] = useState<string | null>(null)
 
   useEffect(() => {
     const abort = new AbortController();
@@ -202,17 +207,6 @@ const CreatorEdit = () => {
   };
 
 
-  // const handleSaveImages = async () => {
-  //     // API call to save images
-  //     if (creator) {
-  //         setCreator({
-  //             ...creator,
-  //             avatarUrl: formData.avatarUrl,
-  //             coverUrl: formData.coverUrl,
-  //         })
-  //     }
-  //     setEditingImages(false)
-  // }
 
   const addSpecialty = () => {
     if (newSpecialty.trim() && !formData.specialties.includes(newSpecialty.trim())) {
@@ -269,133 +263,160 @@ const CreatorEdit = () => {
     window.history.back()
   }
 
+
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+
+  const handleDrop = async (e: React.DragEvent, type: "avatar" | "cover") => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const files = Array.from(e.dataTransfer.files)
+    const imageFile = files.find((file) => file.type.startsWith("image/"))
+
+    if (!imageFile) {
+      alert("Please drop an image file")
+      return
+    }
+
+    // Create a fake event to reuse existing handlers
+    const fakeEvent = {
+      target: { files: [imageFile] },
+    } as any as React.ChangeEvent<HTMLInputElement>
+
+    if (type === "avatar") {
+      handleAvatarFileChange(fakeEvent)
+    } else {
+      handleCoverFileChange(fakeEvent)
+    }
+  }
   // // Add these helper functions before the return statement
-  // const handleAvatarFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const file = event.target.files?.[0]
-  //     if (!file) return
+  const handleAvatarFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
 
-  //     // Validate file type
-  //     if (!file.type.startsWith("image/")) {
-  //         alert("Please select an image file")
-  //         return
-  //     }
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file")
+      return
+    }
 
-  //     // Validate file size (e.g., 5MB limit)
-  //     if (file.size > 5 * 1024 * 1024) {
-  //         alert("Image size should be less than 5MB")
-  //         return
-  //     }
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Image size should be less than 10MB")
+      return
+    }
 
-  //     // Create preview
-  //     const reader = new FileReader()
-  //     reader.onload = (e) => {
-  //         setAvatarPreview(e.target?.result as string)
-  //     }
-  //     reader.readAsDataURL(file)
+    // Create preview
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setAvatarPreview(e.target?.result as string)
+      setAvatarFile(file);
+    }
+    reader.readAsDataURL(file)
+  }
 
-  //     // Upload file
-  //     setUploadingAvatar(true)
-  //     try {
-  //         const uploadedUrl = await uploadImage(file, "avatar")
-  //         setFormData((prev) => ({ ...prev, avatarUrl: uploadedUrl }))
-  //     } catch (error) {
-  //         console.error("Avatar upload failed:", error)
-  //         alert("Failed to upload avatar. Please try again.")
-  //     } finally {
-  //         setUploadingAvatar(false)
-  //     }
-  // }
+  const handleCoverFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
 
-  // const handleCoverFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  //     const file = event.target.files?.[0]
-  //     if (!file) return
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file")
+      return
+    }
 
-  //     // Validate file type
-  //     if (!file.type.startsWith("image/")) {
-  //         alert("Please select an image file")
-  //         return
-  //     }
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Image size should be less than 10MB")
+      return
+    }
 
-  //     // Validate file size (e.g., 10MB limit for cover images)
-  //     if (file.size > 10 * 1024 * 1024) {
-  //         alert("Image size should be less than 10MB")
-  //         return
-  //     }
+    // Create preview
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      setCoverPreview(e.target?.result as string)
+      setCoverFile(file);
+    }
+    reader.readAsDataURL(file)
+  }
+  const handleAvatarSave = async () => {
+    if (!avatarFile) {
+      alert("Please select an avatar image before saving.");
+      return;
+    }
 
-  //     // Create preview
-  //     const reader = new FileReader()
-  //     reader.onload = (e) => {
-  //         setCoverPreview(e.target?.result as string)
-  //     }
-  //     reader.readAsDataURL(file)
+    const form = new FormData();
+    form.append("avatar", avatarFile);
 
-  //     // Upload file
-  //     setUploadingCover(true)
-  //     try {
-  //         const uploadedUrl = await uploadImage(file, "cover")
-  //         setFormData((prev) => ({ ...prev, coverUrl: uploadedUrl }))
-  //     } catch (error) {
-  //         console.error("Cover upload failed:", error)
-  //         alert("Failed to upload cover image. Please try again.")
-  //     } finally {
-  //         setUploadingCover(false)
-  //     }
-  // }
+    try {
+      const res = await fetch("/api/v1/users/me/avatar", {
+        method: "PATCH",
+        body: form,
+        credentials: "include",
+      });
 
-  // // Mock upload function - replace with your actual upload logic
-  // const uploadImage = async (file: File, type: "avatar" | "cover"): Promise<string> => {
-  //     // This is where you'd implement your actual upload logic
-  //     // Examples:
-  //     // - Upload to AWS S3
-  //     // - Upload to Cloudinary
-  //     // - Upload to your own server
-  //     // - Use a service like Uploadcare or Filestack
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err || "Failed to upload avatar.");
+      }
 
-  //     const formData = new FormData()
-  //     formData.append("file", file)
-  //     formData.append("type", type)
+      const data = await res.json();
+      console.log("Avatar uploaded:", data.avatarUrl);
+      setCreator((prev) => prev ? { ...prev, avatarUrl: data.avatarUrl } : prev);
+      setAvatarFile(null);
+      await refreshUser();
+    } catch (err: any) {
+      console.error("Avatar upload failed:", err);
+      setUploadError("Failed to upload avatar: " + ("Unknown error"));
+      throw err;
+    }
+  };
+  const handleCoverSave = async () => {
+    if (!coverFile) {
+      alert("Please select a cover image before saving.");
+      return;
+    }
 
-  //     const response = await fetch("/api/upload-image", {
-  //         method: "POST",
-  //         body: formData,
-  //     })
+    const form = new FormData();
+    form.append("cover", coverFile); // must match your multer config
+    try {
+      const res = await fetch("/api/v1/creators/me/cover", {
+        method: "PATCH",
+        body: form,
+        credentials: "include",
+      });
 
-  //     if (!response.ok) {
-  //         throw new Error("Upload failed")
-  //     }
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err || "Failed to upload cover.");
+      }
 
-  //     const result = await response.json()
-  //     return result.url
-  // }
+      const data = await res.json();
+      console.log("Cover uploaded:", data.coverUrl);
+      setCreator((prev) => prev ? { ...prev, coverUrl: data.coverUrl } : prev);
+      setCoverFile(null);
+    } catch (err: any) {
+      console.error("Cover upload failed:", err);
+      setUploadError("Failed to upload cover: " + ("Unknown error"));
+      throw err;
+    }
+    finally {
+    }
+  };
 
-  // const handleDragOver = (e: React.DragEvent) => {
-  //     e.preventDefault()
-  //     e.stopPropagation()
-  // }
+  const handleSaveImages = async () => {
+    setUploadError("");
+    setUploading(true);
 
-  // const handleDrop = async (e: React.DragEvent, type: "avatar" | "cover") => {
-  //     e.preventDefault()
-  //     e.stopPropagation()
+    try {
+      if (avatarFile) await handleAvatarSave();
+      if (coverFile) await handleCoverSave();
+      if (!uploadError) setEditingImages(false);
+    } finally {
+      setUploading(false);
+    }
+  };
 
-  //     const files = Array.from(e.dataTransfer.files)
-  //     const imageFile = files.find((file) => file.type.startsWith("image/"))
-
-  //     if (!imageFile) {
-  //         alert("Please drop an image file")
-  //         return
-  //     }
-
-  //     // Create a fake event to reuse existing handlers
-  //     const fakeEvent = {
-  //         target: { files: [imageFile] },
-  //     } as any as React.ChangeEvent<HTMLInputElement>
-
-  //     if (type === "avatar") {
-  //         handleAvatarFileChange(fakeEvent)
-  //     } else {
-  //         handleCoverFileChange(fakeEvent)
-  //     }
-  // }
 
 
   return (
@@ -403,26 +424,15 @@ const CreatorEdit = () => {
       {/* Hero Section */}
       <div className="relative">
         {/* Cover Image */}
-        <div className="relative h-64 md:h-80 overflow-hidden">
+        <div className="relative h-52 md:h-80 lg:h-88 [@media(min-width:1600px)]:h-[25rem] overflow-hidden">
           <img
             src={
-              creator.coverUrl ||
-              `/placeholder.svg?height=320&width=1200&query=fitness trainer cover ${creator.username || "/placeholder.svg"}`
+              creator.coverUrl || '/default.jpg'
             }
             alt={`${creator.username} cover`}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-
-          {/* Edit Images Button */}
-          <Button
-            variant="secondary"
-            className="absolute top-6 right-20 bg-white/90 hover:bg-white text-black"
-            onClick={() => setEditingImages(true)}
-          >
-            <Edit className="mr-2 h-4 w-4" />
-            Edit Images
-          </Button>
 
           {/* Back Button */}
           <Button variant="ghost" className="absolute top-6 left-6 text-white hover:bg-white/20" onClick={handleBack}>
@@ -437,17 +447,27 @@ const CreatorEdit = () => {
         <div className="bg-background border-b">
           <div className="relative container mx-auto p-4 md:p-8">
 
+            {/* Edit Images Button */}
+            <Button
+              variant="secondary"
+              className="absolute -top-28 right-4 md:right-8 bg-white/90 hover:bg-white text-black"
+              onClick={() => setEditingImages(true)}
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              Edit Images
+            </Button>
+
             {/* Public View button */}
-            <Button onClick={() => goToCreator({ subdomain: creator.subdomain, newTab: true })} className="absolute -top-16 right-4 md:right-8 bg-black/50 text-white border-0">
+            <Button onClick={() => goToCreator({ subdomain: creator.subdomain, newTab: true })} className="absolute -top-16 right-4 md:right-8 bg-white/90 hover:bg-white text-black border-0">
               <Eye className="h-4 w-4 mr-2" />
-              Public View
+              Go Public View
             </Button>
 
             {/* Mobile Layout */}
             <div className="flex flex-col md:hidden gap-4">
               <div className="flex items-center gap-4 -mt-12">
                 <Avatar className="h-20 w-20 border-4 border-white shadow-xl bg-background">
-                  <AvatarImage src={creator.avatarUrl || "/placeholder.svg"} alt={creator.username} />
+                  <AvatarImage src={creator.avatarUrl} alt={creator.username} />
                   <AvatarFallback className="text-xl font-bold bg-primary text-primary-foreground">
                     {creator.username.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
@@ -484,7 +504,7 @@ const CreatorEdit = () => {
             <div className="hidden md:flex flex-col lg:flex-row justify-between items-center gap-6">
               <div className="flex items-end gap-6 -mt-16">
                 <Avatar className="h-32 w-32 border-4 border-white shadow-xl bg-background">
-                  <AvatarImage src={creator.avatarUrl || "/placeholder.svg"} alt={creator.username} />
+                  <AvatarImage src={creator.avatarUrl} alt={creator.username} />
                   <AvatarFallback className="text-3xl font-bold bg-primary text-primary-foreground">
                     {creator.username.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
@@ -865,192 +885,155 @@ const CreatorEdit = () => {
 
       {/* Edit Images Modal */}
       {
-        editingImages && (<></>
-          // <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          //     <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          //         <CardHeader>
-          //             <CardTitle>Edit Profile Images</CardTitle>
-          //         </CardHeader>
-          //         <CardContent className="space-y-6">
-          //             {/* Avatar Upload */}
-          //             <div>
-          //                 <Label className="text-base font-semibold">Profile Picture</Label>
-          //                 <div className="mt-2 space-y-4">
-          //                     {/* Current/Preview Avatar */}
-          //                     <div className="flex items-center gap-4">
-          //                         <Avatar className="h-20 w-20">
-          //                             <AvatarImage
-          //                                 src={avatarPreview || formData.avatarUrl || "/placeholder.svg"}
-          //                                 alt="Avatar preview"
-          //                             />
-          //                             <AvatarFallback>{formData.username.slice(0, 2).toUpperCase()}</AvatarFallback>
-          //                         </Avatar>
-          //                         <div className="text-sm text-muted-foreground">
-          //                             <p>Recommended: Square image, at least 200x200px</p>
-          //                             <p>Max file size: 5MB</p>
-          //                         </div>
-          //                     </div>
+        editingImages && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <CardHeader>
+                <CardTitle>Edit Profile Images</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Avatar Upload */}
+                <div>
+                  <Label className="text-base font-semibold">Profile Picture</Label>
+                  <div className="mt-2 space-y-4">
+                    {/* Current/Preview Avatar */}
+                    <div className="flex items-center gap-4">
+                      <Avatar className="h-20 w-20">
+                        <AvatarImage
+                          src={avatarPreview || creator.avatarUrl || undefined}
+                          alt="Avatar preview"
+                          className="h-full w-full object-cover object-center"
+                        />
+                        <AvatarFallback>{formData.username.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div className="text-sm text-muted-foreground">
+                        <p>Recommended: Square image, at least 200x200px</p>
+                        <p>Max file size: 10MB</p>
+                      </div>
+                    </div>
 
-          //                     {/* Upload Area */}
-          //                     <div
-          //                         className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
-          //                         onDragOver={handleDragOver}
-          //                         onDrop={(e) => handleDrop(e, "avatar")}
-          //                         onClick={() => document.getElementById("avatar-upload")?.click()}
-          //                     >
-          //                         {uploadingAvatar ? (
-          //                             <div className="flex items-center justify-center gap-2">
-          //                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-          //                                 <span>Uploading...</span>
-          //                             </div>
-          //                         ) : (
-          //                             <>
-          //                                 <div className="mx-auto h-12 w-12 text-muted-foreground mb-2">
-          //                                     <svg fill="none" stroke="currentColor" viewBox="0 0 48 48">
-          //                                         <path
-          //                                             strokeLinecap="round"
-          //                                             strokeLinejoin="round"
-          //                                             strokeWidth={1}
-          //                                             d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-          //                                         />
-          //                                     </svg>
-          //                                 </div>
-          //                                 <p className="text-sm">
-          //                                     <span className="font-medium text-primary">Click to upload</span> or drag and drop
-          //                                 </p>
-          //                                 <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 5MB</p>
-          //                             </>
-          //                         )}
-          //                     </div>
+                    {/* Upload Area */}
+                    <div
+                      className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, "avatar")}
+                      onClick={() => document.getElementById("avatar-upload")?.click()}
+                    >
 
-          //                     <input
-          //                         id="avatar-upload"
-          //                         type="file"
-          //                         accept="image/*"
-          //                         onChange={handleAvatarFileChange}
-          //                         className="hidden"
-          //                         disabled={uploadingAvatar}
-          //                     />
+                      <div className="mx-auto h-12 w-12 text-muted-foreground mb-2">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1}
+                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          />
+                        </svg>
+                      </div>
+                      <p className="text-sm">
+                        <span className="font-medium text-primary">Click to upload</span> or drag and drop
+                      </p>
+                      <p className="text-xs text-muted-foreground"> WEBP, PNG, JPG, JPEG up to 10MB </p>
 
-          //                     {/* URL Input as fallback */}
-          //                     <div className="space-y-2">
-          //                         <Label htmlFor="avatarUrl" className="text-sm">
-          //                             Or paste image URL
-          //                         </Label>
-          //                         <Input
-          //                             id="avatarUrl"
-          //                             value={formData.avatarUrl}
-          //                             onChange={(e) => {
-          //                                 setFormData((prev) => ({ ...prev, avatarUrl: e.target.value }))
-          //                                 setAvatarPreview(null) // Clear file preview when URL is used
-          //                             }}
-          //                             placeholder="https://example.com/avatar.jpg"
-          //                             disabled={uploadingAvatar}
-          //                         />
-          //                     </div>
-          //                 </div>
-          //             </div>
+                    </div>
 
-          //             {/* Cover Image Upload */}
-          //             <div>
-          //                 <Label className="text-base font-semibold">Cover Image</Label>
-          //                 <div className="mt-2 space-y-4">
-          //                     {/* Current/Preview Cover */}
-          //                     <div className="space-y-2">
-          //                         <div className="relative h-32 w-full rounded-lg overflow-hidden bg-muted">
-          //                             <img
-          //                                 src={coverPreview || formData.coverUrl || "/placeholder.svg?height=128&width=400"}
-          //                                 alt="Cover preview"
-          //                                 className="w-full h-full object-cover"
-          //                             />
-          //                         </div>
-          //                         <div className="text-sm text-muted-foreground">
-          //                             <p>Recommended: 1200x400px or similar ratio</p>
-          //                             <p>Max file size: 10MB</p>
-          //                         </div>
-          //                     </div>
+                    <input
+                      id="avatar-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarFileChange}
+                      className="hidden"
+                    />
+                  </div>
+                </div>
 
-          //                     {/* Upload Area */}
-          //                     <div
-          //                         className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
-          //                         onDragOver={handleDragOver}
-          //                         onDrop={(e) => handleDrop(e, "cover")}
-          //                         onClick={() => document.getElementById("cover-upload")?.click()}
-          //                     >
-          //                         {uploadingCover ? (
-          //                             <div className="flex items-center justify-center gap-2">
-          //                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-          //                                 <span>Uploading...</span>
-          //                             </div>
-          //                         ) : (
-          //                             <>
-          //                                 <div className="mx-auto h-12 w-12 text-muted-foreground mb-2">
-          //                                     <svg fill="none" stroke="currentColor" viewBox="0 0 48 48">
-          //                                         <path
-          //                                             strokeLinecap="round"
-          //                                             strokeLinejoin="round"
-          //                                             strokeWidth={1}
-          //                                             d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-          //                                         />
-          //                                     </svg>
-          //                                 </div>
-          //                                 <p className="text-sm">
-          //                                     <span className="font-medium text-primary">Click to upload</span> or drag and drop
-          //                                 </p>
-          //                                 <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB</p>
-          //                             </>
-          //                         )}
-          //                     </div>
+                {/* Cover Image Upload */}
+                <div>
+                  <Label className="text-base font-semibold">Cover Image</Label>
+                  <div className="mt-2 space-y-4">
+                    {/* Current/Preview Cover */}
+                    <div className="space-y-2">
+                      <div className="relative aspect-[3/1] w-full rounded-lg overflow-hidden bg-muted">
+                        <img
+                          src={coverPreview || creator.coverUrl || "/default.jpg"}
+                          alt="Cover preview"
+                          className="h-full w-full object-cover object-center"
+                        />
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        <p>Recommended: 1200x400px or similar ratio</p>
+                        <p>Max file size: 10MB</p>
+                      </div>
+                    </div>
 
-          //                     <input
-          //                         id="cover-upload"
-          //                         type="file"
-          //                         accept="image/*"
-          //                         onChange={handleCoverFileChange}
-          //                         className="hidden"
-          //                         disabled={uploadingCover}
-          //                     />
+                    {/* Upload Area */}
+                    <div
+                      className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, "cover")}
+                      onClick={() => document.getElementById("cover-upload")?.click()}
+                    >
 
-          //                     {/* URL Input as fallback */}
-          //                     <div className="space-y-2">
-          //                         <Label htmlFor="coverUrl" className="text-sm">
-          //                             Or paste image URL
-          //                         </Label>
-          //                         <Input
-          //                             id="coverUrl"
-          //                             value={formData.coverUrl}
-          //                             onChange={(e) => {
-          //                                 setFormData((prev) => ({ ...prev, coverUrl: e.target.value }))
-          //                                 setCoverPreview(null) // Clear file preview when URL is used
-          //                             }}
-          //                             placeholder="https://example.com/cover.jpg"
-          //                             disabled={uploadingCover}
-          //                         />
-          //                     </div>
-          //                 </div>
-          //             </div>
+                      <div className="mx-auto h-12 w-12 text-muted-foreground mb-2">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1}
+                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          />
+                        </svg>
+                      </div>
+                      <p className="text-sm">
+                        <span className="font-medium text-primary">Click to upload</span> or drag and drop
+                      </p>
+                      <p className="text-xs text-muted-foreground">WEBP, PNG, JPG, JPEG up to 10MB</p>
 
-          //             <div className="flex gap-2 pt-4">
-          //                 <Button onClick={handleSaveImages} className="flex-1" disabled={uploadingAvatar || uploadingCover}>
-          //                     <Save className="mr-2 h-4 w-4" />
-          //                     Save Changes
-          //                 </Button>
-          //                 <Button
-          //                     variant="outline"
-          //                     onClick={() => {
-          //                         setEditingImages(false)
-          //                         setAvatarPreview(null)
-          //                         setCoverPreview(null)
-          //                     }}
-          //                     className="flex-1"
-          //                     disabled={uploadingAvatar || uploadingCover}
-          //                 >
-          //                     Cancel
-          //                 </Button>
-          //             </div>
-          //         </CardContent>
-          //     </Card>
-          // </div>
+                    </div>
+
+                    <input
+                      id="cover-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCoverFileChange}
+                      className="hidden"
+                    />
+                  </div>
+                </div>
+                {uploadError && (
+                  <p className="text-md text-red-600 mt-1">{uploadError}</p>
+                )}
+                <div className="flex gap-2 pt-4">
+                  <Button onClick={handleSaveImages} disabled={uploading} className="flex-1">
+                    {uploading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save Changes
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setEditingImages(false)
+                      setAvatarPreview(null)
+                      setCoverPreview(null)
+                      setAvatarFile(null)
+                      setCoverFile(null)
+                    }}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )
       }
     </div >

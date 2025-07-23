@@ -31,7 +31,7 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
       <div className="relative h-32 overflow-hidden">
         <img
           src={
-            creator.coverUrl || `/plan_images/default.jpg`
+            creator.coverUrl || `/default.jpg`
           }
           alt={`${creator.username} cover`}
           width={400}
@@ -61,7 +61,7 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
         </a>)}
 
         <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
-          <AvatarImage src={creator.avatarUrl || "/placeholder.svg"} alt={creator.username} />
+          <AvatarImage src={creator.avatarUrl} alt={creator.username} />
           <AvatarFallback className="text-lg font-semibold bg-primary text-primary-foreground">
             {creator.username.slice(0, 2).toUpperCase()}
           </AvatarFallback>
