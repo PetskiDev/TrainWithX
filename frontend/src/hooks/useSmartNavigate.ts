@@ -1,3 +1,4 @@
+import type { UserDto } from '@shared/types/user';
 import { useNavigate } from 'react-router-dom';
 
 export const useSmartNavigate = () => {
@@ -44,6 +45,15 @@ export const useSmartNavigate = () => {
             window.location.assign(url);
         }
     };
+    const goToDashboard = (user: UserDto) => {
+        if (user.isAdmin) {
+            goPublic('/admin');
+        } else if (user.isCreator) {
+            goPublic('/me/creator');
+        } else {
+            goPublic('/me');
+        }
+    };
 
-    return { goPublic, goToCreator };
+    return { goPublic, goToCreator, goToDashboard };
 };

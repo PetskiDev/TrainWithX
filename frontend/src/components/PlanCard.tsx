@@ -20,7 +20,6 @@ export const PlanCard = ({ plan, onPlanClick }: Props) => {
   const {
     id,
     title,
-    slug,
     creatorUsername,
     price,
     originalPrice,

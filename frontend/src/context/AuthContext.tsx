@@ -17,7 +17,7 @@ interface AuthState {
     username: string,
     password: string
   ) => Promise<UserDto>;
-  refreshUser: () => void;
+  refreshUser: () => Promise<UserDto>;
   logout: () => Promise<void>;
 }
 
@@ -90,8 +90,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   const refreshUser = async () => {
     const res = await fetch('/api/v1/users/me', { credentials: 'include' });
+
+    if (!res.ok) {
+      // Clear user if not authenticated (e.g., 401)
+      setUser(null);
+      return null;
+    }
+
     const updatedUser = await res.json();
     setUser(updatedUser);
+    return updatedUser;
   };
   const logout = async () => {
     await fetch('/api/v1/auth/logout', {

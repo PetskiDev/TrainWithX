@@ -23,6 +23,10 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
   const [creator, setCreator] = useState<CreatorPreviewDTO | null>(null);
   const [reviews, setReviews] = useState<CreatorPageReviewDTO[] | null>(null);
 
+  const params = new URLSearchParams(window.location.search);
+  const openCheckout = params.get("openCheckout") === "true";
+
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -87,6 +91,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
     }
     fetchReviews();
   }, [planPreveiw])
+
 
   if (loading) {
     return <div className="text-center py-10">Loading...</div>;
@@ -262,7 +267,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                     One-time purchase
                   </p>
                 </div>
-                <BuyButton planId={plan.id}></BuyButton>
+                <BuyButton autoOpen={openCheckout} planId={plan.id}></BuyButton>
                 {/* TODO<Button variant="outline" className="w-full">
                   Add to Wishlist
                 </Button> */}

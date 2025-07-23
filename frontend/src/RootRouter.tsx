@@ -17,12 +17,14 @@ import AdminDashboard from '@frontend/pages/AdminDashboard';
 import CreatorEdit from '@frontend/pages/CreatorEdit';
 import CreatePlanPage from '@frontend/pages/CreatePlanPage';
 import EditPlanPage from '@frontend/pages/EditPlanPage';
+import AuthRedirectPage from '@frontend/pages/AuthRedirectPage';
 
 function PublicRoutes() {
   return (
     <>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/auth-redirect" element={<AuthRedirectPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/plans" element={<PlansPage />} />
         <Route path="/plans/edit/:planId" element={<EditPlanPage />} />

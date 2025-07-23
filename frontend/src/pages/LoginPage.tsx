@@ -17,10 +17,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { goToDashboard } from '@frontend/lib/nav';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 const LoginPage = () => {
-  /* -------------- state & hooks --------------------------------------- */
+  const { goToDashboard } = useSmartNavigate();
+  /* -------------- state & hooks -------------------------------------- */
   const { user, loading, login } = useAuth();
 
   const [form, setForm] = useState({ email: '', password: '' });

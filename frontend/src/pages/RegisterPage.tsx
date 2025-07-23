@@ -17,11 +17,10 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { goToDashboard } from '@frontend/lib/nav';
 import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 const RegisterPage = () => {
-  const { goPublic } = useSmartNavigate();
+  const { goPublic, goToDashboard } = useSmartNavigate();
 
   /* -------------- state & hooks --------------------------------------- */
   const { user, loading, register } = useAuth();

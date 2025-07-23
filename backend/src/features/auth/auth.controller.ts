@@ -84,6 +84,22 @@ export async function redirectToGoogleController(req: Request, res: Response) {
   res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${qs}`);
 };
 
+function isSafeRedirect(urlStr: string | undefined): boolean {
+  if (!urlStr) return false;
+  try {
+    const url = new URL(urlStr);
+    const hostname = url.hostname;
+
+    // Allow main domain and any subdomain of it
+    return (
+      hostname === env.DOMAIN ||
+      hostname.endsWith(`.${env.DOMAIN}`)
+    );
+  } catch {
+    return false;
+  }
+}
+
 export async function googleCallbackController(req: Request, res: Response) {
   //get the auth code
   const code = req.query.code as string | undefined;
@@ -94,19 +110,21 @@ export async function googleCallbackController(req: Request, res: Response) {
     code
   );
 
+  const redirectUrl = req.cookies.redirectUrl;
+  res.clearCookie('redirectUrl', { path: '/', domain: `.${env.DOMAIN}` });
+
+  const finalRedirect = isSafeRedirect(redirectUrl)
+    ? redirectUrl!
+    : `${env.FRONTEND_URL}/auth-redirect`;
+
   const result = await getOrCreateGoogleUser({
     googleId,
     email,
     name,
     picture,
   });
-  let redirectPath = '/me';
-  if (result.user.isCreator) redirectPath = '/me/creator';
-  if (result.user.isAdmin) redirectPath = '/admin';
 
-  console.log(redirectPath);
-  //google redirects to me, with cookie it hydrates.
   res
     .cookie('access', result.token, cookieOpts)
-    .redirect(`${env.FRONTEND_URL}${redirectPath}`);
+    .redirect(finalRedirect);
 };

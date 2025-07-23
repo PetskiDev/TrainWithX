@@ -45,7 +45,7 @@ const Navbar = () => {
     }
     console.log('LOGGING OUT');
     await logout();
-    goPublic('/');
+    window.location.reload();
   };
 
   const NavButton = ({
