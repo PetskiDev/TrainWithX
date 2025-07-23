@@ -42,8 +42,10 @@ export const storeAvatar = async (
 
   const buffer = await sharp(file.buffer)
     .rotate()
-    .resize({ width: 400, height: 400, fit: 'inside' })
-    .webp({ quality: 80 })
+    .resize(400, 400, {
+      fit: 'cover',          // crop instead of fitting
+      position: 'centre'     // crop from the center
+    }).webp({ quality: 80 })
     .toBuffer();
 
   await fs.writeFile(target, buffer);
@@ -75,7 +77,7 @@ export const storeAvatar = async (
   });
 
   return relative;
-};export async function getUserById(id: number): Promise<UserDto | null> {
+}; export async function getUserById(id: number): Promise<UserDto | null> {
   const user = await prisma.user.findUnique({
     where: { id },
   });
