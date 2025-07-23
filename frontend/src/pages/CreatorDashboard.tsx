@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,9 @@ import {
   Plus,
   Edit3,
   Eye,
-  BarChart3
+  BarChart3,
+  Camera,
+  Loader2
 } from "lucide-react";
 import type { PlanWithRevenue } from "@shared/types/plan";
 import { useAuth } from "@frontend/context/AuthContext";
@@ -25,6 +27,10 @@ const CreatorDashboard = () => {
   const [creator, setCreator] = useState<CreatorFullDTO | undefined>(undefined);
   const [plansLoading, setPlansLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadingPlanId, setUploadingPlanId] = useState<number | null>(null);
 
   // Fetch creator
   useEffect(() => {
@@ -50,31 +56,24 @@ const CreatorDashboard = () => {
     return () => controller.abort();
   }, [user]);
 
+  const fetchPlans = useCallback(async () => {
+    try {
+      setPlansLoading(true);
+      const res = await fetch(`/api/v1/creators/me/plans`);
+      if (!res.ok) throw new Error(`Failed to fetch plans: ${res.status}`);
+      const data: PlanWithRevenue[] = await res.json();
+      setPlans(data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch plans.");
+    } finally {
+      setPlansLoading(false);
+    }
+  }, []);
   useEffect(() => {
     if (!creator) return;
-
-    const controller = new AbortController();
-    const fetchPlans = async () => {
-      try {
-        setPlansLoading(true);
-        const res = await fetch(`/api/v1/creators/me/plans`, {
-          signal: controller.signal,
-        });
-        if (!res.ok) throw new Error(`Failed to fetch plans: ${res.status}`);
-        const data: PlanWithRevenue[] = await res.json();
-        setPlans(data);
-      } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return;
-        console.error(err);
-        setError("Failed to fetch plans.");
-      } finally {
-        setPlansLoading(false);
-      }
-    };
-
     fetchPlans();
-    return () => controller.abort();
-  }, [creator]);
+  }, [creator, fetchPlans]);
 
   const handlePlanClick = (planId: number) => {
     console.log("Plan clicked:", planId);
@@ -112,9 +111,45 @@ const CreatorDashboard = () => {
       </div>
     );
   }
+  const handlePlanImageUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    planId: number
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      alert('Only JPEG, PNG, or WEBP images are allowed.');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image must be 10MB or less.');
+      return;
+    }
 
+    setUploadingPlanId(planId);
 
+    try {
+      const form = new FormData();
+      form.append('image', file); // Ensure backend expects `image`
+
+      const res = await fetch(`/api/v1/plans/${planId}/image`, {
+        method: 'PATCH',
+        body: form,
+        credentials: 'include',
+      });
+
+      if (!res.ok) throw new Error('Upload failed');
+
+      await fetchPlans(); // Refresh plans to reflect image change
+    } catch (err: any) {
+      alert(err.message || 'Upload error');
+      console.error(err);
+    } finally {
+      setUploadingPlanId(null);
+      e.target.value = '';
+    }
+  };
 
 
 
@@ -227,18 +262,38 @@ const CreatorDashboard = () => {
               {plans.map((plan) => (
                 <div key={plan.id} className="relative group overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow">
                   <PlanCard plan={plan} onPlanClick={handlePlanClick} />
-                  <Button
-                    onClick={() => goPublic(`/plans/edit/${plan.id}`)}
-                    className="absolute top-3 right-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow"
-                  >
-                    ✏️ Edit
-                  </Button>
+
                   <div className="absolute top-3 left-3 flex items-center gap-2 bg-gradient-to-r from-green-100 to-green-200 border border-green-400 text-green-800 text-sm font-medium px-3 py-1.5 rounded-md shadow-sm">
                     💰 <span>${plan.revenue.toLocaleString()}</span>
                   </div>
                   <div className="absolute top-14 left-3 flex items-center gap-2 bg-white border border-gray-300 text-gray-800 text-sm font-medium px-3 py-1.5 rounded-md shadow-sm">
                     🛒 <span>{plan.sales} sales</span>
                   </div>
+                  <div className="absolute top-[153px] left-3">
+                    <label htmlFor={`plan-image-${plan.id}`} className="cursor-pointer">
+                      <div className="bg-primary text-primary-foreground rounded-full p-2 shadow-lg hover:bg-primary/90 transition-colors">
+                        {uploadingPlanId === plan.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Camera className="h-4 w-4" />
+                        )}
+                      </div>
+                    </label>
+                    <input
+                      id={`plan-image-${plan.id}`}
+                      type="file"
+                      accept=".jpg,.jpeg,.png,.webp"
+                      onChange={(e) => handlePlanImageUpload(e, plan.id)}
+                      className="hidden"
+                    />
+                  </div>
+                  <Button
+                    onClick={() => goPublic(`/plans/edit/${plan.id}`)}
+                    className="absolute top-36 right-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow"
+                  >
+                    ✏️ Edit
+                  </Button>
+
                 </div>
               ))}
             </div>

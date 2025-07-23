@@ -108,7 +108,7 @@ export const storeCreatorCover = async (
   });
 
   const newUrl = await storeInUploads({
-    userId: creatorId,
+    id: creatorId,
     file,
     folder: 'creator-covers',
     width: 2400,

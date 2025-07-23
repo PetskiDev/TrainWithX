@@ -127,7 +127,7 @@ const Creators = () => {
             Discover amazing fitness creators and their expert training programs
           </p>
 
-          <div className="mt-4 bg-white rounded-lg shadow-sm p-6 mb-8">
+          <div className="mt-6 bg-white rounded-lg shadow-sm p-6 mb-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Search */}
               <div className="relative">

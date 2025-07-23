@@ -39,7 +39,7 @@ export default function PlanCardNew({ plan, showCreator = false }: PlanCardProps
       <div className="relative">
         <div className="aspect-video overflow-hidden">
           <img
-            src={plan.coverImage || `/default.jpg`}
+            src={plan.image || `/default.jpg`}
             alt={plan.title}
             width={350}
             height={200}

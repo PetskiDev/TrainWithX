@@ -30,7 +30,7 @@ export function toPlanPreview(
     title: plan.title,
     slug: plan.slug,
     price: Number(plan.price),
-    coverImage: plan.coverImage ?? undefined,
+    image: plan.image ?? undefined,
     description: plan.description,
     originalPrice:
       plan.originalPrice !== null ? Number(plan.originalPrice) : undefined,

@@ -7,9 +7,11 @@ import {
   getPlanContentByIdController,
   getPlanSubSlugContent,
   getPlanSubSlugPreveiw,
+  uploadPlanImageController,
 } from './plan.controller';
 import { deleteReviewController, getMyReviewForPlanController, getReviewsOfPlanController } from '../reviews/review.controller';
 import { doAuth } from '@src/middleware/auth';
+import { multerImageUpload } from '@src/middleware/multer.uploads';
 
 const router = Router();
 
@@ -20,6 +22,12 @@ router.post('/', doAuth, createPlanController);
 router.get('/:planId/content', doAuth, getPlanContentByIdController);
 
 router.put('/:planId', doAuth, editPlanController);
+
+router.patch(
+  '/:planId/image', 
+  doAuth,
+  multerImageUpload("image"),
+  uploadPlanImageController);
 
 //TODO: CHECK IF THE USER IS THE CREATOR OF THE PLAN
 //TODO: Make an admin controller in .admin without that validation

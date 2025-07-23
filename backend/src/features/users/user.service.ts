@@ -33,7 +33,7 @@ export const storeAvatar = async (
   });
 
   const newUrl = await storeInUploads({
-    userId,
+    id: userId,
     file,
     folder: 'avatars',
     width: 400,

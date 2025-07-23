@@ -5,6 +5,7 @@ import { CreatePlanDto, PlanContentJSON, PlanWithRevenue, PlanPreview, PlanWeek,
 import { paddle, syncPaddleForPlan } from '@src/utils/paddle';
 import { toPlanCreatorData, toPlanPreview } from '@src/features/plans/plan.transformer';
 import { Plan, Prisma } from '@prisma/client';
+import { storeInUploads } from '@src/utils/imageUploader';
 
 export async function getAllPlans() {
   return prisma.plan.findMany({
@@ -291,3 +292,32 @@ function calculateProgress(plan: Plan): number {
     return 0;
   }
 }
+
+
+export const storePlanImage = async (
+  planId: number,
+  file: Express.Multer.File
+): Promise<string> => {
+
+  const plan = await prisma.plan.findUnique({
+    where: { id: planId },
+    select: { image: true },
+  });
+
+  const newUrl = await storeInUploads({
+    id: planId,
+    file,
+    folder: 'plan-images',
+    width: 2400,
+    height: 800,
+    oldFileUrl: plan?.image ?? undefined,
+  });
+
+
+  await prisma.plan.update({
+    where: { id: planId },
+    data: { image: newUrl },
+  });
+
+  return newUrl;
+};

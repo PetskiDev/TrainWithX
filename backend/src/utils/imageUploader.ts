@@ -5,7 +5,7 @@ import fs from 'fs/promises';
 import { AppError } from './AppError';
 
 interface ImageStoreOptions {
-    userId: number,
+    id: number,
     file: Express.Multer.File,
     folder: string,
     width: number,
@@ -15,7 +15,7 @@ interface ImageStoreOptions {
 
 
 export const storeInUploads = async ({
-    userId,
+    id,
     file,
     folder,
     width,
@@ -29,7 +29,7 @@ export const storeInUploads = async ({
         throw new AppError('Unsupported image type', 400);
 
     await fs.mkdir(DIR, { recursive: true });
-    const filename = `${userId}_${Date.now()}.webp`;
+    const filename = `${id}_${Date.now()}.webp`;
     const target = path.join(DIR, filename);
 
     const buffer = await sharp(file.buffer)

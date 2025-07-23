@@ -59,7 +59,6 @@ model Plan {
   description      String
   tags             String[]     @default([])
   features         String[]     @default([])
-  coverImage       String?
   difficulty       Difficulty?
   avgRating        Decimal      @default(0) @db.Decimal(3, 2)
   noReviews        Int          @default(0)

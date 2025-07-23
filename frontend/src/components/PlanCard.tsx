@@ -28,7 +28,6 @@ export const PlanCard = ({ plan, onPlanClick }: Props) => {
     creatorSubdomain,
   } = plan;
 
-  const imageUrl = `/plan_images/${slug}.jpg`;
   const hasDiscount = !!originalPrice && originalPrice > price;
   const discountPercentage = hasDiscount
     ? Math.round(((originalPrice - price) / originalPrice) * 100)
@@ -46,7 +45,7 @@ export const PlanCard = ({ plan, onPlanClick }: Props) => {
       {/* ---------- image ---------- */}
       <div className="relative overflow-hidden">
         <img
-          src={imageUrl}
+          src={plan.image || `/default.jpg`}
           alt={title}
           className="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
           onError={(e) => {

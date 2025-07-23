@@ -244,8 +244,9 @@ const Me = () => {
                   id="avatar-upload"
                   type="file"
                   accept=".jpg,.jpeg,.png,.webp"
-                  onChange={handleAvatarUpload}
+                  onChange={uploading ? undefined : handleAvatarUpload}
                   className="hidden"
+                  disabled={uploading}
                 />
               </div>
             </div>

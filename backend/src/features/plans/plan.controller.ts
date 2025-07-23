@@ -11,6 +11,7 @@ import {
   getCreatorIdForPlan,
   updatePlanService,
   getPlanById,
+  storePlanImage,
 } from './plan.service';
 import { AppError } from '@src/utils/AppError';
 import {
@@ -77,6 +78,30 @@ export async function editPlanController(req: Request, res: Response) {
 
   res.status(200).json(updatedPlan);
 }
+
+export async function uploadPlanImageController(req: Request, res: Response) {
+  const user = req.user!;
+  const planId = Number(req.params.planId);
+  if (!req.file) throw new AppError('No file uploaded', 400);
+
+  if (isNaN(planId)) {
+    throw new AppError('Invalid Plan ID', 400);
+  }
+
+  // Fetch existing plan to validate ownership
+  const creatorOfPlan = await getCreatorIdForPlan(planId);
+
+  // Check authorization: must be admin or owner of the plan
+  const isOwner = creatorOfPlan === user.id;
+
+  if (!user.isAdmin && !isOwner) {
+    throw new AppError('Unauthorized to edit this plan', 403);
+  }
+
+  const coverUrl = await storePlanImage(planId, req.file);
+  res.status(200).json({ coverUrl });
+}
+
 
 
 /** GET /api/v1/creators/by-subdomain/:subdomain/plans */

@@ -140,7 +140,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
         {/* Hero Section */}
         <div className="relative mb-8 rounded-lg overflow-hidden">
           <img
-            src={plan.coverImage}
+            src={plan.image || `/default.jpg`}
             alt={plan.title}
             className="w-full h-64 md:h-80 object-cover"
           />

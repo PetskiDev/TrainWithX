@@ -5,7 +5,7 @@ export interface PlanPreview {
   slug: string;
   price: number;
   description: string;
-  coverImage?: string;
+  image?: string;
   originalPrice?: number;
   creatorId: number;
   isPublished: boolean;
