@@ -111,8 +111,8 @@ export const storeCreatorCover = async (
     id: creatorId,
     file,
     folder: 'creator-covers',
-    width: 2400,
-    height: 800,
+    width: 1200,
+    height: 400,
     oldFileUrl: creator?.coverUrl ?? undefined,
   });
 

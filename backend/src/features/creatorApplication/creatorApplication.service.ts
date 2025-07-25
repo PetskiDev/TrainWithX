@@ -1,8 +1,10 @@
-import { CreatorApplicationDTO, SendApplicationDTO } from '@shared/types/creator';
-import { promoteUserToCreator } from '@src/features/creators/creator.service';
-import { AppError } from '@src/utils/AppError';
-import { prisma } from '@src/utils/prisma';
-
+import {
+  CreatorApplicationDTO,
+  SendApplicationDTO,
+} from "@shared/types/creator";
+import { promoteUserToCreator } from "@src/features/creators/creator.service";
+import { AppError } from "@src/utils/AppError";
+import { prisma } from "@src/utils/prisma";
 
 export async function submitCreatorApplication(
   userId: number,
@@ -13,19 +15,20 @@ export async function submitCreatorApplication(
   });
 
   if (existingApplication) {
-    throw new AppError('You have already submitted an application.', 400);
+    throw new AppError("You have already submitted an application.", 400);
   }
 
   // 2. Check if subdomain is already taken (by Creator or another Application)
-  const subdomainTaken = (await prisma.creator.findFirst({
-    where: { subdomain: dto.subdomain },
-  })) ||
+  const subdomainTaken =
+    (await prisma.creator.findFirst({
+      where: { subdomain: dto.subdomain },
+    })) ||
     (await prisma.creatorApplication.findFirst({
       where: { subdomain: dto.subdomain },
     }));
 
   if (subdomainTaken) {
-    throw new AppError('Subdomain is already in use.', 400);
+    throw new AppError("Subdomain is already in use.", 400);
   }
   const application = await prisma.creatorApplication.create({
     data: {
@@ -35,16 +38,17 @@ export async function submitCreatorApplication(
   });
 
   return application;
-} export async function getCreatorApplications(): Promise<
+}
+export async function getCreatorApplications(): Promise<
   CreatorApplicationDTO[]
 > {
   const applications = await prisma.creatorApplication.findMany({
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
     include: {
-      user: { select: { id: true, avatarUrl: true, username: true } }
-    }
+      user: { select: { id: true, avatarUrl: true, username: true } },
+    },
   });
 
   return applications.map((app) => ({
@@ -53,7 +57,7 @@ export async function submitCreatorApplication(
     specialties: app.specialties,
     experience: app.experience,
     bio: app.bio,
-    socialMedia: app.socialMedia || '',
+    socialMedia: app.socialMedia || "",
     agreeToTerms: app.agreeToTerms,
     email: app.email,
     createdAt: app.createdAt,
@@ -66,31 +70,40 @@ export async function submitCreatorApplication(
   }));
 }
 
-
-
 export async function approveCreatorApplication(id: number) {
   const application = await prisma.creatorApplication.findUnique({
     where: { id },
   });
 
   if (!application) {
-    throw new AppError('Application not found', 404);
+    throw new AppError("Application not found", 404);
   }
 
-  if (application.status === 'approved') {
-    throw new AppError('Already approved', 400);
+  if (application.status === "approved") {
+    throw new AppError("Already approved", 400);
   }
   return await prisma.$transaction(async (tx) => {
-
     const creator = await promoteUserToCreator(application, tx);
 
     await tx.creatorApplication.update({
       where: { id },
-      data: { status: 'approved' },
+      data: { status: "approved" },
     });
 
     return creator;
   });
+}
+
+export async function getCreatorApplication(userId: number) {
+  const application = await prisma.creatorApplication.findUnique({
+    where: { userId },
+  });
+
+  if (!application) {
+    throw new AppError("Application not found", 404);
+  }
+
+  return application;
 }
 
 export async function rejectCreatorApplication(id: number) {
@@ -99,16 +112,15 @@ export async function rejectCreatorApplication(id: number) {
   });
 
   if (!application) {
-    throw new AppError('Application not found', 404);
+    throw new AppError("Application not found", 404);
   }
 
-  if (application.status === 'rejected') {
-    throw new AppError('Already rejected', 400);
+  if (application.status === "rejected") {
+    throw new AppError("Already rejected", 400);
   }
 
   await prisma.creatorApplication.update({
     where: { id },
-    data: { status: 'rejected' },
+    data: { status: "rejected" },
   });
-
 }

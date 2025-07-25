@@ -29,7 +29,6 @@ const CreatorDashboard = () => {
   const [error, setError] = useState<string | null>(null);
 
 
-  const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadingPlanId, setUploadingPlanId] = useState<number | null>(null);
 
   // Fetch creator

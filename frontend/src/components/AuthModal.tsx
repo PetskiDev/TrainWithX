@@ -79,7 +79,6 @@ export const AuthModal = ({
         redirectUrl
       )}; path=/; domain=.${import.meta.env.VITE_BASE_DOMAIN}; SameSite=Lax`;
       console.log(document.cookie);
-      window.location.href = "/api/v1/auth/google";
     }
     window.location.href = "/api/v1/auth/google";
   };

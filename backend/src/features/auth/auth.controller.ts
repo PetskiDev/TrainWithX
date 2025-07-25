@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 import {
   getUserInfoFromGoogle,
   login,
@@ -6,16 +6,16 @@ import {
   getOrCreateGoogleUser,
   verifyEmail,
   createAndSendVerificationToken,
-} from './auth.service';
-import { AppError } from '@src/utils/AppError';
-import { clearCookieOpts, cookieOpts } from '@src/utils/cookies';
-import querystring from 'node:querystring';
-import { env } from '@src/utils/env';
+} from "./auth.service";
+import { AppError } from "@src/utils/AppError";
+import { clearCookieOpts, cookieOpts } from "@src/utils/cookies";
+import querystring from "node:querystring";
+import { env } from "@src/utils/env";
 
 export async function registerController(req: Request, res: Response) {
   const { email, username, password } = req.body;
   if (!email || !username || !password) {
-    throw new AppError('Email, username, and password are required.', 400);
+    throw new AppError("Email, username, and password are required.", 400);
   }
 
   const result = await register(email, username, password);
@@ -23,19 +23,19 @@ export async function registerController(req: Request, res: Response) {
   if (result.user.isVerified) {
     //it was a already-registered google acc
     res
-      .cookie('access', result.token, cookieOpts)
+      .cookie("access", result.token, cookieOpts)
       .status(201)
       .json(result.user);
   } else {
     res.status(200).json(result.user);
     //no cookie till login
   }
-};
+}
 
 export async function loginController(req: Request, res: Response) {
   const { email, password } = req.body;
   if (!email || !password) {
-    throw new AppError('Email, and password are required.', 400);
+    throw new AppError("Email, and password are required.", 400);
   }
   const result = await login(email, password);
 
@@ -47,54 +47,53 @@ export async function loginController(req: Request, res: Response) {
       username: result.user.username,
     });
     res.status(401).json({
-      error: 'Email not verified.',
-      reason: 'not_verified',
+      error: "Email not verified.",
+      reason: "not_verified",
     });
     return;
   }
 
-  res.cookie('access', result.token, cookieOpts).status(200).json(result.user);
-};
+  res.cookie("access", result.token, cookieOpts).status(200).json(result.user);
+}
 
 export async function logoutController(req: Request, res: Response) {
-  res.clearCookie('access', clearCookieOpts);
-  res.status(200).json({ message: 'Logged out' });
-};
+  res.clearCookie("access", clearCookieOpts);
+  res.status(200).json({ message: "Logged out" });
+}
 
 export async function verifyController(req: Request, res: Response) {
   const { token } = req.body;
-  if (!token) throw new AppError('Token required', 400);
+  if (!token) throw new AppError("Token required", 400);
 
   await verifyEmail(token);
 
   res.json({
     ok: true,
-    message: 'Email successfully verified.',
+    message: "Email successfully verified.",
   });
-};
+}
 
 export async function redirectToGoogleController(req: Request, res: Response) {
   const qs = querystring.stringify({
     client_id: env.GOOGLE_CLIENT_ID,
     redirect_uri: `${env.API_URL}/auth/google/callback`,
-    response_type: 'code',
-    scope: 'openid email profile',
-    prompt: 'select_account',
+    response_type: "code",
+    scope: "openid email profile",
+    prompt: "select_account",
   });
   res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${qs}`);
-};
+}
 
 function isSafeRedirect(urlStr: string | undefined): boolean {
   if (!urlStr) return false;
+  console.log("URL STR:" + urlStr);
   try {
     const url = new URL(urlStr);
     const hostname = url.hostname;
+    console.log("HOSTNAME:" + hostname);
 
     // Allow main domain and any subdomain of it
-    return (
-      hostname === env.DOMAIN ||
-      hostname.endsWith(`.${env.DOMAIN}`)
-    );
+    return hostname === env.DOMAIN || hostname.endsWith(`.${env.DOMAIN}`);
   } catch {
     return false;
   }
@@ -103,15 +102,13 @@ function isSafeRedirect(urlStr: string | undefined): boolean {
 export async function googleCallbackController(req: Request, res: Response) {
   //get the auth code
   const code = req.query.code as string | undefined;
-  if (!code) throw new AppError('Missing OAuth code', 400);
+  if (!code) throw new AppError("Missing OAuth code", 400);
 
   //use the code to ask google for the user
-  const { googleId, email, name, picture } = await getUserInfoFromGoogle(
-    code
-  );
+  const { googleId, email, name, picture } = await getUserInfoFromGoogle(code);
 
   const redirectUrl = req.cookies.redirectUrl;
-  res.clearCookie('redirectUrl', { path: '/', domain: `.${env.DOMAIN}` });
+  res.clearCookie("redirectUrl", { path: "/", domain: `.${env.DOMAIN}` });
 
   const finalRedirect = isSafeRedirect(redirectUrl)
     ? redirectUrl!
@@ -124,7 +121,5 @@ export async function googleCallbackController(req: Request, res: Response) {
     picture,
   });
 
-  res
-    .cookie('access', result.token, cookieOpts)
-    .redirect(finalRedirect);
-};
+  res.cookie("access", result.token, cookieOpts).redirect(finalRedirect);
+}

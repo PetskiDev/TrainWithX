@@ -1,35 +1,58 @@
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Plus, Trash2, Save, Eye, X } from 'lucide-react';
+} from "@/components/ui/select";
+import { Plus, Trash2, Save, Eye, X } from "lucide-react";
 import type {
   CreatePlanDto,
   Exercise,
   PlanDay,
   PlanWeek,
-} from '@shared/types/plan';
-import type { CreatorPreviewDTO } from '@shared/types/creator';
-import { useAuth } from '@frontend/context/AuthContext';
-import { Badge } from '@frontend/components/ui/badge';
-import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
-import { toast } from '@frontend/hooks/use-toast';
+} from "@shared/types/plan";
+import type { CreatorPreviewDTO } from "@shared/types/creator";
+import { useAuth } from "@frontend/context/AuthContext";
+import { Badge } from "@frontend/components/ui/badge";
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
+import { toast } from "@frontend/hooks/use-toast";
 
+const availableTags = [
+  "Strength",
+  "Hypertrophy",
+  "HIIT",
+  "Fat Loss",
+  "Endurance",
+  "Power",
+  "CrossFit",
+  "Home",
+  "Calisthenics",
+  "Pilates",
+  "Yoga",
+  "Running",
+  "Bodyweight",
+  "Recovery",
+  "Women",
+  "Beginner",
+  "Mobility",
+  "Martial Arts",
+];
 
-const availableTags = ["Strength Training", "Fat Loss", "Home Workout", "Gym"];
-
-
-const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: number }) => {
+const CreateOrEditPlan = ({
+  init,
+  planId,
+}: {
+  init?: CreatePlanDto;
+  planId?: number;
+}) => {
   const { goPublic, goToCreator } = useSmartNavigate();
 
   const isEditing = !!init && planId;
@@ -44,33 +67,33 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
 
   const [planData, setPlanData] = useState<CreatePlanDto>({
     creatorId: -1, //fetched below
-    title: '',
-    description: '',
-    difficulty: 'beginner',
+    title: "",
+    description: "",
+    difficulty: "beginner",
     price: 25,
     originalPrice: undefined,
-    slug: '',
+    slug: "",
     goals: [],
     tags: [],
     weeks: [],
     features: [],
   });
 
-  const [activeTab, setActiveTab] = useState('basic');
+  const [activeTab, setActiveTab] = useState("basic");
 
   useEffect(() => {
     if (!user || !user.isAdmin) return;
     const fetchAllCreators = async () => {
       try {
-        const res = await fetch('/api/v1/creators', {
-          credentials: 'include',
+        const res = await fetch("/api/v1/creators", {
+          credentials: "include",
         });
-        if (!res.ok) throw new Error('Failed to fetch creators');
+        if (!res.ok) throw new Error("Failed to fetch creators");
         const creators = await res.json();
         setAllCreators(creators);
       } catch (err) {
-        console.error('Error loading all creators:', err);
-        setError('Failed to load creators. Please try again later.');
+        console.error("Error loading all creators:", err);
+        setError("Failed to load creators. Please try again later.");
       }
     };
     fetchAllCreators();
@@ -81,10 +104,10 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
       try {
         //TODO: Change to me?
         const res = await fetch(`/api/v1/creators/${user.id}`, {
-          credentials: 'include',
+          credentials: "include",
         });
         if (!res.ok) {
-          throw new Error('User is not creator');
+          throw new Error("User is not creator");
         }
 
         const c = await res.json();
@@ -97,8 +120,8 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
           }));
         }
       } catch (err) {
-        console.error('Failed to load creator:', err);
-        setError('Failed to load creator.');
+        console.error("Failed to load creator:", err);
+        setError("Failed to load creator.");
       }
     };
 
@@ -120,7 +143,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
         </p>
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded"
-          onClick={() => goPublic('/login')}
+          onClick={() => goPublic("/login")}
         >
           Go to Login
         </button>
@@ -150,8 +173,8 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
     const newWeek: PlanWeek = {
       id: planData.weeks.length + 1,
       title: `Week ${planData.weeks.length + 1}`,
-      description: '',
-      emoj: '🆕',
+      description: "",
+      emoj: "🆕",
       days: [],
     };
     setPlanData((prev) => ({
@@ -182,12 +205,12 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
     const newDay: PlanDay = {
       id: (week?.days.length || 0) + 1,
       title: `Day ${(week?.days.length || 0) + 1}`,
-      type: 'workout',
+      type: "workout",
       exercises: [],
       completed: false,
     };
 
-    updateWeek(weekId, 'days', [...(week?.days || []), newDay]);
+    updateWeek(weekId, "days", [...(week?.days || []), newDay]);
   };
 
   const updateDay = (
@@ -202,7 +225,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
     const updatedDays = week.days.map((day) =>
       day.id === dayId ? { ...day, [field]: value } : day
     );
-    updateWeek(weekId, 'days', updatedDays);
+    updateWeek(weekId, "days", updatedDays);
   };
 
   const deleteDay = (weekId: number, dayId: number) => {
@@ -210,7 +233,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
     if (!week) return;
 
     const updatedDays = week.days.filter((day) => day.id !== dayId);
-    updateWeek(weekId, 'days', updatedDays);
+    updateWeek(weekId, "days", updatedDays);
   };
 
   // Exercise management
@@ -220,14 +243,14 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
     if (!day) return;
 
     const newExercise: Exercise = {
-      name: '',
+      name: "",
       sets: 3,
-      reps: '12',
-      weight: 'Bodyweight',
+      reps: "12",
+      weight: "Bodyweight",
     };
 
     const updatedExercises = [...(day.exercises || []), newExercise];
-    updateDay(weekId, dayId, 'exercises', updatedExercises);
+    updateDay(weekId, dayId, "exercises", updatedExercises);
   };
 
   const updateExercise = (
@@ -245,7 +268,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
       index === exerciseIndex ? { ...exercise, [field]: value } : exercise
     );
 
-    updateDay(weekId, dayId, 'exercises', updatedExercises);
+    updateDay(weekId, dayId, "exercises", updatedExercises);
   };
 
   const deleteExercise = (
@@ -260,14 +283,14 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
     const updatedExercises = day.exercises.filter(
       (_, index) => index !== exerciseIndex
     );
-    updateDay(weekId, dayId, 'exercises', updatedExercises);
+    updateDay(weekId, dayId, "exercises", updatedExercises);
   };
 
   // Goals and Tags management
   const addGoal = () => {
     setPlanData((prev) => ({
       ...prev,
-      goals: [...prev.goals, ''],
+      goals: [...prev.goals, ""],
     }));
   };
 
@@ -285,18 +308,19 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
     }));
   };
 
-
   const addFeature = () => {
     setPlanData((prev) => ({
       ...prev,
-      features: [...prev.features, ''],
+      features: [...prev.features, ""],
     }));
   };
 
   const updateFeature = (index: number, value: string) => {
     setPlanData((prev) => ({
       ...prev,
-      features: prev.features.map((feature, i) => (i === index ? value : feature)),
+      features: prev.features.map((feature, i) =>
+        i === index ? value : feature
+      ),
     }));
   };
 
@@ -313,7 +337,6 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
     setCustomTag("");
   };
 
-
   const removeTag = (index: number) => {
     const newTags = [...planData.tags];
     newTags.splice(index, 1);
@@ -321,58 +344,59 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
   };
 
   const handlePreview = () => {
-    console.log('Previewing plan:', planData);
+    console.log("Previewing plan:", planData);
     // Here you would navigate to preview
   };
 
   const handleSave = async () => {
     try {
-      const endpoint = isEditing
-        ? `/api/v1/plans/${planId}`
-        : `/api/v1/plans`;
+      const endpoint = isEditing ? `/api/v1/plans/${planId}` : `/api/v1/plans`;
 
-      const method = isEditing ? 'PUT' : 'POST';
+      const method = isEditing ? "PUT" : "POST";
 
       const res = await fetch(endpoint, {
         method,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify(planData),
       });
 
       if (!res.ok) {
         const errorData = await res.json();
         // Use backend-sent error message if available
-        throw new Error(errorData?.error || `Failed to ${isEditing ? 'update' : 'create'} plan`);
+        throw new Error(
+          errorData?.error ||
+            `Failed to ${isEditing ? "update" : "create"} plan`
+        );
       }
 
       const saved = await res.json();
       toast({
-        title: `Plan ${isEditing ? 'updated' : 'created'} successfully`,
+        title: `Plan ${isEditing ? "updated" : "created"} successfully`,
         description: `"${saved.title}" has been saved.`,
       });
       if (user.isAdmin) {
-        const c = allCreators?.find(a => a.id == planData.creatorId);
+        const c = allCreators?.find((a) => a.id == planData.creatorId);
         goToCreator({ subdomain: c!.subdomain, path: `/${planData.slug}` });
-
-      }
-      else if (creator) {
-        goToCreator({ subdomain: creator.subdomain, path: `/${planData.slug}` });
-      }
-      else {
+      } else if (creator) {
+        goToCreator({
+          subdomain: creator.subdomain,
+          path: `/${planData.slug}`,
+        });
+      } else {
         console.error("SHOULD NOT HAPPEN");
       }
-
     } catch (err: any) {
-      console.error('Error saving plan:', err);
+      console.error("Error saving plan:", err);
       toast({
-        title: 'Error',
-        description: err.message || 'Something went wrong while saving the plan.',
-        variant: 'destructive',
+        title: "Error",
+        description:
+          err.message || "Something went wrong while saving the plan.",
+        variant: "destructive",
       });
-      setError(err instanceof Error ? err.message : 'Something went wrong.');
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     }
   };
 
@@ -388,7 +412,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">
-              {`Create New Plan ${user.isAdmin ? '(admin)' : ''}`}
+              {`Create New Plan ${user.isAdmin ? "(admin)" : ""}`}
             </h1>
             <p className="text-muted-foreground">
               Build your training plan step by step
@@ -424,7 +448,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                     <Input
                       id="title"
                       value={planData.title}
-                      onChange={(e) => updateBasicInfo('title', e.target.value)}
+                      onChange={(e) => updateBasicInfo("title", e.target.value)}
                       placeholder="e.g., 30-Day Muscle Building Program"
                     />
                   </div>
@@ -434,13 +458,13 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                     <Input
                       id="slug"
                       value={planData.slug}
-                      onChange={(e) => updateBasicInfo('slug', e.target.value)}
+                      onChange={(e) => updateBasicInfo("slug", e.target.value)}
                       placeholder="e.g., 30-day-muscle-building"
                     />
                     <p className="text-xs text-muted-foreground">
-                      {user.isAdmin ? 'admin' : creator?.subdomain}
+                      {user.isAdmin ? "admin" : creator?.subdomain}
                       .trainwithx.com/
-                      {planData.slug || 'your-slug'}
+                      {planData.slug || "your-slug"}
                     </p>
                   </div>
                 </div>
@@ -450,7 +474,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                   <Select
                     value={planData.difficulty}
                     onValueChange={(value) =>
-                      updateBasicInfo('difficulty', value)
+                      updateBasicInfo("difficulty", value)
                     }
                   >
                     <SelectTrigger>
@@ -472,7 +496,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                       type="number"
                       value={planData.price}
                       onChange={(e) =>
-                        updateBasicInfo('price', Number(e.target.value))
+                        updateBasicInfo("price", Number(e.target.value))
                       }
                       placeholder="79"
                     />
@@ -488,7 +512,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                       value={planData.originalPrice || undefined}
                       onChange={(e) =>
                         updateBasicInfo(
-                          'originalPrice',
+                          "originalPrice",
                           e.target.value ? Number(e.target.value) : undefined
                         )
                       }
@@ -503,7 +527,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                     id="description"
                     value={planData.description}
                     onChange={(e) =>
-                      updateBasicInfo('description', e.target.value)
+                      updateBasicInfo("description", e.target.value)
                     }
                     placeholder="Describe what your plan includes and who it's for..."
                     rows={4}
@@ -519,10 +543,10 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                     </Label>
                     <Select
                       value={
-                        planData.creatorId > 0 ? String(planData.creatorId) : ''
+                        planData.creatorId > 0 ? String(planData.creatorId) : ""
                       }
                       onValueChange={(value) =>
-                        updateBasicInfo('creatorId', Number(value))
+                        updateBasicInfo("creatorId", Number(value))
                       }
                       disabled={!allCreators}
                     >
@@ -563,7 +587,8 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                 <CardContent className="space-y-4">
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">
-                      What will users achieve with this plan? (this section is available when the user purchases the plan)
+                      What will users achieve with this plan? (this section is
+                      available when the user purchases the plan)
                     </p>
                     <Button size="sm" onClick={addGoal}>
                       <Plus className="h-4 w-4 mr-2" />
@@ -604,7 +629,8 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                 <CardContent className="space-y-4">
                   <div className="flex justify-between items-center">
                     <p className="text-sm text-muted-foreground">
-                      Selling point of this plan. (This is listed on the plan purchase card)
+                      Selling point of this plan. (This is listed on the plan
+                      purchase card)
                     </p>
                     <Button size="sm" onClick={addFeature}>
                       <Plus className="h-4 w-4 mr-2" />
@@ -665,7 +691,6 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                     </div>
                   )}
 
-
                   {/* Suggested tags */}
                   <div className="flex flex-wrap gap-2">
                     {availableTags
@@ -690,7 +715,8 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                       value={customTag}
                       onChange={(e) => setCustomTag(e.target.value)}
                       onKeyPress={(e) =>
-                        e.key === "Enter" && (e.preventDefault(), addTag(customTag))
+                        e.key === "Enter" &&
+                        (e.preventDefault(), addTag(customTag))
                       }
                       className="flex-1"
                     />
@@ -724,7 +750,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                       <Input
                         value={week.title}
                         onChange={(e) =>
-                          updateWeek(week.id, 'title', e.target.value)
+                          updateWeek(week.id, "title", e.target.value)
                         }
                         className="text-lg font-semibold border-none p-0 h-auto max-w-md"
                         placeholder="Week title"
@@ -740,7 +766,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                     <Textarea
                       value={week.description}
                       onChange={(e) =>
-                        updateWeek(week.id, 'description', e.target.value)
+                        updateWeek(week.id, "description", e.target.value)
                       }
                       placeholder="What will users focus on this week?"
                       rows={2}
@@ -769,7 +795,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                                   updateDay(
                                     week.id,
                                     day.id,
-                                    'title',
+                                    "title",
                                     e.target.value
                                   )
                                 }
@@ -779,7 +805,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                               <Select
                                 value={day.type}
                                 onValueChange={(value) =>
-                                  updateDay(week.id, day.id, 'type', value)
+                                  updateDay(week.id, day.id, "type", value)
                                 }
                               >
                                 <SelectTrigger className="w-auto h-8">
@@ -805,7 +831,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
 
                         <CardContent className="space-y-4">
                           {/* Workout Section */}
-                          {day.type === 'workout' && (
+                          {day.type === "workout" && (
                             <div className="space-y-3">
                               <div className="flex justify-between items-center">
                                 <Label>Exercises</Label>
@@ -830,7 +856,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                                         week.id,
                                         day.id,
                                         index,
-                                        'name',
+                                        "name",
                                         e.target.value
                                       )
                                     }
@@ -845,7 +871,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                                         week.id,
                                         day.id,
                                         index,
-                                        'sets',
+                                        "sets",
                                         Number(e.target.value)
                                       )
                                     }
@@ -859,7 +885,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                                         week.id,
                                         day.id,
                                         index,
-                                        'reps',
+                                        "reps",
                                         e.target.value
                                       )
                                     }
@@ -873,7 +899,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                                         week.id,
                                         day.id,
                                         index,
-                                        'weight',
+                                        "weight",
                                         e.target.value
                                       )
                                     }
@@ -896,7 +922,7 @@ const CreateOrEditPlan = ({ init, planId }: { init?: CreatePlanDto, planId?: num
                           )}
 
                           {/* Rest Day Content */}
-                          {day.type === 'rest' && (
+                          {day.type === "rest" && (
                             <div className="p-4 bg-muted/50 rounded-lg text-center">
                               <h3 className="font-medium mb-1">Rest Day</h3>
                               <p className="text-sm text-muted-foreground">

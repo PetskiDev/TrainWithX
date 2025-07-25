@@ -308,8 +308,8 @@ export const storePlanImage = async (
     id: planId,
     file,
     folder: 'plan-images',
-    width: 2400,
-    height: 800,
+    width: 1200,
+    height: 400,
     oldFileUrl: plan?.image ?? undefined,
   });
 

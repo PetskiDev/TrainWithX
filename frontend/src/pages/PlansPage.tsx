@@ -1,17 +1,41 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from "react";
 
-import { Input } from '@/components/ui/input';
-import { Filter, Search, SortAsc } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Filter, Search, SortAsc } from "lucide-react";
 
-import type { PlanPreview } from '@shared/types/plan';
-import PlansGrid from '@frontend/components/PlansGrid';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
-
+import type { PlanPreview } from "@shared/types/plan";
+import PlansGrid from "@frontend/components/PlansGrid";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
 
 //TODO: fetch this
-const categories = ["All", "Strength", "Cardio", "Yoga", "Bodyweight", "Running", "Functional"]
-
+const availableTags = [
+  "All",
+  "Strength",
+  "Hypertrophy",
+  "HIIT",
+  "Fat Loss",
+  "Endurance",
+  "Power",
+  "CrossFit",
+  "Home",
+  "Calisthenics",
+  "Pilates",
+  "Yoga",
+  "Running",
+  "Bodyweight",
+  "Recovery",
+  "Women",
+  "Beginner",
+  "Mobility",
+  "Martial Arts",
+];
 
 const sortOptions = [
   { value: "title", label: "Title" },
@@ -19,18 +43,17 @@ const sortOptions = [
   { value: "price-high", label: "Price: High to Low" },
   { value: "duration", label: "Duration" },
   { value: "difficulty", label: "Difficulty" },
-]
-
+];
 
 const PlansPage = () => {
   const { goPublic } = useSmartNavigate();
 
   const [plans, setPlans] = useState<PlanPreview[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const [sortBy, setSortBy] = useState("title")
-  const [selectedCategory, setSelectedCategory] = useState("All")
+  const [sortBy, setSortBy] = useState("title");
+  const [selectedTag, setSelectedTag] = useState("All");
 
   const filteredAndSortedPlans = useMemo(() => {
     const filtered = plans.filter((plan) => {
@@ -38,39 +61,46 @@ const PlansPage = () => {
         plan.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         plan.slug.toLowerCase().includes(searchTerm.toLowerCase()) ||
         plan.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        plan.features.some(feature =>
-          feature.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        plan.creatorUsername.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesCategory = selectedCategory === "All" || true //TODO SEE IF THE PLAN IS in the category or contains tags
-      return matchesSearch && matchesCategory
-    })
+        plan.features.some((feature) =>
+          feature.toLowerCase().includes(searchTerm.toLowerCase())
+        ) ||
+        plan.creatorUsername.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesTag =
+        selectedTag === "All" ||
+        plan.tags?.some(
+          (tag) =>
+            tag.toLowerCase().includes(selectedTag.toLowerCase()) ||
+            selectedTag.toLowerCase().includes(tag.toLowerCase())
+        );
+      return matchesSearch && matchesTag;
+    });
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "price-low":
-          return a.price - b.price
+          return a.price - b.price;
         case "price-high":
-          return b.price - a.price
+          return b.price - a.price;
         case "duration":
-          return a.duration - b.duration
+          return a.duration - b.duration;
         case "difficulty":
-          const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 }
-          return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]
+          const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
+          return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
         default:
-          return a.title.localeCompare(b.title)
+          return a.title.localeCompare(b.title);
       }
-    })
-    return filtered
-  }, [plans, searchTerm, selectedCategory, sortBy])
+    });
+    return filtered;
+  }, [plans, searchTerm, selectedTag, sortBy]);
 
   // Fetch plans from API on mount
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await fetch('/api/v1/plans');
+        const res = await fetch("/api/v1/plans");
         const data = await res.json();
         setPlans(data);
       } catch (err) {
-        console.error('Failed to fetch plans:', err);
+        console.error("Failed to fetch plans:", err);
       } finally {
         setLoading(false);
       }
@@ -79,19 +109,20 @@ const PlansPage = () => {
     fetchPlans();
   }, []);
 
-
   const handlePlanClick = (planId: number) => {
     goPublic(`/plan/${planId}`);
   };
-
-
 
   return (
     <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Choose Your Fitness Plan</h1>
-          <p className="text-gray-600">Find the perfect workout program to achieve your fitness goals</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+            Choose Your Fitness Plan
+          </h1>
+          <p className="text-gray-600">
+            Find the perfect workout program to achieve your fitness goals
+          </p>
         </div>
 
         {/* Filters and Search */}
@@ -109,15 +140,15 @@ const PlansPage = () => {
             </div>
 
             {/* Category Filter */}
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <Select value={selectedTag} onValueChange={setSelectedTag}>
               <SelectTrigger>
                 <Filter className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Category" />
               </SelectTrigger>
               <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
+                {availableTags.map((tag) => (
+                  <SelectItem key={tag} value={tag}>
+                    {tag}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -140,7 +171,8 @@ const PlansPage = () => {
 
             {/* Results Count */}
             <div className="flex items-center text-sm text-gray-600">
-              {filteredAndSortedPlans.length} plan{filteredAndSortedPlans.length !== 1 ? "s" : ""} found
+              {filteredAndSortedPlans.length} plan
+              {filteredAndSortedPlans.length !== 1 ? "s" : ""} found
             </div>
           </div>
         </div>

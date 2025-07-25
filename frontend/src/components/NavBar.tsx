@@ -19,7 +19,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { User, Settings, LogOut, Menu } from 'lucide-react';
+import { User, LogOut, Menu } from 'lucide-react';
 
 import { useAuth } from '@/context/AuthContext';
 import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
@@ -158,10 +158,6 @@ const Navbar = () => {
                   <DropdownMenuItem onClick={() => goPublic('/me')}>
                     <User className="mr-2 h-4 w-4" />
                     <span>My Plans</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => goPublic('/settings')}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
