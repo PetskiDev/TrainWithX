@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>New Contact Message</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        padding: 20px;
+        color: #333;
+      }
+      .container {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .footer {
+        font-size: 12px;
+        color: #777;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>📬 New Contact Form Submission</h2>
+      <p><strong>Email:</strong> {{email}}</p>
+      <p><strong>Reason:</strong> {{reason}}</p>
+      <p><strong>Message:</strong></p>
+      <p>{{message}}</p>
+      <div class="footer">
+        <p>TrainWithX • {{year}}</p>
+      </div>
+    </div>
+  </body>
+</html>

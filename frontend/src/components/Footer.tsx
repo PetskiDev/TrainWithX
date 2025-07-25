@@ -18,7 +18,7 @@ export function Footer() {
   const { goPublic } = useSmartNavigate();
 
   return (
-    <footer className="bg-muted/30 border-t py-12">
+    <footer className="bg-muted/30 border-t pt-12 pb-6">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div className="space-y-4">
@@ -73,24 +73,36 @@ export function Footer() {
             <h3 className="font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <button
+                  onClick={() => goPublic("/help")}
+                  className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
+                >
                   Help Center
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <button
+                  onClick={() => goPublic("/contact")}
+                  className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
+                >
                   Contact Us
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <button
+                  onClick={() => goPublic("/faq")}
+                  className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
+                >
                   FAQ
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <button
+                  onClick={() => goPublic("/community-guidelines")}
+                  className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
+                >
                   Community Guidelines
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -311,7 +323,6 @@ export function Footer() {
           </div>
         </div>
       </div>
-
     </footer>
   );
 }
