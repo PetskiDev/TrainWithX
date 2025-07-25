@@ -2,22 +2,22 @@
  *  src/pages/RegisterPage.tsx
  * ------------------------------------------------*/
 
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '@frontend/context/AuthContext';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@frontend/context/AuthContext";
 
-import { TrainWithXLogo } from '@/components/TrainWithXLogo';
+import { TrainWithXLogo } from "@/components/TrainWithXLogo";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
 
 const RegisterPage = () => {
   const { goPublic, goToDashboard } = useSmartNavigate();
@@ -26,15 +26,15 @@ const RegisterPage = () => {
   const { user, loading, register } = useAuth();
 
   const [form, setForm] = useState({
-    username: '',
-    email: '',
-    password: '',
+    username: "",
+    email: "",
+    password: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   /* -------------- redirect if signed in ------------------------------- */
   useEffect(() => {
-    if (!loading && user) goPublic('/me');
+    if (!loading && user) goPublic("/me");
   }, [loading, user]);
 
   /* -------------- handlers ------------------------------------------- */
@@ -43,12 +43,12 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     try {
       const user = await register(form.email, form.username, form.password);
 
       if (!user.isVerified) {
-        goPublic('/email-verification');
+        goPublic("/email-verification");
       } else {
         goToDashboard(user);
       }
@@ -58,7 +58,7 @@ const RegisterPage = () => {
   };
 
   const handleGoogleSignUp = () =>
-    (window.location.href = '/api/v1/auth/google');
+    (window.location.href = "/api/v1/auth/google");
 
   /* -------------- loading skeleton ----------------------------------- */
   if (loading || user) {
@@ -136,6 +136,25 @@ const RegisterPage = () => {
               Create Account
             </Button>
           </form>
+          <p className="text-xs text-muted-foreground text-center mt-2">
+            By signing up, you agree to our{" "}
+            <button
+              type="button"
+              onClick={() => goPublic("/terms-of-service", true)}
+              className="underline text-foreground px-0 bg-transparent border-none cursor-pointer"
+            >
+              Terms of Service
+            </button>{" "}
+            and{" "}
+            <button
+              type="button"
+              onClick={() => goPublic("/privacy-policy", true)}
+              className="underline text-foreground px-0 bg-transparent border-none cursor-pointer"
+            >
+              Privacy Policy
+            </button>
+            .
+          </p>
 
           {/* ---------- divider ---------- */}
           <div className="relative">
@@ -182,7 +201,7 @@ const RegisterPage = () => {
           </Button>
 
           <div className="text-center text-sm">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link to="/login" className="text-primary hover:underline">
               Sign in
             </Link>
