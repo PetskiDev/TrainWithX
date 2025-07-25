@@ -74,7 +74,15 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <button
-                  onClick={() => goPublic("/help")}
+                  onClick={() => goPublic("/faq")}
+                  className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
+                >
+                  FAQ
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => goPublic("/help-center")}
                   className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
                 >
                   Help Center
@@ -86,22 +94,6 @@ export function Footer() {
                   className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
                 >
                   Contact Us
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => goPublic("/faq")}
-                  className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
-                >
-                  FAQ
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => goPublic("/community-guidelines")}
-                  className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
-                >
-                  Community Guidelines
                 </button>
               </li>
             </ul>
@@ -216,24 +208,28 @@ export function Footer() {
             <CollapsibleContent className="pt-2">
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Contact Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary transition-colors">
+                  <button
+                    onClick={() => goPublic("/faq")}
+                    className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
+                  >
                     FAQ
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Community Guidelines
-                  </a>
+                  <button
+                    onClick={() => goPublic("/help-center")}
+                    className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
+                  >
+                    Help Center
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => goPublic("/contact")}
+                    className="hover:text-primary transition-colors bg-transparent border-none p-0 m-0 cursor-pointer text-left"
+                  >
+                    Contact Us
+                  </button>
                 </li>
               </ul>
             </CollapsibleContent>
@@ -247,23 +243,52 @@ export function Footer() {
             <CollapsibleContent className="pt-2">
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary transition-colors">
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goPublic("/terms-of-service");
+                    }}
+                    className="hover:text-primary transition-colors cursor-pointer"
+                  >
                     Terms of Service
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goPublic("/privacy-policy");
+                    }}
+                    className="hover:text-primary transition-colors cursor-pointer"
+                  >
+                    Privacy Policy
+                  </a>
+                </li>
+
+                <li>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goPublic("/cookie-policy");
+                    }}
+                    className="hover:text-primary transition-colors cursor-pointer"
+                  >
                     Cookie Policy
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary transition-colors">
-                    Refund Policy
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goPublic("/creator-agreement");
+                    }}
+                    className="hover:text-primary transition-colors cursor-pointer"
+                  >
+                    Creator Agreement
                   </a>
                 </li>
               </ul>

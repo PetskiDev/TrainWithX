@@ -14,8 +14,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
 
 const CreatorAgreement = () => {
+  const { goPublic } = useSmartNavigate();
   const [activeSection, setActiveSection] = useState("");
   const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -148,16 +150,21 @@ const CreatorAgreement = () => {
                     <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                       <li>
                         You agree to this Creator Agreement, our{" "}
-                        <a
-                          href="/terms-of-service"
-                          className="text-primary hover:underline"
+                        <button
+                          type="button"
+                          onClick={() => goPublic("/terms-of-service")}
+                          className="text-primary hover:underline bg-transparent border-none p-0 cursor-pointer"
                         >
                           Terms of Service
-                        </a>
+                        </button>
                         , and{" "}
-                        <a href="#" className="text-primary hover:underline">
+                        <button
+                          type="button"
+                          onClick={() => goPublic("/privacy-policy")}
+                          className="text-primary hover:underline bg-transparent border-none p-0 cursor-pointer"
+                        >
                           Privacy Policy
-                        </a>
+                        </button>
                         .
                       </li>
                       <li>

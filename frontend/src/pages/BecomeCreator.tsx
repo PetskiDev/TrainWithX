@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { TrainWithXLogo } from "@/components/TrainWithXLogo";
@@ -13,7 +25,6 @@ import type { SendApplicationDTO } from "@shared/types/creator";
 import { Badge } from "@frontend/components/ui/badge";
 import { Plus, X } from "lucide-react";
 import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
-
 
 const availableSpecialties = [
   "Strength Training",
@@ -33,7 +44,7 @@ const availableSpecialties = [
   "Women's Fitness",
   "Beginner Friendly",
   "Martial Arts",
-]
+];
 
 const BecomeCreator = () => {
   const { goPublic } = useSmartNavigate();
@@ -52,43 +63,45 @@ const BecomeCreator = () => {
   });
   const [customSpecialty, setCustomSpecialty] = useState("");
 
-
   useEffect(() => {
     if (user?.email) {
-      setFormData(prev => ({ ...prev, email: user.email }));
+      setFormData((prev) => ({ ...prev, email: user.email }));
     }
   }, [user]);
   if (!user) {
-    return <div className="p-4 text-center">
-      <p className="text-2xl text-red-600 font-semibold mb-3">
-        You must be logged in to apply for a creator.
-      </p>
-      <button
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-        onClick={() => goPublic('/login')}
-      >
-        Login
-      </button>
-    </div>
+    return (
+      <div className="p-4 text-center">
+        <p className="text-2xl text-red-600 font-semibold mb-3">
+          You must be logged in to apply for a creator.
+        </p>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+          onClick={() => goPublic("/login")}
+        >
+          Login
+        </button>
+      </div>
+    );
   }
   if (user.isCreator) {
-    return <div className="p-4 text-center">
-      <p className="text-xl text-red-600 font-semibold mb-3">
-        You are alrady a creator.
-      </p>
-      <button
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-        onClick={() => goPublic('/me/creator')}
-      >
-        Go to Dashboard
-      </button>
-    </div>
+    return (
+      <div className="p-4 text-center">
+        <p className="text-xl text-red-600 font-semibold mb-3">
+          You are alrady a creator.
+        </p>
+        <button
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+          onClick={() => goPublic("/me/creator")}
+        >
+          Go to Dashboard
+        </button>
+      </div>
+    );
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.agreeToTerms) {
-
       toast({
         title: "Terms Required",
         description: "Please agree to the terms and conditions",
@@ -110,7 +123,7 @@ const BecomeCreator = () => {
       });
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || 'Unknown error');
+        throw new Error(errorData.error || "Unknown error");
       }
 
       toast({
@@ -130,41 +143,42 @@ const BecomeCreator = () => {
         agreeToTerms: false,
       });
       setCustomSpecialty("");
-
     } catch (error: any) {
       toast({
-        title: 'Error',
+        title: "Error",
         description: error.message,
-        variant: 'destructive',
+        variant: "destructive",
       });
     }
   };
 
-
   const addSpecialty = (specialty: string) => {
     if (!formData.specialties.includes(specialty)) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        specialties: [...prev.specialties, specialty]
+        specialties: [...prev.specialties, specialty],
       }));
     }
   };
 
   const removeSpecialty = (specialty: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      specialties: prev.specialties.filter(s => s !== specialty)
+      specialties: prev.specialties.filter((s) => s !== specialty),
     }));
   };
 
   const addCustomSpecialty = () => {
-    if (customSpecialty.trim() && !formData.specialties.includes(customSpecialty.trim())) {
+    if (
+      customSpecialty.trim() &&
+      !formData.specialties.includes(customSpecialty.trim())
+    ) {
       addSpecialty(customSpecialty.trim());
       setCustomSpecialty("");
     }
   };
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -174,9 +188,12 @@ const BecomeCreator = () => {
           <div className="flex justify-center mb-4">
             <TrainWithXLogo size="lg" showText={false} />
           </div>
-          <h1 className="text-4xl font-bold mb-4 text-gradient">Become a Creator</h1>
+          <h1 className="text-4xl font-bold mb-4 text-gradient">
+            Become a Creator
+          </h1>
           <p className="text-lg text-muted-foreground">
-            Join our community of fitness professionals and share your expertise with thousands of users
+            Join our community of fitness professionals and share your expertise
+            with thousands of users
           </p>
         </div>
 
@@ -184,7 +201,9 @@ const BecomeCreator = () => {
           <CardHeader>
             <CardTitle>Creator Application</CardTitle>
             <CardDescription>
-              Apply to become a TrainWithX creator. Your logged-in account will be reviewed for approval or rejection, and you'll receive notifications about the status.
+              Apply to become a TrainWithX creator. Your logged-in account will
+              be reviewed for approval or rejection, and you'll receive
+              notifications about the status.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -195,7 +214,9 @@ const BecomeCreator = () => {
                   <Input
                     id="fullName"
                     value={formData.fullName}
-                    onChange={(e) => handleInputChange("fullName", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("fullName", e.target.value)
+                    }
                     required
                   />
                 </div>
@@ -205,7 +226,9 @@ const BecomeCreator = () => {
                     <Input
                       id="subdomain"
                       value={formData.subdomain}
-                      onChange={(e) => handleInputChange("subdomain", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("subdomain", e.target.value)
+                      }
                       placeholder="yourname"
                       className="pr-32"
                       required
@@ -243,7 +266,9 @@ const BecomeCreator = () => {
                 <div className="space-y-3">
                   <div className="flex flex-wrap gap-2">
                     {availableSpecialties
-                      .filter(specialty => !formData.specialties.includes(specialty))
+                      .filter(
+                        (specialty) => !formData.specialties.includes(specialty)
+                      )
                       .map((specialty) => (
                         <Badge
                           key={specialty}
@@ -263,7 +288,10 @@ const BecomeCreator = () => {
                       placeholder="Add custom specialty..."
                       value={customSpecialty}
                       onChange={(e) => setCustomSpecialty(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addCustomSpecialty())}
+                      onKeyPress={(e) =>
+                        e.key === "Enter" &&
+                        (e.preventDefault(), addCustomSpecialty())
+                      }
                       className="flex-1"
                     />
                     <Button
@@ -279,7 +307,6 @@ const BecomeCreator = () => {
                 </div>
               </div>
 
-
               <div className="grid md:grid-cols-2 gap-4">
                 {/* Instagram Handle */}
                 <div className="space-y-2">
@@ -288,18 +315,29 @@ const BecomeCreator = () => {
                     <Input
                       id="instagram"
                       value={formData.instagram}
-                      onChange={(e) => handleInputChange("instagram", e.target.value.replace(/^@/, ""))}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "instagram",
+                          e.target.value.replace(/^@/, "")
+                        )
+                      }
                       placeholder="yourhandle"
                       className="pl-7"
                     />
-                    <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">@</span>
+                    <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">
+                      @
+                    </span>
                   </div>
                 </div>
 
                 {/* Years of Experience */}
                 <div className="space-y-2">
                   <Label htmlFor="experience">Years of Experience *</Label>
-                  <Select onValueChange={(value) => handleInputChange("experience", value)}>
+                  <Select
+                    onValueChange={(value) =>
+                      handleInputChange("experience", value)
+                    }
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select your experience level" />
                     </SelectTrigger>
@@ -331,7 +369,9 @@ const BecomeCreator = () => {
                   id="socialMedia"
                   placeholder="Share your Instagram, YouTube, TikTok, or website links"
                   value={formData.socialMedia}
-                  onChange={(e) => handleInputChange("socialMedia", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("socialMedia", e.target.value)
+                  }
                   className="min-h-[80px]"
                 />
               </div>
@@ -341,11 +381,30 @@ const BecomeCreator = () => {
                   id="terms"
                   checked={formData.agreeToTerms}
                   onCheckedChange={(checked) =>
-                    setFormData(prev => ({ ...prev, agreeToTerms: checked as boolean }))
+                    setFormData((prev) => ({
+                      ...prev,
+                      agreeToTerms: checked as boolean,
+                    }))
                   }
                 />
                 <Label htmlFor="terms" className="text-sm">
-                  I agree to the TrainWithX Creator Terms & Conditions and understand that my application will be reviewed *
+                  I agree to the{" "}
+                  <button
+                    type="button"
+                    onClick={() => goPublic("/creator-agreement", true)}
+                    className="underline bg-transparent border-none p-0 cursor-pointer"
+                  >
+                    TrainWithX Creator Agreement
+                  </button>{" "}
+                  and{" "}
+                  <button
+                    type="button"
+                    onClick={() => goPublic("/terms-of-service", true)}
+                    className="underline bg-transparent border-none p-0 cursor-pointer"
+                  >
+                    Terms & Conditions
+                  </button>
+                  , and understand that my application will be reviewed *
                 </Label>
               </div>
 

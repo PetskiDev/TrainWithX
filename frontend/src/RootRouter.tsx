@@ -23,6 +23,8 @@ import CreatorAgreement from "@frontend/pages/CreatorAgreement";
 import PrivacyPolicy from "@frontend/pages/PrivacyPolicy";
 import CookiePolicy from "@frontend/pages/CookiePolicy";
 import ContactUs from "@frontend/pages/Contact";
+import HelpCenter from "@frontend/pages/HelpCenter";
+import FAQ from "@frontend/pages/FAQ";
 
 function PublicRoutes() {
   return (
@@ -47,6 +49,8 @@ function PublicRoutes() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/cookie-policy" element={<CookiePolicy />} />
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/help-center" element={<HelpCenter />} />
+        <Route path="/faq" element={<FAQ />} />
         <Route path="*" element={<NotFoundPage />} /> {/* 404 */}
       </Routes>
     </>
