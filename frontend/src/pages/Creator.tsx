@@ -1,12 +1,12 @@
 // src/pages/Creator.tsx
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Star, Eye, TrendingUp, BookOpen, Calendar, Award, Users, MessageCircle, ArrowLeft, Dumbbell } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import PlanCardNew from "@/components/PlanCardNew"
+const PlanCardNew = lazy(() => import('@frontend/components/PlanCardNew'));
 import type { PlanPreview } from '@shared/types/plan';
 import type { CreatorPreviewDTO } from '@shared/types/creator';
 import type { CreatorPageReviewDTO } from '@shared/types/review';
@@ -409,7 +409,9 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
             {plans.length < 3 ? (
               <div className="flex justify-center gap-6 flex-wrap">
                 {plans.map((plan) => (
-                  <PlanCardNew key={plan.id} plan={plan} />
+                  <Suspense fallback={<div>Loading...</div>}>
+                   <PlanCardNew key={plan.id} plan={plan} />
+                  </Suspense>
                 ))}
               </div>
             ) : (

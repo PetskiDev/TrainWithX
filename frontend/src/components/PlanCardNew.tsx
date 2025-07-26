@@ -39,9 +39,10 @@ export default function PlanCardNew({
   };
 
   return (
-    <Card 
-    onClick={()=>handleGetThisPlan(plan)}
-    className="relative group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-0 shadow-sm flex flex-col flex-space-between h-full">
+    <Card
+      onClick={() => handleGetThisPlan(plan)}
+      className="relative group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer border-0 shadow-sm flex flex-col flex-space-between h-full"
+    >
       <div className="relative">
         <div className="aspect-video overflow-hidden">
           <img
@@ -50,6 +51,7 @@ export default function PlanCardNew({
             width={350}
             height={200}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
           />
 
           {hasDiscount && (

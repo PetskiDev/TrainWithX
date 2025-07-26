@@ -1,5 +1,7 @@
 import type { PlanPreview } from '@shared/types/plan';
-import PlanCardNew from '@frontend/components/PlanCardNew';
+import { lazy, Suspense } from 'react';
+
+const PlanCardNew = lazy(() => import('@frontend/components/PlanCardNew'));
 
 interface Props {
   plans: PlanPreview[];
@@ -23,7 +25,12 @@ function PlansGrid({ plans }: Props) {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       {plans.map((plan) => (
-        <PlanCardNew key={plan.id} plan={plan} showCreator />
+        <Suspense
+          key={plan.id}
+          fallback={<div className="h-[400px] bg-muted rounded-xl animate-pulse" />}
+        >
+          <PlanCardNew plan={plan} showCreator />
+        </Suspense>
       ))}
     </div>
   );
