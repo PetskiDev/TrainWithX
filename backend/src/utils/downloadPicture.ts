@@ -1,4 +1,4 @@
-import { storeAvatar } from '@src/features/users/user.service';
+import { storeAvatar } from '@src/features/users/user.service.js';
 
 interface Args {
   userId: number;

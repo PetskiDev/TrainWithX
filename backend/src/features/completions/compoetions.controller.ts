@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { AppError } from '@src/utils/AppError';
+import { AppError } from '@src/utils/AppError.js';
 import { CreateCompletionDTO } from '@trainwithx/shared';
-import { checkUserPurchasedPlan } from '@src/features/checkout/checkout.service';
-import { createCompletion } from '@src/features/completions/completions.service';
+import { checkUserPurchasedPlan } from '@src/features/checkout/checkout.service.js';
+import { createCompletion } from '@src/features/completions/completions.service.js';
 
 export async function createCompletionController(req: Request, res: Response) {
   const userId = req.user!.id;

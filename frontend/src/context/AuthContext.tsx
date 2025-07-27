@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         // Optional: trigger resend email here if you want automatic behavior
         throw new Error('Email not verified. Verification email is resent.');
       }
-      throw new Error(errorData.error || 'Login failed');
+      throw new Error(errorData.message || 'Login failed');
     }
     const user: UserDto = await res.json();
     setUser(user);
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(errorData.error || 'Registration failed');
+      throw new Error(errorData.message || 'Registration failed');
     }
 
     const user: UserDto = await res.json();

@@ -174,7 +174,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
       const data = await res.json();
 
       if (data.error) {
-        throw new Error(data.error);
+        throw new Error(data.message);
       }
       updateWeekDayCompleted(weekId, dayId);
 

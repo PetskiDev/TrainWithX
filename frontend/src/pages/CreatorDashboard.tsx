@@ -8,7 +8,6 @@ import {
   ShoppingCart,
   Plus,
   Edit3,
-  Eye,
   BarChart3,
   Camera,
   Loader2,

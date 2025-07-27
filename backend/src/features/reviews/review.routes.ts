@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
-import { doAuth } from '@src/middleware/auth';
-import { createReviewController as createMyReviewController, updateReviewController as updateMyReviewController } from '@src/features/reviews/review.controller';
+import { doAuth } from '@src/middleware/auth.js';
+import { createReviewController as createMyReviewController, updateReviewController as updateMyReviewController } from '@src/features/reviews/review.controller.js';
 
 const router = Router();
 

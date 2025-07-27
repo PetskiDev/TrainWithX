@@ -1,5 +1,5 @@
-import { AppError } from "@src/utils/AppError";
-import { prisma } from "@src/utils/prisma";
+import { AppError } from "@src/utils/AppError.js";
+import { prisma } from "@src/utils/prisma.js";
 
 export async function createCompletion({
     userId,

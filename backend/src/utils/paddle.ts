@@ -14,8 +14,8 @@ import {
 } from '@paddle/paddle-node-sdk';
 import { Plan } from '@prisma/client';
 import { CreatePlanDto } from '@trainwithx/shared';
-import { AppError } from '@src/utils/AppError';
-import { env } from '@src/utils/env';
+import { AppError } from '@src/utils/AppError.js';
+import { env } from '@src/utils/env.js';
 
 interface CreatePaddleInput {
   name: string;

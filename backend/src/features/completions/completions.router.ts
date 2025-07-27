@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { doAuth } from '@src/middleware/auth';
-import { createCompletionController } from '@src/features/completions/compoetions.controller';
+import { doAuth } from '@src/middleware/auth.js';
+import { createCompletionController } from '@src/features/completions/compoetions.controller.js';
 
 const router = Router();
 

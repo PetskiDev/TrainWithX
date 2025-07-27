@@ -1,5 +1,5 @@
-import app from '@src/app';
-import { env } from '@src/utils/env';
+import app from '@src/app.js';
+import { env } from '@src/utils/env.js';
 
 app.listen(env.PORT, () => {
   if (process.env.NODE_ENV === 'production') {

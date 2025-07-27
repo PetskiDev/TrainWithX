@@ -2,7 +2,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import {
   Star,
-  Eye,
   TrendingUp,
   BookOpen,
   Calendar,

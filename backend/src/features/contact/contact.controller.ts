@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { AppError } from '@src/utils/AppError';
-import { sendContactMessage } from './contact.service';
+import { AppError } from '@src/utils/AppError.js';
+import { sendContactMessage } from './contact.service.js';
 
 export async function contactController(req: Request, res: Response) {
   const { email, reason, customReason, message } = req.body;

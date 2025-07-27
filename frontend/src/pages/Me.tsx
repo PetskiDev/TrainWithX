@@ -89,7 +89,7 @@ const Me = () => {
 
       if (!res.ok) {
         const errorData = await res.json();
-        alert(errorData.error || 'Failed to update username');
+        alert(errorData.message || 'Failed to update username');
         return;
       }
       await refreshUser();

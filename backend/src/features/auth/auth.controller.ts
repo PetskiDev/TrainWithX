@@ -6,14 +6,22 @@ import {
   getOrCreateGoogleUser,
   verifyEmail,
   createAndSendVerificationToken,
-} from "./auth.service";
-import { AppError } from "@src/utils/AppError";
-import { clearCookieOpts, cookieOpts } from "@src/utils/cookies";
+} from "./auth.service.js";
+import { AppError } from "@src/utils/AppError.js";
+import { clearCookieOpts, cookieOpts } from "@src/utils/cookies.js";
 import querystring from "node:querystring";
-import { env } from "@src/utils/env";
+import { env } from "@src/utils/env.js";
+import { registerSchema } from "@trainwithx/shared";
+import { treeifyError } from "zod";
 
 export async function registerController(req: Request, res: Response) {
-  const { email, username, password } = req.body;
+  const parsed = registerSchema.safeParse(req.body);
+  if (!parsed.success) {
+    const errors = treeifyError(parsed.error);
+    throw new AppError("Validation failed", 400, errors);
+  }
+
+  const { email, username, password } = parsed.data;
   if (!email || !username || !password) {
     throw new AppError("Email, username, and password are required.", 400);
   }
@@ -21,14 +29,14 @@ export async function registerController(req: Request, res: Response) {
   const result = await register(email, username, password);
 
   if (result.user.isVerified) {
-    //it was a already-registered google acc
+    // It was an already-registered Google account
     res
       .cookie("access", result.token, cookieOpts)
       .status(201)
       .json(result.user);
   } else {
     res.status(200).json(result.user);
-    //no cookie till login
+    // Account created, but email not verified — no cookie yet
   }
 }
 

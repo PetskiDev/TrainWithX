@@ -1,9 +1,9 @@
-import { prisma } from '@src/utils/prisma';
-import { AppError } from '@src/utils/AppError';
+import { prisma } from '@src/utils/prisma.js';
+import { AppError } from '@src/utils/AppError.js';
 
 import { UserDto } from '@trainwithx/shared';
-import { toUserDTO } from '@src/features/users/user.transformer';
-import { storeInUploads } from '@src/utils/imageUploader';
+import { toUserDTO } from '@src/features/users/user.transformer.js';
+import { storeInUploads } from '@src/utils/imageUploader.js';
 
 export async function editUsername(userId: number, newUsername: string) {
   try {

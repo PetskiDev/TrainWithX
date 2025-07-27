@@ -1,15 +1,15 @@
 import bcrypt from 'bcrypt';
-import { prisma } from '@src/utils/prisma';
-import { generateToken } from '@src/utils/jwt';
-import { AppError } from '@src/utils/AppError';
-import { AuthResult } from '@src/features/auth/auth.types';
-import { toUserDTO } from '@src/features/users/user.transformer';
-import { env } from '@src/utils/env';
-import { sendMailFromFile } from '@src/utils/mail';
+import { prisma } from '@src/utils/prisma.js';
+import { generateToken } from '@src/utils/jwt.js';
+import { AppError } from '@src/utils/AppError.js';
+import { AuthResult } from '@src/features/auth/auth.types.js';
+import { toUserDTO } from '@src/features/users/user.transformer.js';
+import { env } from '@src/utils/env.js';
+import { sendMailFromFile } from '@src/utils/mail.js';
 import { addMinutes, subMinutes } from 'date-fns';
 import crypto from 'node:crypto';
-import { downloadImageAsMulter } from '@src/utils/downloadPicture';
-import { storeAvatar } from '@src/features/users/user.service';
+import { downloadImageAsMulter } from '@src/utils/downloadPicture.js';
+import { storeAvatar } from '@src/features/users/user.service.js';
 
 export async function createAndSendVerificationToken({
   userId,

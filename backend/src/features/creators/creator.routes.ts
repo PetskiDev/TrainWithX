@@ -5,12 +5,12 @@ import {
   editMyCreatorController,
   getMyCreatorController,
   uploadCreatorCoverController,
-} from '@src/features/creators/creator.controller';
-import { getReviewsOfCreatorController } from '../reviews/review.controller';
-import { getPlansFromCreatorSubController, getMyCreatedPlansController } from '@src/features/plans/plan.controller';
-import { doAuth } from '@src/middleware/auth';
+} from '@src/features/creators/creator.controller.js';
+import { getReviewsOfCreatorController } from '../reviews/review.controller.js';
+import { getPlansFromCreatorSubController, getMyCreatedPlansController } from '@src/features/plans/plan.controller.js';
+import { doAuth } from '@src/middleware/auth.js';
 import { Router } from 'express';
-import { multerImageUpload } from '@src/middleware/multer.uploads';
+import { multerImageUpload } from '@src/middleware/multer.uploads.js';
 
 const router = Router();
 

@@ -1,6 +1,6 @@
-import { prisma } from '@src/utils/prisma';
-import { AppError } from '@src/utils/AppError';
-import { generateTransaction } from '@src/utils/paddle';
+import { prisma } from '@src/utils/prisma.js';
+import { AppError } from '@src/utils/AppError.js';
+import { generateTransaction } from '@src/utils/paddle.js';
 
 export async function generateTransactionToken({
   planId,

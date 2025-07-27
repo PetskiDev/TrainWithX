@@ -1,6 +1,5 @@
 import {
   Star,
-  Eye,
   TrendingUp,
   BookOpen,
   Calendar,

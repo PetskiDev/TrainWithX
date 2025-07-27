@@ -5,10 +5,10 @@ import {
   ReviewPreviewDTO,
   UpdateReviewDTO,
 } from '@trainwithx/shared';
-import { getCreatorIdForPlan } from '@src/features/plans/plan.service';
-import { enforceHasPurchased } from '../checkout/checkout.service';
-import { AppError } from '@src/utils/AppError';
-import { prisma } from '@src/utils/prisma';
+import { getCreatorIdForPlan } from '@src/features/plans/plan.service.js';
+import { enforceHasPurchased } from '../checkout/checkout.service.js';
+import { AppError } from '@src/utils/AppError.js';
+import { prisma } from '@src/utils/prisma.js';
 
 // Update stats for creators and plans
 // Storing info in the plan and creator themselves so the things are not calculated

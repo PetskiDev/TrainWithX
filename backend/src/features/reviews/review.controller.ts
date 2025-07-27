@@ -11,8 +11,8 @@ import {
   getReview,
   updateReview,
   getReviewsOfPlan,
-} from '@src/features/reviews/review.service';
-import { AppError } from '@src/utils/AppError';
+} from '@src/features/reviews/review.service.js';
+import { AppError } from '@src/utils/AppError.js';
 
 export async function getMyReviewForPlanController(
   req: Request,

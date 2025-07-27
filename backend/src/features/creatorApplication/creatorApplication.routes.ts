@@ -1,5 +1,5 @@
-import { addCreatorApplicationController, getCreatorApplicationController } from '@src/features/creatorApplication/creatorApplication.controller';
-import { doAuth } from '@src/middleware/auth';
+import { addCreatorApplicationController, getCreatorApplicationController } from '@src/features/creatorApplication/creatorApplication.controller.js';
+import { doAuth } from '@src/middleware/auth.js';
 import { Router } from 'express';
 
 const router = Router();

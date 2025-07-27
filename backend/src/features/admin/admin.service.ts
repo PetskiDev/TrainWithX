@@ -1,8 +1,8 @@
-import { prisma } from '@src/utils/prisma';
+import { prisma } from '@src/utils/prisma.js';
 import { subMonths, startOfMonth } from 'date-fns';
 import { AdminInfoDTO } from '@trainwithx/shared';
 import { UserDto } from '@trainwithx/shared';
-import { toUsersDTO } from '@src/features/users/user.transformer';
+import { toUsersDTO } from '@src/features/users/user.transformer.js';
 
 export async function getDashboardStats(): Promise<AdminInfoDTO> {
   const startOfCurrentMonth = startOfMonth(new Date());

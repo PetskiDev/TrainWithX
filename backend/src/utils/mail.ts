@@ -1,4 +1,4 @@
-import { env } from '@src/utils/env';
+import { env } from '@src/utils/env.js';
 import fs from 'node:fs/promises';
 import nodemailer from 'nodemailer';
 import path from 'node:path';

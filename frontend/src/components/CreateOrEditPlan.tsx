@@ -367,7 +367,7 @@ const CreateOrEditPlan = ({
         const errorData = await res.json();
         // Use backend-sent error message if available
         throw new Error(
-          errorData?.error ||
+          errorData?.message ||
             `Failed to ${isEditing ? 'update' : 'create'} plan`
         );
       }

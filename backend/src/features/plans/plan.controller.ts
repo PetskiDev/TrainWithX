@@ -12,13 +12,13 @@ import {
   updatePlanService,
   getPlanById,
   storePlanImage,
-} from './plan.service';
-import { AppError } from '@src/utils/AppError';
-import { toPaidPlan, toPlanPreview } from './plan.transformer';
+} from './plan.service.js';
+import { AppError } from '@src/utils/AppError.js';
+import { toPaidPlan, toPlanPreview } from './plan.transformer.js';
 import { CreatePlanDto } from '@trainwithx/shared';
-import { getCreatorById } from '@src/features/creators/creator.service';
-import { getCompletedSet } from '@src/features/completions/completions.service';
-import { checkUserPurchasedPlan } from '@src/features/checkout/checkout.service';
+import { getCreatorById } from '@src/features/creators/creator.service.js';
+import { getCompletedSet } from '@src/features/completions/completions.service.js';
+import { checkUserPurchasedPlan } from '@src/features/checkout/checkout.service.js';
 
 export async function getAllPlansPreview(req: Request, res: Response) {
   const plans = await getAllPlans();

@@ -2,16 +2,16 @@ import {
   checkUserPurchasedPlan,
   generateTransactionToken,
   handlePaymentComplete as createPurchase,
-} from '@src/features/checkout/checkout.service';
-import { AppError } from '@src/utils/AppError';
+} from '@src/features/checkout/checkout.service.js';
+import { AppError } from '@src/utils/AppError.js';
 import { Request, Response } from 'express';
-import { env } from '@src/utils/env';
+import { env } from '@src/utils/env.js';
 import {
   EventEntity,
   EventName,
   TransactionNotification,
 } from '@paddle/paddle-node-sdk';
-import { paddle } from '@src/utils/paddle';
+import { paddle } from '@src/utils/paddle.js';
 
 export async function startPurchaseController(req: Request, res: Response) {
   const { planId } = req.body;

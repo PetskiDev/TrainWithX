@@ -4,10 +4,10 @@ import {
   getCreatorApplication,
   rejectCreatorApplication,
   submitCreatorApplication,
-} from './creatorApplication.service';
+} from './creatorApplication.service.js';
 import { Request, Response } from 'express';
-import { AppError } from '@src/utils/AppError';
-import { transformCreatorToPreview } from '@src/features/creators/creator.transformer';
+import { AppError } from '@src/utils/AppError.js';
+import { transformCreatorToPreview } from '@src/features/creators/creator.transformer.js';
 
 export async function addCreatorApplicationController(
   req: Request,

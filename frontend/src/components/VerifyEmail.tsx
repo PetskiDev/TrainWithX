@@ -23,7 +23,7 @@ export default function VerifyEmail({ token }: { token: string }) {
         setStatus("success");
         setMessage("Your email has been confirmed! You can now log in.");
       } else {
-        throw new Error(data.error || "Verification failed");
+        throw new Error(data.message || "Verification failed");
       }
     } catch (err: any) {
       setStatus("fail");

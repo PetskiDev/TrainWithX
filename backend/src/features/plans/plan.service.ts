@@ -1,6 +1,6 @@
 // backend/src/features/plans/plan.service.ts
-import { prisma } from '@src/utils/prisma';
-import { AppError } from '@src/utils/AppError';
+import { prisma } from '@src/utils/prisma.js';
+import { AppError } from '@src/utils/AppError.js';
 import {
   CreatePlanDto,
   PlanContentJSON,
@@ -9,13 +9,13 @@ import {
   PlanWeek,
   PlanPreviewWithProgress,
 } from '@trainwithx/shared';
-import { paddle, syncPaddleForPlan } from '@src/utils/paddle';
+import { paddle, syncPaddleForPlan } from '@src/utils/paddle.js';
 import {
   toPlanCreatorData,
   toPlanPreview,
-} from '@src/features/plans/plan.transformer';
+} from '@src/features/plans/plan.transformer.js';
 import { Plan, Prisma } from '@prisma/client';
-import { storeInUploads } from '@src/utils/imageUploader';
+import { storeInUploads } from '@src/utils/imageUploader.js';
 
 export async function getAllPlans() {
   return prisma.plan.findMany({

@@ -1,5 +1,5 @@
-import { sendMailFromFile } from "@src/utils/mail";
-import { env } from "@src/utils/env";
+import { sendMailFromFile } from "@src/utils/mail.js";
+import { env } from "@src/utils/env.js";
 
 type ContactMessage = {
   email: string;

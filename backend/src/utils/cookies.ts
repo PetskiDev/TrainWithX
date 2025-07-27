@@ -1,4 +1,4 @@
-import { env } from '@src/utils/env';
+import { env } from '@src/utils/env.js';
 
 const isLocalhost =
   env.DOMAIN === 'localhost' || env.DOMAIN.endsWith('.localhost');

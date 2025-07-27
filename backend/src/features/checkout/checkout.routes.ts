@@ -3,8 +3,8 @@
 import { Router } from 'express';
 import {
   startPurchaseController,
-} from './checkout.controller';
-import { doAuth } from '@src/middleware/auth';
+} from './checkout.controller.js';
+import { doAuth } from '@src/middleware/auth.js';
 
 const router = Router();
 

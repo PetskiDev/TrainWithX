@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { AppError } from '@src/utils/AppError';
+import { AppError } from '@src/utils/AppError.js';
 import {
   editUsername,
   storeAvatar,
-} from '@src/features/users/user.service';
-import { getUserById } from './user.service';
+} from '@src/features/users/user.service.js';
+import { getUserById } from './user.service.js';
 
 
 export async function getMyUserController(req: Request, res: Response) {

@@ -5,8 +5,8 @@ import {
   logoutController,
   registerController,
   verifyController,
-} from '@src/features/auth/auth.controller';
-import { doAuth } from '@src/middleware/auth';
+} from '@src/features/auth/auth.controller.js';
+import { doAuth } from '@src/middleware/auth.js';
 import { Router } from 'express';
 
 const router = Router();

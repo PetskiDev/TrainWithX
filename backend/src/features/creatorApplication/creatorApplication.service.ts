@@ -1,7 +1,7 @@
 import { CreatorApplicationDTO, SendApplicationDTO } from '@trainwithx/shared';
-import { promoteUserToCreator } from '@src/features/creators/creator.service';
-import { AppError } from '@src/utils/AppError';
-import { prisma } from '@src/utils/prisma';
+import { promoteUserToCreator } from '@src/features/creators/creator.service.js';
+import { AppError } from '@src/utils/AppError.js';
+import { prisma } from '@src/utils/prisma.js';
 
 export async function submitCreatorApplication(
   userId: number,

@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { editMyUsernameController, getMyUserController, uploadAvatarController } from '@src/features/users/user.controller';
-import { doAuth } from '@src/middleware/auth';
-import { getMyPurchasedPlansController } from '@src/features/plans/plan.controller';
-import { multerImageUpload } from '@src/middleware/multer.uploads';
+import { editMyUsernameController, getMyUserController, uploadAvatarController } from '@src/features/users/user.controller.js';
+import { doAuth } from '@src/middleware/auth.js';
+import { getMyPurchasedPlansController } from '@src/features/plans/plan.controller.js';
+import { multerImageUpload } from '@src/middleware/multer.uploads.js';
 
 const router = Router();
 

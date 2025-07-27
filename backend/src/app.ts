@@ -2,9 +2,9 @@ import 'express-async-errors';
 
 import express from 'express';
 import { Request, Response } from 'express';
-import { errorHandler } from '@src/middleware/errorHandler';
+import { errorHandler } from '@src/middleware/errorHandler.js';
 import morgan from 'morgan';
-import apiRouter from './api.router';
+import apiRouter from './api.router.js';
 import path, { dirname } from 'node:path';
 import cookieParser from 'cookie-parser';
 import { fileURLToPath } from 'node:url';

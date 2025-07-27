@@ -3,11 +3,11 @@ import {
   getAllPlansAdminController,
   getAllUsersAdminController,
   getCreatorApplicationsController,
-} from '@src/features/admin/admin.controller';
-import { getAllCreatorsAdminController } from './admin.controller';
-import { doAuth, isAdmin } from '@src/middleware/auth';
+} from '@src/features/admin/admin.controller.js';
+import { getAllCreatorsAdminController } from './admin.controller.js';
+import { doAuth, isAdmin } from '@src/middleware/auth.js';
 import { Router } from 'express';
-import { approveCreatorApplicationController, rejectApplicationController } from '@src/features/creatorApplication/creatorApplication.controller';
+import { approveCreatorApplicationController, rejectApplicationController } from '@src/features/creatorApplication/creatorApplication.controller.js';
 
 const router = Router();
 router.use(doAuth, isAdmin);

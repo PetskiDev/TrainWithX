@@ -2,7 +2,7 @@
 import sharp from 'sharp';
 import path, { dirname } from 'path';
 import fs from 'fs/promises';
-import { AppError } from './AppError';
+import { AppError } from './AppError.js';
 import { fileURLToPath } from 'url';
 
 interface ImageStoreOptions {

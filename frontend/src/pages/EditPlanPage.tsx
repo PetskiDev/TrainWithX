@@ -23,7 +23,7 @@ export default function EditPlanPage() {
 
         if (!res.ok) {
           const errorData = await res.json();
-          throw new Error(errorData?.error || 'Failed to load plan');
+          throw new Error(errorData?.message || 'Failed to load plan');
         }
 
         const data: PlanPaidPreveiw = await res.json();

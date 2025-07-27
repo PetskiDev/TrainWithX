@@ -139,7 +139,7 @@ const BecomeCreator = () => {
       });
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || 'Unknown error');
+        throw new Error(errorData.message || 'Unknown error');
       }
 
       toast({

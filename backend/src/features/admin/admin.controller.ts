@@ -1,11 +1,11 @@
-import { getDashboardStats } from '@src/features/admin/admin.service';
-import { getCreatorApplications } from '../creatorApplication/creatorApplication.service';
+import { getDashboardStats } from '@src/features/admin/admin.service.js';
+import { getCreatorApplications } from '../creatorApplication/creatorApplication.service.js';
 import { Request, Response } from 'express';
-import { getAllPlans } from '@src/features/plans/plan.service';
-import { toPlanCreatorData } from '@src/features/plans/plan.transformer';
-import { getAllCreators } from '@src/features/creators/creator.service';
-import { getAllUsersAdmin } from './admin.service';
-import { transformToCreatorFullDTO } from '@src/features/creators/creator.transformer';
+import { getAllPlans } from '@src/features/plans/plan.service.js';
+import { toPlanCreatorData } from '@src/features/plans/plan.transformer.js';
+import { getAllCreators } from '@src/features/creators/creator.service.js';
+import { getAllUsersAdmin } from './admin.service.js';
+import { transformToCreatorFullDTO } from '@src/features/creators/creator.transformer.js';
 
 export async function adminDashboardController(req: Request, res: Response) {
   const stats = await getDashboardStats();

@@ -3,16 +3,16 @@ import { Request, Response } from 'express';
 import {
   transformCreatorToPreview,
   transformToCreatorFullDTO,
-} from './creator.transformer';
+} from './creator.transformer.js';
 import { CreatorPostDTO } from '@trainwithx/shared';
-import { AppError } from '@src/utils/AppError';
+import { AppError } from '@src/utils/AppError.js';
 import {
   editCreator,
   getAllCreators,
   getCreatorById as getCreatorPreveiwById,
   getCreatorBySub,
   storeCreatorCover,
-} from './creator.service';
+} from './creator.service.js';
 
 export async function getAllCreatorsPreviewController(
   req: Request,

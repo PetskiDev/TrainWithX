@@ -8,10 +8,10 @@ import {
   getPlanSubSlugContent,
   getPlanSubSlugPreveiw,
   uploadPlanImageController,
-} from './plan.controller';
-import { deleteReviewController, getMyReviewForPlanController, getReviewsOfPlanController } from '../reviews/review.controller';
-import { doAuth } from '@src/middleware/auth';
-import { multerImageUpload } from '@src/middleware/multer.uploads';
+} from './plan.controller.js';
+import { deleteReviewController, getMyReviewForPlanController, getReviewsOfPlanController } from '../reviews/review.controller.js';
+import { doAuth } from '@src/middleware/auth.js';
+import { multerImageUpload } from '@src/middleware/multer.uploads.js';
 
 const router = Router();
 

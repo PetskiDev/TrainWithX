@@ -4,8 +4,8 @@ import { CreatorFullDTO, CreatorPreviewDTO } from '@trainwithx/shared';
 import {
   countPlansByCreatorId,
   countSalesByCreatorId,
-} from '../plans/plan.service';
-import { prisma } from '@src/utils/prisma';
+} from '../plans/plan.service.js';
+import { prisma } from '@src/utils/prisma.js';
 
 export async function transformCreatorToPreview(
   creator: Creator & { user: User }
