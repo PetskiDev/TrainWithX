@@ -1,10 +1,10 @@
-import { Star, Clock, Dumbbell, Users, Shield } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { PlanPreview } from "@shared/types/plan";
-import { Button } from "@frontend/components/ui/button";
-import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
+import { Star, Clock, Dumbbell, Users, Shield } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import type { PlanPreview } from '@trainwithx/shared';
+import { Button } from '@frontend/components/ui/button';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 interface PlanCardProps {
   plan?: PlanPreview;
@@ -12,9 +12,9 @@ interface PlanCardProps {
 }
 
 const difficultyColors = {
-  beginner: "bg-green-100 text-green-800 border-green-200",
-  intermediate: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  advanced: "bg-red-100 text-red-800 border-red-200",
+  beginner: 'bg-green-100 text-green-800 border-green-200',
+  intermediate: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  advanced: 'bg-red-100 text-red-800 border-red-200',
 };
 
 export default function PlanCardNew({

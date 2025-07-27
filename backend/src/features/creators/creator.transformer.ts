@@ -1,7 +1,10 @@
 // backend/src/features/creators/creator.transformer.ts
 import type { Creator, User } from '@prisma/client';
-import { CreatorFullDTO, CreatorPreviewDTO } from '@shared/types/creator';
-import { countPlansByCreatorId, countSalesByCreatorId } from '../plans/plan.service';
+import { CreatorFullDTO, CreatorPreviewDTO } from '@trainwithx/shared';
+import {
+  countPlansByCreatorId,
+  countSalesByCreatorId,
+} from '../plans/plan.service';
 import { prisma } from '@src/utils/prisma';
 
 export async function transformCreatorToPreview(

@@ -6,7 +6,7 @@ import {
   PlanContentJSON,
   PlanWithRevenue,
   PlanWeekInfo,
-} from '@shared/types/plan';
+} from '@trainwithx/shared';
 
 function extractPlanWeekInfo(content?: PlanContentJSON): PlanWeekInfo[] {
   if (!content) {
@@ -50,7 +50,6 @@ export function toPlanPreview(
     noReviews: plan.noReviews,
     tags: plan.tags,
 
-
     creatorId: plan.creator.id,
     creatorUsername: plan.creator.user.username,
     creatorSubdomain: plan.creator.subdomain,
@@ -89,7 +88,7 @@ export function toPaidPlan(
           title: day.title,
           duration: day.duration ?? undefined,
           exercises: day.exercises ?? [],
-          completed: completedSet.has(`${week.id}-${day.id}`)
+          completed: completedSet.has(`${week.id}-${day.id}`),
         })),
       })) ?? [],
   };

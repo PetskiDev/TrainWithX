@@ -1,4 +1,4 @@
-import type { PlanPreview } from '@shared/types/plan';
+import type { PlanPreview } from '@trainwithx/shared';
 import { lazy, Suspense } from 'react';
 
 const PlanCardNew = lazy(() => import('@frontend/components/PlanCardNew'));
@@ -27,7 +27,9 @@ function PlansGrid({ plans }: Props) {
       {plans.map((plan) => (
         <Suspense
           key={plan.id}
-          fallback={<div className="h-[400px] bg-muted rounded-xl animate-pulse" />}
+          fallback={
+            <div className="h-[400px] bg-muted rounded-xl animate-pulse" />
+          }
         >
           <PlanCardNew plan={plan} showCreator />
         </Suspense>

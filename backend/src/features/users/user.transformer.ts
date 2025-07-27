@@ -1,5 +1,5 @@
 import { User, Creator } from '@prisma/client';
-import { UserDto } from '@shared/types/user';
+import { UserDto } from '@trainwithx/shared';
 
 export function toUserDTO(user: User): UserDto {
   return {

@@ -15,12 +15,11 @@ import {
   Settings,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext'; // 👉 adjust the import path if different
-import type { PlanPreviewWithProgress } from '@shared/types/plan';
+import type { PlanPreviewWithProgress } from '@trainwithx/shared';
 import { Link } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import BecomeCreatorSection from '@frontend/components/BecomeCreatorSection';
 import { PlanOwnedCard } from '@frontend/components/PlanOwnedCard';
-
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Component
@@ -69,7 +68,6 @@ const Me = () => {
     fetchPlans();
     return () => controller.abort();
   }, [user]);
-
 
   const handleEditName = () => {
     if (!user) return;
@@ -183,14 +181,16 @@ const Me = () => {
   return (
     <div className="min-h-screen-navbar bg-background">
       <div className="container mx-auto px-4 py-8">
-
         {/* If user is creator, remind him to go to the dashboard */}
         {user.isCreator && (
           <Card className="mt-1 mb-8">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <Label htmlFor="creator-mode" className="text-base font-medium">
+                  <Label
+                    htmlFor="creator-mode"
+                    className="text-base font-medium"
+                  >
                     Creator Dashboard
                   </Label>
                   <p className="text-sm text-muted-foreground">
@@ -298,7 +298,6 @@ const Me = () => {
             </div>
           </div>
 
-
           {/* ──────────────── Stats Cards ──────────────── */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <Card>
@@ -368,10 +367,7 @@ const Me = () => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {plans.map((plan) => (
-                    <PlanOwnedCard
-                      key={plan.id}
-                      plan={plan}
-                    />
+                    <PlanOwnedCard key={plan.id} plan={plan} />
                   ))}
                 </div>
               )}
@@ -418,13 +414,9 @@ const Me = () => {
             </div>
           </TabsContent>
         </Tabs>
-        {!user.isCreator && (
-          <BecomeCreatorSection className='mt-10' />
-        )
-        }
-
+        {!user.isCreator && <BecomeCreatorSection className="mt-10" />}
       </div>
-    </div >
+    </div>
   );
 };
 

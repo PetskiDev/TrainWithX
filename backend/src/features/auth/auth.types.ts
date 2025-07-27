@@ -1,4 +1,4 @@
-import { UserDto } from '@shared/types/user';
+import { UserDto } from '@trainwithx/shared';
 
 export interface AuthResult {
   token: string;

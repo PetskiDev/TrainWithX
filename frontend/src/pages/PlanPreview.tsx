@@ -4,11 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ArrowLeft, Play, Clock, Users, Star, CheckCircle, Shield, Download } from 'lucide-react';
-import type { PlanPaidPreveiw } from '@shared/types/plan';
-import type { CreatorPreviewDTO } from '@shared/types/creator';
+import {
+  ArrowLeft,
+  Play,
+  Clock,
+  Users,
+  Star,
+  CheckCircle,
+  Shield,
+  Download,
+} from 'lucide-react';
+import type { PlanPaidPreveiw } from '@trainwithx/shared';
+import type { CreatorPreviewDTO } from '@trainwithx/shared';
 import BuyButton from '@frontend/components/BuyButton';
-import type { CreatorPageReviewDTO } from '@shared/types/review';
+import type { CreatorPageReviewDTO } from '@trainwithx/shared';
 import { RatingBreakdownCard } from '@frontend/components/RatingBreakdownCard';
 import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
@@ -24,8 +33,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
   const [reviews, setReviews] = useState<CreatorPageReviewDTO[] | null>(null);
 
   const params = new URLSearchParams(window.location.search);
-  const openCheckout = params.get("openCheckout") === "true";
-
+  const openCheckout = params.get('openCheckout') === 'true';
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,14 +81,14 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
   useEffect(() => {
     if (!planPreveiw) return;
     const fetchReviews = async () => {
-
       try {
-        const reviewRes = await fetch(`/api/v1/plans/${planPreveiw.id}/reviews`);
+        const reviewRes = await fetch(
+          `/api/v1/plans/${planPreveiw.id}/reviews`
+        );
         if (!reviewRes.ok)
           throw new Error(`Reviews fetch failed: ${reviewRes.status}`);
         const reviewData: CreatorPageReviewDTO[] = await reviewRes.json();
         setReviews(reviewData);
-
       } catch (err: any) {
         if (err.name !== 'AbortError') {
           setError(err.message ?? 'Unknown error');
@@ -88,10 +96,9 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
       } finally {
         setLoading(false);
       }
-    }
+    };
     fetchReviews();
-  }, [planPreveiw])
-
+  }, [planPreveiw]);
 
   if (loading) {
     return <div className="text-center py-10">Loading...</div>;
@@ -113,7 +120,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
       </div>
     );
   }
-  //TODO: in all pages, don't prevent everything from loading, just the components. 
+  //TODO: in all pages, don't prevent everything from loading, just the components.
   if (!reviews) {
     return (
       <div className="min-h-screen-navbar bg-background flex items-center justify-center">
@@ -129,8 +136,8 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
   const hasDiscount = plan.originalPrice && plan.originalPrice > plan.price;
   const discountPercentage = hasDiscount
     ? Math.round(
-      ((plan.originalPrice! - plan.price) / plan.originalPrice!) * 100
-    )
+        ((plan.originalPrice! - plan.price) / plan.originalPrice!) * 100
+      )
     : 0;
 
   return (
@@ -229,7 +236,9 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                         </span>
                       </div>
                       <div>
-                        <h4 className="font-semibold mb-1">  Week {week.id}: {week.title}
+                        <h4 className="font-semibold mb-1">
+                          {' '}
+                          Week {week.id}: {week.title}
                         </h4>
                         <p className="text-sm text-muted-foreground">
                           {week.description}
@@ -324,9 +333,15 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                 <div className="flex items-start gap-4">
                   {/* User Avatar */}
                   <Avatar className="w-12 h-12 border-2 border-primary/20">
-                    <AvatarImage src={review.userAvatar} alt={review.userUsername} />
+                    <AvatarImage
+                      src={review.userAvatar}
+                      alt={review.userUsername}
+                    />
                     <AvatarFallback>
-                      {review.userUsername.split(' ').map(n => n[0]).join('')}
+                      {review.userUsername
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')}
                     </AvatarFallback>
                   </Avatar>
 
@@ -334,7 +349,9 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                     {/* Review Header */}
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h4 className="font-semibold text-lg">{review.userUsername}</h4>
+                        <h4 className="font-semibold text-lg">
+                          {review.userUsername}
+                        </h4>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xs text-muted-foreground">
                             {new Date(review.createdAt).toLocaleDateString()}
@@ -347,10 +364,11 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`h-4 w-4 ${i < review.rating
-                              ? "text-yellow-500 fill-current"
-                              : "text-muted-foreground"
-                              }`}
+                            className={`h-4 w-4 ${
+                              i < review.rating
+                                ? 'text-yellow-500 fill-current'
+                                : 'text-muted-foreground'
+                            }`}
                           />
                         ))}
                       </div>
@@ -371,10 +389,14 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
             {/* Pricing */}
             <div className="text-center mb-6">
               <div className="flex items-center justify-center gap-3 mb-2">
-                <span className="text-4xl font-bold text-primary">${plan.price}</span>
+                <span className="text-4xl font-bold text-primary">
+                  ${plan.price}
+                </span>
                 {hasDiscount && (
                   <>
-                    <span className="text-xl text-red-500 line-through font-medium">${plan.originalPrice}</span>
+                    <span className="text-xl text-red-500 line-through font-medium">
+                      ${plan.originalPrice}
+                    </span>
                     <Badge className="bg-red-500 hover:bg-red-500 text-white font-semibold">
                       -{discountPercentage}% OFF
                     </Badge>
@@ -386,14 +408,17 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                   You save ${(plan.originalPrice! - plan.price).toFixed(0)}!
                 </p>
               )}
-              <p className="text-sm text-muted-foreground">One-time payment • Lifetime access</p>
+              <p className="text-sm text-muted-foreground">
+                One-time payment • Lifetime access
+              </p>
             </div>
 
             {/* CTA Button */}
-            <BuyButton planId={plan.id} text='Start Your Transformation'
-              className='w-full gradient-bg from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl text-lg mb-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]'
-            >
-            </BuyButton>
+            <BuyButton
+              planId={plan.id}
+              text="Start Your Transformation"
+              className="w-full gradient-bg from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl text-lg mb-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+            ></BuyButton>
             {/* Trust Signals */}
             <div className="space-y-3 text-center text-sm text-muted-foreground">
               <div className="flex items-center justify-center gap-4">
@@ -411,7 +436,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
           </CardContent>
         </Card>
       </div>
-    </div >
+    </div>
   );
 };
 

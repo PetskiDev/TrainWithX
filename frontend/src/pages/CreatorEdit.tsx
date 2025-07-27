@@ -1,60 +1,71 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from 'react';
 
-import { Star, Eye, TrendingUp, BookOpen, Calendar, Award, Users, ArrowLeft, Edit, Save, X, Plus, Loader2 } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import type { CreatorPostDTO, CreatorPreviewDTO } from "@shared/types/creator"
-import { toast } from "@frontend/hooks/use-toast"
-import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate"
-import { useAuth } from "@frontend/context/AuthContext"
-
-
+import {
+  Star,
+  Eye,
+  TrendingUp,
+  BookOpen,
+  Calendar,
+  Award,
+  Users,
+  ArrowLeft,
+  Edit,
+  Save,
+  X,
+  Plus,
+  Loader2,
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import type { CreatorPostDTO, CreatorPreviewDTO } from '@trainwithx/shared';
+import { toast } from '@frontend/hooks/use-toast';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
+import { useAuth } from '@frontend/context/AuthContext';
 
 const CreatorEdit = () => {
   const { refreshUser } = useAuth();
 
   const { goToCreator } = useSmartNavigate();
-  const [creator, setCreator] = useState<CreatorPreviewDTO | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [creator, setCreator] = useState<CreatorPreviewDTO | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Edit states
-  const [editingBio, setEditingBio] = useState(false)
-  const [editingSpecialties, setEditingSpecialties] = useState(false)
-  const [editingCertifications, setEditingCertifications] = useState(false)
-  const [editingAchievements, setEditingAchievements] = useState(false)
+  const [editingBio, setEditingBio] = useState(false);
+  const [editingSpecialties, setEditingSpecialties] = useState(false);
+  const [editingCertifications, setEditingCertifications] = useState(false);
+  const [editingAchievements, setEditingAchievements] = useState(false);
 
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
-  const [editingProfile, setEditingProfile] = useState(false)
-  const [editingImages, setEditingImages] = useState(false)
-  const [uploading, setUploading] = useState(false)
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [editingImages, setEditingImages] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   // Form states
   const [formData, setFormData] = useState<CreatorPostDTO>({
     achievements: [],
-    bio: "",
+    bio: '',
     certifications: [],
     specialties: [],
-    username: "",
+    username: '',
     yearsXP: 0,
-    subdomain: "",
-  }) //some initial values so it doesn't have to be | null
+    subdomain: '',
+  }); //some initial values so it doesn't have to be | null
 
   // New item states
-  const [newSpecialty, setNewSpecialty] = useState("")
-  const [newCertification, setNewCertification] = useState("")
-  const [newAchievement, setNewAchievement] = useState("")
+  const [newSpecialty, setNewSpecialty] = useState('');
+  const [newCertification, setNewCertification] = useState('');
+  const [newAchievement, setNewAchievement] = useState('');
 
-
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  const [coverPreview, setCoverPreview] = useState<string | null>(null)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
 
   useEffect(() => {
     const abort = new AbortController();
@@ -62,9 +73,9 @@ const CreatorEdit = () => {
     const fetchCreator = async () => {
       try {
         setLoading(true);
-        const res = await fetch("/api/v1/creators/me", {
+        const res = await fetch('/api/v1/creators/me', {
           signal: abort.signal,
-          credentials: "include",
+          credentials: 'include',
         });
 
         if (!res.ok) {
@@ -85,8 +96,8 @@ const CreatorEdit = () => {
           yearsXP: c.yearsXP,
         });
       } catch (err: any) {
-        if (err.name !== "AbortError") {
-          setError(err.message ?? "You are not a creator");
+        if (err.name !== 'AbortError') {
+          setError(err.message ?? 'You are not a creator');
         }
       } finally {
         setLoading(false);
@@ -98,47 +109,46 @@ const CreatorEdit = () => {
   }, []);
 
   if (!formData) {
-    return <>Error fetching creator</>
+    return <>Error fetching creator</>;
   }
-
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <p className="text-muted-foreground">Loading…</p>
       </div>
-    )
+    );
   }
 
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <p className="text-muted-foreground">Error: {error}
-        </p>
+        <p className="text-muted-foreground">Error: {error}</p>
       </div>
-    )
+    );
   }
   if (!creator) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-2">Creator not found</h2>
-          <p className="text-muted-foreground">The creator you're looking for doesn't exist.</p>
+          <p className="text-muted-foreground">
+            The creator you're looking for doesn't exist.
+          </p>
         </div>
       </div>
-    )
+    );
   }
-
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + "M"
+      return (num / 1000000).toFixed(1) + 'M';
     }
     if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "K"
+      return (num / 1000).toFixed(1) + 'K';
     }
-    return num.toString()
-  }
+    return num.toString();
+  };
 
   const handleSaveBio = async () => {
     await handleSaveApi({ bio: formData.bio });
@@ -170,242 +180,254 @@ const CreatorEdit = () => {
     setEditingProfile(false);
   };
 
-
   const handleSaveApi = async (payload: Partial<CreatorPostDTO>) => {
     try {
-      const res = await fetch("/api/v1/creators/me", {
-        method: "PATCH",
+      const res = await fetch('/api/v1/creators/me', {
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
         const { error } = await res.json();
-        throw new Error(error || "Failed to save changes");
+        throw new Error(error || 'Failed to save changes');
       }
 
       const updated = await res.json();
       setCreator((prev) => (prev ? { ...prev, ...updated } : updated));
 
       toast({
-        title: "Update successful",
-        variant: "default",
-        className: "bg-green-100"
+        title: 'Update successful',
+        variant: 'default',
+        className: 'bg-green-100',
       });
-      setUploadError("");
+      setUploadError('');
     } catch (err: any) {
       toast({
-        title: "Update Failed",
-        description: err.message || "Something went wrong while saving your changes.",
-        variant: "destructive",
+        title: 'Update Failed',
+        description:
+          err.message || 'Something went wrong while saving your changes.',
+        variant: 'destructive',
       });
       setUploadError(err.message);
-      console.error("[API Error]", err);
+      console.error('[API Error]', err);
     }
   };
 
-
-
   const addSpecialty = () => {
-    if (newSpecialty.trim() && !formData.specialties.includes(newSpecialty.trim())) {
+    if (
+      newSpecialty.trim() &&
+      !formData.specialties.includes(newSpecialty.trim())
+    ) {
       setFormData((prev) => ({
         ...prev,
         specialties: [...prev.specialties, newSpecialty.trim()],
-      }))
-      setNewSpecialty("")
+      }));
+      setNewSpecialty('');
     }
-  }
+  };
 
   const removeSpecialty = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       specialties: prev.specialties.filter((_, i) => i !== index),
-    }))
-  }
+    }));
+  };
 
   const addCertification = () => {
-    if (newCertification.trim() && !formData.certifications.includes(newCertification.trim())) {
+    if (
+      newCertification.trim() &&
+      !formData.certifications.includes(newCertification.trim())
+    ) {
       setFormData((prev) => ({
         ...prev,
         certifications: [...prev.certifications, newCertification.trim()],
-      }))
-      setNewCertification("")
+      }));
+      setNewCertification('');
     }
-  }
+  };
 
   const removeCertification = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       certifications: prev.certifications.filter((_, i) => i !== index),
-    }))
-  }
+    }));
+  };
 
   const addAchievement = () => {
-    if (newAchievement.trim() && !formData.achievements.includes(newAchievement.trim())) {
+    if (
+      newAchievement.trim() &&
+      !formData.achievements.includes(newAchievement.trim())
+    ) {
       setFormData((prev) => ({
         ...prev,
         achievements: [...prev.achievements, newAchievement.trim()],
-      }))
-      setNewAchievement("")
+      }));
+      setNewAchievement('');
     }
-  }
+  };
 
   const removeAchievement = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       achievements: prev.achievements.filter((_, i) => i !== index),
-    }))
-  }
+    }));
+  };
 
   const handleBack = () => {
-    window.history.back()
-  }
-
-
+    window.history.back();
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-  }
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
-  const handleDrop = async (e: React.DragEvent, type: "avatar" | "cover") => {
-    e.preventDefault()
-    e.stopPropagation()
+  const handleDrop = async (e: React.DragEvent, type: 'avatar' | 'cover') => {
+    e.preventDefault();
+    e.stopPropagation();
 
-    const files = Array.from(e.dataTransfer.files)
-    const imageFile = files.find((file) => file.type.startsWith("image/"))
+    const files = Array.from(e.dataTransfer.files);
+    const imageFile = files.find((file) => file.type.startsWith('image/'));
 
     if (!imageFile) {
-      alert("Please drop an image file")
-      return
+      alert('Please drop an image file');
+      return;
     }
 
     // Create a fake event to reuse existing handlers
     const fakeEvent = {
       target: { files: [imageFile] },
-    } as any as React.ChangeEvent<HTMLInputElement>
+    } as any as React.ChangeEvent<HTMLInputElement>;
 
-    if (type === "avatar") {
-      handleAvatarFileChange(fakeEvent)
+    if (type === 'avatar') {
+      handleAvatarFileChange(fakeEvent);
     } else {
-      handleCoverFileChange(fakeEvent)
+      handleCoverFileChange(fakeEvent);
     }
-  }
+  };
   // // Add these helper functions before the return statement
-  const handleAvatarFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  const handleAvatarFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image file")
-      return
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      alert("Image size should be less than 10MB")
-      return
+      alert('Image size should be less than 10MB');
+      return;
     }
 
     // Create preview
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = (e) => {
-      setAvatarPreview(e.target?.result as string)
+      setAvatarPreview(e.target?.result as string);
       setAvatarFile(file);
-    }
-    reader.readAsDataURL(file)
-  }
+    };
+    reader.readAsDataURL(file);
+  };
 
-  const handleCoverFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (!file) return
+  const handleCoverFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image file")
-      return
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file');
+      return;
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      alert("Image size should be less than 10MB")
-      return
+      alert('Image size should be less than 10MB');
+      return;
     }
 
     // Create preview
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = (e) => {
-      setCoverPreview(e.target?.result as string)
+      setCoverPreview(e.target?.result as string);
       setCoverFile(file);
-    }
-    reader.readAsDataURL(file)
-  }
+    };
+    reader.readAsDataURL(file);
+  };
   const handleAvatarSave = async () => {
     if (!avatarFile) {
-      alert("Please select an avatar image before saving.");
+      alert('Please select an avatar image before saving.');
       return;
     }
 
     const form = new FormData();
-    form.append("avatar", avatarFile);
+    form.append('avatar', avatarFile);
 
     try {
-      const res = await fetch("/api/v1/users/me/avatar", {
-        method: "PATCH",
+      const res = await fetch('/api/v1/users/me/avatar', {
+        method: 'PATCH',
         body: form,
-        credentials: "include",
+        credentials: 'include',
       });
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err || "Failed to upload avatar.");
+        throw new Error(err || 'Failed to upload avatar.');
       }
 
       const data = await res.json();
-      console.log("Avatar uploaded:", data.avatarUrl);
-      setCreator((prev) => prev ? { ...prev, avatarUrl: data.avatarUrl } : prev);
+      console.log('Avatar uploaded:', data.avatarUrl);
+      setCreator((prev) =>
+        prev ? { ...prev, avatarUrl: data.avatarUrl } : prev
+      );
       setAvatarFile(null);
       await refreshUser();
     } catch (err: any) {
-      console.error("Avatar upload failed:", err);
-      setUploadError("Failed to upload avatar: " + ("Unknown error"));
+      console.error('Avatar upload failed:', err);
+      setUploadError('Failed to upload avatar: ' + 'Unknown error');
       throw err;
     }
   };
   const handleCoverSave = async () => {
     if (!coverFile) {
-      alert("Please select a cover image before saving.");
+      alert('Please select a cover image before saving.');
       return;
     }
 
     const form = new FormData();
-    form.append("cover", coverFile); // must match your multer config
+    form.append('cover', coverFile); // must match your multer config
     try {
-      const res = await fetch("/api/v1/creators/me/cover", {
-        method: "PATCH",
+      const res = await fetch('/api/v1/creators/me/cover', {
+        method: 'PATCH',
         body: form,
-        credentials: "include",
+        credentials: 'include',
       });
 
       if (!res.ok) {
         const err = await res.text();
-        throw new Error(err || "Failed to upload cover.");
+        throw new Error(err || 'Failed to upload cover.');
       }
 
       const data = await res.json();
-      console.log("Cover uploaded:", data.coverUrl);
-      setCreator((prev) => prev ? { ...prev, coverUrl: data.coverUrl } : prev);
+      console.log('Cover uploaded:', data.coverUrl);
+      setCreator((prev) =>
+        prev ? { ...prev, coverUrl: data.coverUrl } : prev
+      );
       setCoverFile(null);
     } catch (err: any) {
-      console.error("Cover upload failed:", err);
-      setUploadError("Failed to upload cover: " + ("Unknown error"));
+      console.error('Cover upload failed:', err);
+      setUploadError('Failed to upload cover: ' + 'Unknown error');
       throw err;
-    }
-    finally {
+    } finally {
     }
   };
 
   const handleSaveImages = async () => {
-    setUploadError("");
+    setUploadError('');
     setUploading(true);
 
     try {
@@ -417,8 +439,6 @@ const CreatorEdit = () => {
     }
   };
 
-
-
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -426,27 +446,26 @@ const CreatorEdit = () => {
         {/* Cover Image */}
         <div className="relative h-52 md:h-80 lg:h-88 [@media(min-width:1600px)]:h-[25rem] overflow-hidden">
           <img
-            src={
-              creator.coverUrl || '/default.jpg'
-            }
+            src={creator.coverUrl || '/default.jpg'}
             alt={`${creator.username} cover`}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
 
           {/* Back Button */}
-          <Button variant="ghost" className="absolute top-6 left-6 text-white hover:bg-white/20" onClick={handleBack}>
+          <Button
+            variant="ghost"
+            className="absolute top-6 left-6 text-white hover:bg-white/20"
+            onClick={handleBack}
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
-
-
         </div>
 
         {/* Creator Info Section - Below Image */}
         <div className="bg-background border-b">
           <div className="relative container mx-auto p-4 md:p-8">
-
             {/* Edit Images Button */}
             <Button
               variant="secondary"
@@ -458,7 +477,12 @@ const CreatorEdit = () => {
             </Button>
 
             {/* Public View button */}
-            <Button onClick={() => goToCreator({ subdomain: creator.subdomain, newTab: true })} className="absolute -top-16 right-4 md:right-8 bg-white/90 hover:bg-white text-black border-0">
+            <Button
+              onClick={() =>
+                goToCreator({ subdomain: creator.subdomain, newTab: true })
+              }
+              className="absolute -top-16 right-4 md:right-8 bg-white/90 hover:bg-white text-black border-0"
+            >
               <Eye className="h-4 w-4 mr-2" />
               Go Public View
             </Button>
@@ -474,12 +498,20 @@ const CreatorEdit = () => {
                 </Avatar>
                 <div className="flex-1 pt-12">
                   <div className="flex items-center gap-2">
-                    <h1 className="text-2xl font-bold mb-1">{creator.username}</h1>
-                    <Button variant="ghost" size="sm" onClick={() => setEditingProfile(true)}>
+                    <h1 className="text-2xl font-bold mb-1">
+                      {creator.username}
+                    </h1>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setEditingProfile(true)}
+                    >
                       <Edit className="h-3 w-3" />
                     </Button>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">{creator.subdomain}.trainwithx.com</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {creator.subdomain}.trainwithx.com
+                  </p>
                 </div>
               </div>
 
@@ -490,11 +522,15 @@ const CreatorEdit = () => {
                 </div>
                 <div className="flex items-center gap-1">
                   <Users className="h-3 w-3" />
-                  <span>Joined {new Date(creator.joinedAt).toLocaleDateString()}</span>
+                  <span>
+                    Joined {new Date(creator.joinedAt).toLocaleDateString()}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                  <span className="font-medium text-foreground">{Number(creator.avgRating).toFixed(1)}</span>
+                  <span className="font-medium text-foreground">
+                    {Number(creator.avgRating).toFixed(1)}
+                  </span>
                   <span>({creator.noReviews} reviews)</span>
                 </div>
               </div>
@@ -512,12 +548,20 @@ const CreatorEdit = () => {
 
                 <div className="flex-1 pt-16">
                   <div className="flex items-center gap-3">
-                    <h1 className="text-4xl font-bold mb-2">{creator.username}</h1>
-                    <Button variant="ghost" size="sm" onClick={() => setEditingProfile(true)}>
+                    <h1 className="text-4xl font-bold mb-2">
+                      {creator.username}
+                    </h1>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setEditingProfile(true)}
+                    >
                       <Edit className="h-4 w-4" />
                     </Button>
                   </div>
-                  <p className="text-xl text-muted-foreground mb-3">{creator.subdomain}.trainwithx.com</p>
+                  <p className="text-xl text-muted-foreground mb-3">
+                    {creator.subdomain}.trainwithx.com
+                  </p>
                   <div className="flex items-center gap-6 text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
@@ -525,11 +569,15 @@ const CreatorEdit = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <Users className="h-4 w-4" />
-                      <span>Joined {new Date(creator.joinedAt).toLocaleDateString()}</span>
+                      <span>
+                        Joined {new Date(creator.joinedAt).toLocaleDateString()}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium text-foreground">{Number(creator.avgRating).toFixed(1)}</span>
+                      <span className="font-medium text-foreground">
+                        {Number(creator.avgRating).toFixed(1)}
+                      </span>
                       <span>({creator.noReviews} reviews)</span>
                     </div>
                   </div>
@@ -556,7 +604,11 @@ const CreatorEdit = () => {
                     <Users className="h-5 w-5" />
                     About {creator.username}
                   </CardTitle>
-                  <Button variant="outline" size="sm" onClick={() => setEditingBio(true)}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setEditingBio(true)}
+                  >
                     <Edit className="mr-2 h-4 w-4" />
                     Edit Bio
                   </Button>
@@ -567,7 +619,12 @@ const CreatorEdit = () => {
                   <div className="space-y-4">
                     <Textarea
                       value={formData.bio}
-                      onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          bio: e.target.value,
+                        }))
+                      }
                       rows={6}
                       className="w-full"
                     />
@@ -580,8 +637,11 @@ const CreatorEdit = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          setFormData((prev) => ({ ...prev, bio: creator.bio }))
-                          setEditingBio(false)
+                          setFormData((prev) => ({
+                            ...prev,
+                            bio: creator.bio,
+                          }));
+                          setEditingBio(false);
                         }}
                       >
                         <X className="mr-2 h-4 w-4" />
@@ -590,14 +650,20 @@ const CreatorEdit = () => {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-muted-foreground leading-relaxed text-lg">{creator.bio}</p>
+                  <p className="text-muted-foreground leading-relaxed text-lg">
+                    {creator.bio}
+                  </p>
                 )}
 
                 {/* Specialties */}
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold">Specialties</h4>
-                    <Button variant="outline" size="sm" onClick={() => setEditingSpecialties(true)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditingSpecialties(true)}
+                    >
                       <Edit className="mr-2 h-3 w-3" />
                       Edit
                     </Button>
@@ -610,7 +676,9 @@ const CreatorEdit = () => {
                           value={newSpecialty}
                           onChange={(e) => setNewSpecialty(e.target.value)}
                           placeholder="Add new specialty..."
-                          onKeyPress={(e) => e.key === "Enter" && addSpecialty()}
+                          onKeyPress={(e) =>
+                            e.key === 'Enter' && addSpecialty()
+                          }
                         />
                         <Button onClick={addSpecialty} size="sm">
                           <Plus className="h-4 w-4" />
@@ -618,9 +686,16 @@ const CreatorEdit = () => {
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {formData.specialties.map((specialty, index) => (
-                          <Badge key={index} variant="secondary" className="px-3 py-1 flex items-center gap-2">
+                          <Badge
+                            key={index}
+                            variant="secondary"
+                            className="px-3 py-1 flex items-center gap-2"
+                          >
                             {specialty}
-                            <X className="h-3 w-3 cursor-pointer" onClick={() => removeSpecialty(index)} />
+                            <X
+                              className="h-3 w-3 cursor-pointer"
+                              onClick={() => removeSpecialty(index)}
+                            />
                           </Badge>
                         ))}
                       </div>
@@ -633,8 +708,11 @@ const CreatorEdit = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            setFormData((prev) => ({ ...prev, specialties: [...creator.specialties] }))
-                            setEditingSpecialties(false)
+                            setFormData((prev) => ({
+                              ...prev,
+                              specialties: [...creator.specialties],
+                            }));
+                            setEditingSpecialties(false);
                           }}
                         >
                           <X className="mr-2 h-4 w-4" />
@@ -645,7 +723,11 @@ const CreatorEdit = () => {
                   ) : (
                     <div className="flex flex-wrap gap-2">
                       {creator.specialties.map((specialty, index) => (
-                        <Badge key={index} variant="secondary" className="px-3 py-1">
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="px-3 py-1"
+                        >
                           {specialty}
                         </Badge>
                       ))}
@@ -657,7 +739,11 @@ const CreatorEdit = () => {
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold">Certifications</h4>
-                    <Button variant="outline" size="sm" onClick={() => setEditingCertifications(true)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditingCertifications(true)}
+                    >
                       <Edit className="mr-2 h-3 w-3" />
                       Edit
                     </Button>
@@ -665,10 +751,12 @@ const CreatorEdit = () => {
 
                   {editingCertifications ? (
                     <div className="space-y-4">
-
                       <div className="space-y-2">
                         {formData.certifications.map((cert, index) => (
-                          <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 bg-muted rounded"
+                          >
                             <div className="flex items-center gap-2">
                               <Award className="h-4 w-4 text-primary" />
                               <span className="text-sm">{cert}</span>
@@ -685,7 +773,9 @@ const CreatorEdit = () => {
                           value={newCertification}
                           onChange={(e) => setNewCertification(e.target.value)}
                           placeholder="Add new certification..."
-                          onKeyPress={(e) => e.key === "Enter" && addCertification()}
+                          onKeyPress={(e) =>
+                            e.key === 'Enter' && addCertification()
+                          }
                         />
                         <Button onClick={addCertification} size="sm">
                           <Plus className="h-4 w-4" />
@@ -700,8 +790,11 @@ const CreatorEdit = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            setFormData((prev) => ({ ...prev, certifications: [...creator.certifications] }))
-                            setEditingCertifications(false)
+                            setFormData((prev) => ({
+                              ...prev,
+                              certifications: [...creator.certifications],
+                            }));
+                            setEditingCertifications(false);
                           }}
                         >
                           <X className="mr-2 h-4 w-4" />
@@ -725,7 +818,11 @@ const CreatorEdit = () => {
                 <div>
                   <div className="flex items-center justify-between mb-3">
                     <h4 className="font-semibold">Achievements</h4>
-                    <Button variant="outline" size="sm" onClick={() => setEditingAchievements(true)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditingAchievements(true)}
+                    >
                       <Edit className="mr-2 h-3 w-3" />
                       Edit
                     </Button>
@@ -733,10 +830,12 @@ const CreatorEdit = () => {
 
                   {editingAchievements ? (
                     <div className="space-y-4">
-
                       <div className="space-y-2">
                         {formData.achievements.map((achievement, index) => (
-                          <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-2 bg-muted rounded"
+                          >
                             <div className="flex items-center gap-2">
                               <Star className="h-4 w-4 text-yellow-500" />
                               <span className="text-sm">{achievement}</span>
@@ -753,7 +852,9 @@ const CreatorEdit = () => {
                           value={newAchievement}
                           onChange={(e) => setNewAchievement(e.target.value)}
                           placeholder="Add new achievement..."
-                          onKeyPress={(e) => e.key === "Enter" && addAchievement()}
+                          onKeyPress={(e) =>
+                            e.key === 'Enter' && addAchievement()
+                          }
                         />
                         <Button onClick={addAchievement} size="sm">
                           <Plus className="h-4 w-4" />
@@ -768,8 +869,11 @@ const CreatorEdit = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            setFormData((prev) => ({ ...prev, achievements: [...creator.achievements] }))
-                            setEditingAchievements(false)
+                            setFormData((prev) => ({
+                              ...prev,
+                              achievements: [...creator.achievements],
+                            }));
+                            setEditingAchievements(false);
                           }}
                         >
                           <X className="mr-2 h-4 w-4" />
@@ -802,20 +906,32 @@ const CreatorEdit = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-4 bg-muted/50 rounded-lg">
                     <TrendingUp className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <div className="font-bold text-2xl">{formatNumber(creator.totalSales)}</div>
-                    <div className="text-sm text-muted-foreground">Total Sales</div>
+                    <div className="font-bold text-2xl">
+                      {formatNumber(creator.totalSales)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Total Sales
+                    </div>
                   </div>
                   <div className="text-center p-4 bg-muted/50 rounded-lg">
                     <BookOpen className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <div className="font-bold text-2xl">{creator.plansCount}</div>
-                    <div className="text-sm text-muted-foreground">Plans Created</div>
+                    <div className="font-bold text-2xl">
+                      {creator.plansCount}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Plans Created
+                    </div>
                   </div>
                 </div>
 
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
                   <Star className="h-6 w-6 mx-auto mb-2 text-yellow-500" />
-                  <div className="font-bold text-2xl">{Number(creator.avgRating).toFixed(1)}</div>
-                  <div className="text-sm text-muted-foreground">Average Rating</div>
+                  <div className="font-bold text-2xl">
+                    {Number(creator.avgRating).toFixed(1)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Average Rating
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -836,7 +952,12 @@ const CreatorEdit = () => {
                 <Input
                   id="username"
                   value={formData.username}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, username: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      username: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div>
@@ -844,7 +965,12 @@ const CreatorEdit = () => {
                 <Input
                   id="subdomain"
                   value={formData.subdomain}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, subdomain: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      subdomain: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div>
@@ -853,7 +979,12 @@ const CreatorEdit = () => {
                   id="yearsXP"
                   type="number"
                   value={formData.yearsXP}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, yearsXP: Number.parseInt(e.target.value) || 0 }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      yearsXP: Number.parseInt(e.target.value) || 0,
+                    }))
+                  }
                 />
               </div>
               <div>
@@ -861,7 +992,12 @@ const CreatorEdit = () => {
                 <Input
                   id="instagram"
                   value={formData.instagram}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, instagram: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      instagram: e.target.value,
+                    }))
+                  }
                   placeholder="@username"
                 />
               </div>
@@ -870,174 +1006,208 @@ const CreatorEdit = () => {
                   <Save className="mr-2 h-4 w-4" />
                   Save
                 </Button>
-                <Button variant="outline" onClick={() => {
-                  setFormData((prev) => ({ ...prev, username: creator.username, subdomain: creator.subdomain, yearsXP: creator.yearsXP, instagram: creator.instagram }));
-                  setEditingProfile(false)
-                }} className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      username: creator.username,
+                      subdomain: creator.subdomain,
+                      yearsXP: creator.yearsXP,
+                      instagram: creator.instagram,
+                    }));
+                    setEditingProfile(false);
+                  }}
+                  className="flex-1"
+                >
                   Cancel
                 </Button>
               </div>
             </CardContent>
           </Card>
         </div>
-      )
-      }
+      )}
 
       {/* Edit Images Modal */}
-      {
-        editingImages && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <CardHeader>
-                <CardTitle>Edit Profile Images</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Avatar Upload */}
-                <div>
-                  <Label className="text-base font-semibold">Profile Picture</Label>
-                  <div className="mt-2 space-y-4">
-                    {/* Current/Preview Avatar */}
-                    <div className="flex items-center gap-4">
-                      <Avatar className="h-20 w-20">
-                        <AvatarImage
-                          src={avatarPreview || creator.avatarUrl || undefined}
-                          alt="Avatar preview"
-                          className="h-full w-full object-cover object-center"
-                        />
-                        <AvatarFallback>{formData.username.slice(0, 2).toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                      <div className="text-sm text-muted-foreground">
-                        <p>Recommended: Square image, at least 200x200px</p>
-                        <p>Max file size: 10MB</p>
-                      </div>
+      {editingImages && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <CardHeader>
+              <CardTitle>Edit Profile Images</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Avatar Upload */}
+              <div>
+                <Label className="text-base font-semibold">
+                  Profile Picture
+                </Label>
+                <div className="mt-2 space-y-4">
+                  {/* Current/Preview Avatar */}
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-20 w-20">
+                      <AvatarImage
+                        src={avatarPreview || creator.avatarUrl || undefined}
+                        alt="Avatar preview"
+                        className="h-full w-full object-cover object-center"
+                      />
+                      <AvatarFallback>
+                        {formData.username.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="text-sm text-muted-foreground">
+                      <p>Recommended: Square image, at least 200x200px</p>
+                      <p>Max file size: 10MB</p>
                     </div>
-
-                    {/* Upload Area */}
-                    <div
-                      className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
-                      onDragOver={handleDragOver}
-                      onDrop={(e) => handleDrop(e, "avatar")}
-                      onClick={() => document.getElementById("avatar-upload")?.click()}
-                    >
-
-                      <div className="mx-auto h-12 w-12 text-muted-foreground mb-2">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 48 48">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1}
-                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                          />
-                        </svg>
-                      </div>
-                      <p className="text-sm">
-                        <span className="font-medium text-primary">Click to upload</span> or drag and drop
-                      </p>
-                      <p className="text-xs text-muted-foreground"> WEBP, PNG, JPG, JPEG up to 10MB </p>
-
-                    </div>
-
-                    <input
-                      id="avatar-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleAvatarFileChange}
-                      className="hidden"
-                    />
                   </div>
-                </div>
 
-                {/* Cover Image Upload */}
-                <div>
-                  <Label className="text-base font-semibold">Cover Image</Label>
-                  <div className="mt-2 space-y-4">
-                    {/* Current/Preview Cover */}
-                    <div className="space-y-2">
-                      <div className="relative aspect-[3/1] w-full rounded-lg overflow-hidden bg-muted">
-                        <img
-                          src={coverPreview || creator.coverUrl || "/default.jpg"}
-                          alt="Cover preview"
-                          className="h-full w-full object-cover object-center"
-                        />
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        <p>Recommended: 1200x400px or similar ratio</p>
-                        <p>Max file size: 10MB</p>
-                      </div>
-                    </div>
-
-                    {/* Upload Area */}
-                    <div
-                      className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
-                      onDragOver={handleDragOver}
-                      onDrop={(e) => handleDrop(e, "cover")}
-                      onClick={() => document.getElementById("cover-upload")?.click()}
-                    >
-
-                      <div className="mx-auto h-12 w-12 text-muted-foreground mb-2">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 48 48">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1}
-                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                          />
-                        </svg>
-                      </div>
-                      <p className="text-sm">
-                        <span className="font-medium text-primary">Click to upload</span> or drag and drop
-                      </p>
-                      <p className="text-xs text-muted-foreground">WEBP, PNG, JPG, JPEG up to 10MB</p>
-
-                    </div>
-
-                    <input
-                      id="cover-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleCoverFileChange}
-                      className="hidden"
-                    />
-                  </div>
-                </div>
-                {uploadError && (
-                  <p className="text-md text-red-600 mt-1">{uploadError}</p>
-                )}
-                <div className="flex gap-2 pt-4">
-                  <Button onClick={handleSaveImages} disabled={uploading} className="flex-1">
-                    {uploading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Uploading...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="mr-2 h-4 w-4" />
-                        Save Changes
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setEditingImages(false)
-                      setAvatarPreview(null)
-                      setCoverPreview(null)
-                      setAvatarFile(null)
-                      setCoverFile(null)
-                    }}
-                    className="flex-1"
+                  {/* Upload Area */}
+                  <div
+                    className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, 'avatar')}
+                    onClick={() =>
+                      document.getElementById('avatar-upload')?.click()
+                    }
                   >
-                    Cancel
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )
-      }
-    </div >
-  )
-}
+                    <div className="mx-auto h-12 w-12 text-muted-foreground mb-2">
+                      <svg
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 48 48"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1}
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-sm">
+                      <span className="font-medium text-primary">
+                        Click to upload
+                      </span>{' '}
+                      or drag and drop
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {' '}
+                      WEBP, PNG, JPG, JPEG up to 10MB{' '}
+                    </p>
+                  </div>
 
-export default CreatorEdit
+                  <input
+                    id="avatar-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAvatarFileChange}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+
+              {/* Cover Image Upload */}
+              <div>
+                <Label className="text-base font-semibold">Cover Image</Label>
+                <div className="mt-2 space-y-4">
+                  {/* Current/Preview Cover */}
+                  <div className="space-y-2">
+                    <div className="relative aspect-[3/1] w-full rounded-lg overflow-hidden bg-muted">
+                      <img
+                        src={coverPreview || creator.coverUrl || '/default.jpg'}
+                        alt="Cover preview"
+                        className="h-full w-full object-cover object-center"
+                      />
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      <p>Recommended: 1200x400px or similar ratio</p>
+                      <p>Max file size: 10MB</p>
+                    </div>
+                  </div>
+
+                  {/* Upload Area */}
+                  <div
+                    className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center hover:border-muted-foreground/50 transition-colors cursor-pointer"
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDrop(e, 'cover')}
+                    onClick={() =>
+                      document.getElementById('cover-upload')?.click()
+                    }
+                  >
+                    <div className="mx-auto h-12 w-12 text-muted-foreground mb-2">
+                      <svg
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 48 48"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1}
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-sm">
+                      <span className="font-medium text-primary">
+                        Click to upload
+                      </span>{' '}
+                      or drag and drop
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      WEBP, PNG, JPG, JPEG up to 10MB
+                    </p>
+                  </div>
+
+                  <input
+                    id="cover-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCoverFileChange}
+                    className="hidden"
+                  />
+                </div>
+              </div>
+              {uploadError && (
+                <p className="text-md text-red-600 mt-1">{uploadError}</p>
+              )}
+              <div className="flex gap-2 pt-4">
+                <Button
+                  onClick={handleSaveImages}
+                  disabled={uploading}
+                  className="flex-1"
+                >
+                  {uploading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      Save Changes
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setEditingImages(false);
+                    setAvatarPreview(null);
+                    setCoverPreview(null);
+                    setAvatarFile(null);
+                    setCoverFile(null);
+                  }}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default CreatorEdit;

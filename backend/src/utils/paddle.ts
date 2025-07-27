@@ -13,7 +13,7 @@ import {
   WebhooksValidator,
 } from '@paddle/paddle-node-sdk';
 import { Plan } from '@prisma/client';
-import { CreatePlanDto } from '@shared/types/plan';
+import { CreatePlanDto } from '@trainwithx/shared';
 import { AppError } from '@src/utils/AppError';
 import { env } from '@src/utils/env';
 
@@ -49,16 +49,19 @@ export async function createNewPaddleDiscount(
   }
 }
 
-export async function createDiscountFor(dto: CreatePlanDto): Promise<string | undefined> {
+export async function createDiscountFor(
+  dto: CreatePlanDto
+): Promise<string | undefined> {
   if (!dto.originalPrice || dto.originalPrice <= dto.price) return undefined;
 
-  const discountAmount = Math.round((dto.originalPrice - dto.price) * 100).toString();
+  const discountAmount = Math.round(
+    (dto.originalPrice - dto.price) * 100
+  ).toString();
   const description = `Discount for ${dto.slug}`;
 
   const discount = await createNewPaddleDiscount(discountAmount, description);
   return discount?.id;
 }
-
 
 export async function createNewPaddlePrice(
   productId: string,
@@ -84,7 +87,6 @@ export async function createNewPaddlePrice(
   return await paddle.prices.create(priceBody);
 }
 
-
 export async function createNewPaddleProduct(
   name: string,
   description: string
@@ -107,7 +109,6 @@ export async function createProductWithPrice(
 
   return { product, price };
 }
-
 
 export async function syncPaddleForPlan(
   dto: CreatePlanDto,
@@ -134,14 +135,14 @@ export async function syncPaddleForPlan(
       description,
     });
 
-    if (
-      existing.price !== price ||
-      existing.originalPrice !== originalPrice
-    ) {
+    if (existing.price !== price || existing.originalPrice !== originalPrice) {
       await paddle.prices.update(existing.paddlePriceId, {
         status: 'archived',
       });
-      const newPrice = await createNewPaddlePrice(existing.paddleProductId, originalPrice ?? price);
+      const newPrice = await createNewPaddlePrice(
+        existing.paddleProductId,
+        originalPrice ?? price
+      );
       paddlePriceId = newPrice.id;
     } else {
       paddlePriceId = existing.paddlePriceId;
@@ -170,8 +171,6 @@ export async function syncPaddleForPlan(
     paddleDiscountId,
   };
 }
-
-
 
 export async function generateTransaction(opts: {
   plan: Plan;

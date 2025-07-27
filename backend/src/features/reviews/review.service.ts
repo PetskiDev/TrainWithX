@@ -1,5 +1,10 @@
 import { Prisma } from '@prisma/client';
-import { CreateReviewDTO, CreatorPageReviewDTO, ReviewPreviewDTO, UpdateReviewDTO } from '@shared/types/review';
+import {
+  CreateReviewDTO,
+  CreatorPageReviewDTO,
+  ReviewPreviewDTO,
+  UpdateReviewDTO,
+} from '@trainwithx/shared';
 import { getCreatorIdForPlan } from '@src/features/plans/plan.service';
 import { enforceHasPurchased } from '../checkout/checkout.service';
 import { AppError } from '@src/utils/AppError';
@@ -43,7 +48,10 @@ async function recalculateReviewStats(
   });
 }
 
-export async function getReview(userId: number, planId: number): Promise<ReviewPreviewDTO> {
+export async function getReview(
+  userId: number,
+  planId: number
+): Promise<ReviewPreviewDTO> {
   const review = await prisma.review.findUnique({
     where: {
       userId_planId: {
@@ -72,8 +80,6 @@ export async function getReview(userId: number, planId: number): Promise<ReviewP
     userId,
   };
 }
-
-
 
 export async function createReview(userId: number, dto: CreateReviewDTO) {
   await enforceHasPurchased({ userId, planId: dto.planId }); // do not let user reveiew not owned plan
@@ -174,15 +180,13 @@ export async function deleteReview(userId: number, planId: number) {
   });
 }
 
-
-
 export async function getReviewsOfPlan(
   planId: number
 ): Promise<CreatorPageReviewDTO[]> {
   const reviews = await prisma.review.findMany({
     where: {
       plan: {
-        id: planId
+        id: planId,
       },
     },
     include: {

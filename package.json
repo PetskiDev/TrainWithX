@@ -3,10 +3,11 @@
   "private": true,
   "description": "**TrainWithX** is a creator-first platform for selling and managing fitness programs. Each trainer gets a unique subdomain (e.g. `mike.trainwithx.com`) where they can list plans, track sales, and manage their content.",
   "scripts": {
-    "dev": "concurrently \"npm --prefix frontend run dev\" \"npm --prefix backend run dev\"",
-    "build": "npm run build:frontend && npm run build:backend",
+    "dev": "concurrently \"npm --prefix shared run dev\" \"npm --prefix frontend run dev\" \"npm --prefix backend run dev\"",
+    "build": "npm run build:shared && npm run build:frontend && npm run build:backend",
+    "build:shared": "npm --prefix shared run build",
     "build:frontend": "npm --prefix frontend run build",
-    "build:backend": "npm --prefix backend  run build",
+    "build:backend": "npm --prefix backend run build",
     "start": "npm run build && NODE_ENV=production node backend/dist/index.js"
   },
   "devDependencies": {

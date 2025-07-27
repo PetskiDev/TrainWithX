@@ -1,5 +1,5 @@
 import { prisma } from '@src/utils/prisma';
-import { CreatorPostDTO, SendApplicationDTO } from '@shared/types/creator';
+import { CreatorPostDTO, SendApplicationDTO } from '@trainwithx/shared';
 import { CreatorApplication, Prisma, PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AppError } from '@src/utils/AppError';
@@ -21,7 +21,10 @@ export async function getCreatorById(id: number) {
   });
 }
 
-export async function editCreator(creatorId: number, data: Partial<CreatorPostDTO>) {
+export async function editCreator(
+  creatorId: number,
+  data: Partial<CreatorPostDTO>
+) {
   const { username, ...creatorData } = data;
   try {
     return await prisma.creator.update({
@@ -41,7 +44,10 @@ export async function editCreator(creatorId: number, data: Partial<CreatorPostDT
       },
     });
   } catch (err) {
-    if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === 'P2002'
+    ) {
       const target = err.meta?.target as string[] | undefined;
       console.log(target);
       if (target?.includes('username')) {
@@ -68,30 +74,37 @@ export async function getCreatorBySub(subdomain: string) {
   });
 }
 
-export async function promoteUserToCreator(application: CreatorApplication, tx: Prisma.TransactionClient | PrismaClient = prisma) {
+export async function promoteUserToCreator(
+  application: CreatorApplication,
+  tx: Prisma.TransactionClient | PrismaClient = prisma
+) {
   try {
-    return await tx.creator.create({
-      data: {
-        id: application.userId,
-        subdomain: application.subdomain.toLowerCase(),
-        yearsXP: application.experience,
-        bio: application.bio,
-        specialties: application.specialties,
-        instagram: application.instagram,
-      },
-      include: { user: true },
-    }).then(async (creator) => {
-      await tx.user.update({
-        where: { id: application.userId },
-        data: { isCreator: true },
+    return await tx.creator
+      .create({
+        data: {
+          id: application.userId,
+          subdomain: application.subdomain.toLowerCase(),
+          yearsXP: application.experience,
+          bio: application.bio,
+          specialties: application.specialties,
+          instagram: application.instagram,
+        },
+        include: { user: true },
+      })
+      .then(async (creator) => {
+        await tx.user.update({
+          where: { id: application.userId },
+          data: { isCreator: true },
+        });
+        return creator;
       });
-      return creator;
-    });
   } catch (err) {
     if (err instanceof PrismaClientKnownRequestError && err.code === 'P2002') {
-      const dup = err.meta?.target as string[] ?? [];
-      if (dup.includes('id')) throw new AppError('User is already a creator.', 409);
-      if (dup.includes('subdomain')) throw new AppError('Subdomain already taken.', 409);
+      const dup = (err.meta?.target as string[]) ?? [];
+      if (dup.includes('id'))
+        throw new AppError('User is already a creator.', 409);
+      if (dup.includes('subdomain'))
+        throw new AppError('Subdomain already taken.', 409);
     }
     throw err;
   }
@@ -101,7 +114,6 @@ export const storeCreatorCover = async (
   creatorId: number,
   file: Express.Multer.File
 ): Promise<string> => {
-
   const creator = await prisma.creator.findUnique({
     where: { id: creatorId },
     select: { coverUrl: true },
@@ -115,7 +127,6 @@ export const storeCreatorCover = async (
     height: 400,
     oldFileUrl: creator?.coverUrl ?? undefined,
   });
-
 
   await prisma.creator.update({
     where: { id: creatorId },

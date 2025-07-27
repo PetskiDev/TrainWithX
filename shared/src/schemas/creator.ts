@@ -3,10 +3,10 @@ export interface CreatorPreviewDTO {
   username: string;
   subdomain: string;
   plansCount: number;
-  avgRating: Decimal;
+  avgRating: any;
   noReviews: number;
   specialties: string[];
-  yearsXP: Decimal;
+  yearsXP: any;
   totalSales: number;
   bio: string;
   coverUrl?: string;
@@ -31,7 +31,7 @@ export interface CreatorPostDTO {
   bio: string;
   subdomain: string;
   instagram?: string;
-  yearsXP: Decimal;
+  yearsXP: any;
   specialties: string[];
   certifications: string[];
   achievements: string[];
@@ -42,7 +42,7 @@ export interface SendApplicationDTO {
   fullName: string;
   subdomain: string;
   specialties: string[];
-  experience: Decimal;
+  experience: any;
   bio: string;
   socialMedia?: string;
   agreeToTerms: boolean;

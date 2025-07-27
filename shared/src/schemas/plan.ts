@@ -9,7 +9,7 @@ export interface PlanPreview {
   originalPrice?: number;
   creatorId: number;
   isPublished: boolean;
-  avgRating: Decimal;
+  avgRating: any;
   noReviews: number;
   totalWorkouts: number;
   duration: number;
@@ -23,7 +23,7 @@ export interface PlanPreview {
   creatorUsername: string;
   creatorSubdomain: string;
   creatorAvatarUrl: string;
-  creatorXp: Decimal;
+  creatorXp: any;
 }
 
 export interface PlanPreviewWithProgress extends PlanPreview {
@@ -39,12 +39,11 @@ export interface PlanContentJSON {
   weeks: PlanWeek[];
 }
 
-export interface PlanPaidPreveiw extends PlanPreview, PlanContentJSON { }
+export interface PlanPaidPreveiw extends PlanPreview, PlanContentJSON {}
 
 export interface PlanWithRevenue extends PlanPreview {
   revenue: number;
 }
-
 
 export type CreatePlanDto = {
   title: string;
@@ -58,7 +57,7 @@ export type CreatePlanDto = {
   goals: string[];
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   weeks: PlanWeek[];
-}
+};
 
 export interface PlanWeek {
   id: number;

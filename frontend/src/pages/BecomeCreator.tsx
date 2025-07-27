@@ -1,53 +1,53 @@
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/hooks/use-toast";
-import { TrainWithXLogo } from "@/components/TrainWithXLogo";
-import { useAuth } from "@frontend/context/AuthContext";
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useToast } from '@/hooks/use-toast';
+import { TrainWithXLogo } from '@/components/TrainWithXLogo';
+import { useAuth } from '@frontend/context/AuthContext';
 import type {
   CreatorApplicationDTO,
   SendApplicationDTO,
-} from "@shared/types/creator";
-import { Badge } from "@frontend/components/ui/badge";
-import { Plus, X } from "lucide-react";
-import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
-import { AuthModal } from "@frontend/components/AuthModal";
+} from '@trainwithx/shared';
+import { Badge } from '@frontend/components/ui/badge';
+import { Plus, X } from 'lucide-react';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
+import { AuthModal } from '@frontend/components/AuthModal';
 
 const availableSpecialties = [
-  "Strength Training",
-  "Bodybuilding & Hypertrophy",
-  "HIIT",
-  "Fat Loss",
-  "Cardio & Endurance",
-  "Powerlifting",
-  "CrossFit",
-  "Home Workouts",
-  "Calisthenics",
-  "Pilates",
-  "Yoga",
-  "Running",
-  "Bodyweight",
-  "Rehab & Recovery",
+  'Strength Training',
+  'Bodybuilding & Hypertrophy',
+  'HIIT',
+  'Fat Loss',
+  'Cardio & Endurance',
+  'Powerlifting',
+  'CrossFit',
+  'Home Workouts',
+  'Calisthenics',
+  'Pilates',
+  'Yoga',
+  'Running',
+  'Bodyweight',
+  'Rehab & Recovery',
   "Women's Fitness",
-  "Beginner Friendly",
-  "Martial Arts",
+  'Beginner Friendly',
+  'Martial Arts',
 ];
 
 const BecomeCreator = () => {
@@ -56,16 +56,16 @@ const BecomeCreator = () => {
   const { user, refreshUser } = useAuth();
   const { toast } = useToast();
   const [formData, setFormData] = useState<SendApplicationDTO>({
-    fullName: "",
-    subdomain: "",
+    fullName: '',
+    subdomain: '',
     specialties: [],
     experience: 0,
-    bio: "",
-    socialMedia: "",
+    bio: '',
+    socialMedia: '',
     agreeToTerms: false,
-    email: "",
+    email: '',
   });
-  const [customSpecialty, setCustomSpecialty] = useState("");
+  const [customSpecialty, setCustomSpecialty] = useState('');
 
   const [showLogin, setShowLogin] = useState(!user);
   const [loadingApplication, setLoadingApplication] = useState(false);
@@ -83,7 +83,7 @@ const BecomeCreator = () => {
   }, [user]);
 
   if (user?.isCreator) {
-    goPublic("/me/creator");
+    goPublic('/me/creator');
   }
   useEffect(() => {
     if (user) {
@@ -93,19 +93,19 @@ const BecomeCreator = () => {
   const fetchApplication = async () => {
     setLoadingApplication(true);
     try {
-      const res = await fetch("/api/v1/creator-application/me", {
-        credentials: "include",
+      const res = await fetch('/api/v1/creator-application/me', {
+        credentials: 'include',
       });
 
       if (res.ok) {
         const data = await res.json();
         setExistingApplication(data);
       } else if (res.status !== 404) {
-        toast({ title: "Failed to fetch application", variant: "destructive" });
+        toast({ title: 'Failed to fetch application', variant: 'destructive' });
       }
     } catch (err) {
       console.error(err);
-      toast({ title: "Error loading application", variant: "destructive" });
+      toast({ title: 'Error loading application', variant: 'destructive' });
     } finally {
       setLoadingApplication(false);
     }
@@ -119,9 +119,9 @@ const BecomeCreator = () => {
     e.preventDefault();
     if (!formData.agreeToTerms) {
       toast({
-        title: "Terms Required",
-        description: "Please agree to the terms and conditions",
-        variant: "destructive",
+        title: 'Terms Required',
+        description: 'Please agree to the terms and conditions',
+        variant: 'destructive',
       });
       return;
     }
@@ -129,41 +129,41 @@ const BecomeCreator = () => {
     try {
       const payload: SendApplicationDTO = formData;
 
-      const res = await fetch("/api/v1/creator-application", {
-        method: "POST",
+      const res = await fetch('/api/v1/creator-application', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
         const errorData = await res.json();
-        throw new Error(errorData.error || "Unknown error");
+        throw new Error(errorData.error || 'Unknown error');
       }
 
       toast({
-        title: "Application Submitted!",
+        title: 'Application Submitted!',
         description: "You'll get a notification once we review it.",
       });
       fetchApplication();
       // reset form
       setFormData({
         ...payload,
-        fullName: "",
-        subdomain: "",
+        fullName: '',
+        subdomain: '',
         specialties: [],
         experience: 0,
-        bio: "",
-        socialMedia: "",
+        bio: '',
+        socialMedia: '',
         agreeToTerms: false,
       });
-      setCustomSpecialty("");
+      setCustomSpecialty('');
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: 'Error',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   };
@@ -190,7 +190,7 @@ const BecomeCreator = () => {
       !formData.specialties.includes(customSpecialty.trim())
     ) {
       addSpecialty(customSpecialty.trim());
-      setCustomSpecialty("");
+      setCustomSpecialty('');
     }
   };
   const handleInputChange = (field: string, value: string) => {
@@ -227,11 +227,11 @@ const BecomeCreator = () => {
                 <CardTitle>Application Submitted</CardTitle>
                 <Badge
                   variant={
-                    existingApplication.status === "approved"
-                      ? "outline"
-                      : existingApplication.status === "rejected"
-                      ? "destructive"
-                      : "secondary"
+                    existingApplication.status === 'approved'
+                      ? 'outline'
+                      : existingApplication.status === 'rejected'
+                      ? 'destructive'
+                      : 'secondary'
                   }
                   className="text-sm"
                 >
@@ -252,11 +252,11 @@ const BecomeCreator = () => {
                 .trainwithx.com
               </div>
               <div>
-                <strong>Specialties:</strong>{" "}
-                {existingApplication.specialties.join(", ")}
+                <strong>Specialties:</strong>{' '}
+                {existingApplication.specialties.join(', ')}
               </div>
               <div>
-                <strong>Experience:</strong> {existingApplication.experience}{" "}
+                <strong>Experience:</strong> {existingApplication.experience}{' '}
                 years
               </div>
               <div>
@@ -266,7 +266,7 @@ const BecomeCreator = () => {
                 <strong>Instagram:</strong> @{existingApplication.instagram}
               </div>
               <div>
-                <strong>Social Media Links:</strong>{" "}
+                <strong>Social Media Links:</strong>{' '}
                 {existingApplication.socialMedia}
               </div>
             </CardContent>
@@ -290,7 +290,7 @@ const BecomeCreator = () => {
                       id="fullName"
                       value={formData.fullName}
                       onChange={(e) =>
-                        handleInputChange("fullName", e.target.value)
+                        handleInputChange('fullName', e.target.value)
                       }
                       required
                     />
@@ -302,7 +302,7 @@ const BecomeCreator = () => {
                         id="subdomain"
                         value={formData.subdomain}
                         onChange={(e) =>
-                          handleInputChange("subdomain", e.target.value)
+                          handleInputChange('subdomain', e.target.value)
                         }
                         placeholder="yourname"
                         className="pr-32"
@@ -365,7 +365,7 @@ const BecomeCreator = () => {
                         value={customSpecialty}
                         onChange={(e) => setCustomSpecialty(e.target.value)}
                         onKeyPress={(e) =>
-                          e.key === "Enter" &&
+                          e.key === 'Enter' &&
                           (e.preventDefault(), addCustomSpecialty())
                         }
                         className="flex-1"
@@ -393,8 +393,8 @@ const BecomeCreator = () => {
                         value={formData.instagram}
                         onChange={(e) =>
                           handleInputChange(
-                            "instagram",
-                            e.target.value.replace(/^@/, "")
+                            'instagram',
+                            e.target.value.replace(/^@/, '')
                           )
                         }
                         placeholder="yourhandle"
@@ -411,7 +411,7 @@ const BecomeCreator = () => {
                     <Label htmlFor="experience">Years of Experience *</Label>
                     <Select
                       onValueChange={(value) =>
-                        handleInputChange("experience", value)
+                        handleInputChange('experience', value)
                       }
                     >
                       <SelectTrigger>
@@ -433,7 +433,7 @@ const BecomeCreator = () => {
                     id="bio"
                     placeholder="Tell us about your background, training philosophy, and what makes you unique as a fitness professional..."
                     value={formData.bio}
-                    onChange={(e) => handleInputChange("bio", e.target.value)}
+                    onChange={(e) => handleInputChange('bio', e.target.value)}
                     className="min-h-[120px]"
                     required
                   />
@@ -446,7 +446,7 @@ const BecomeCreator = () => {
                     placeholder="Share your Instagram, YouTube, TikTok, or website links"
                     value={formData.socialMedia}
                     onChange={(e) =>
-                      handleInputChange("socialMedia", e.target.value)
+                      handleInputChange('socialMedia', e.target.value)
                     }
                     className="min-h-[80px]"
                   />
@@ -464,18 +464,18 @@ const BecomeCreator = () => {
                     }
                   />
                   <Label htmlFor="terms" className="text-sm">
-                    I agree to the{" "}
+                    I agree to the{' '}
                     <button
                       type="button"
-                      onClick={() => goPublic("/creator-agreement", true)}
+                      onClick={() => goPublic('/creator-agreement', true)}
                       className="underline bg-transparent border-none p-0 cursor-pointer"
                     >
                       TrainWithX Creator Agreement
-                    </button>{" "}
-                    and{" "}
+                    </button>{' '}
+                    and{' '}
                     <button
                       type="button"
-                      onClick={() => goPublic("/terms-of-service", true)}
+                      onClick={() => goPublic('/terms-of-service', true)}
                       className="underline bg-transparent border-none p-0 cursor-pointer"
                     >
                       Terms & Conditions
@@ -500,7 +500,7 @@ const BecomeCreator = () => {
         <AuthModal
           open={showLogin}
           onClose={() => {
-            alert("You must be logged in to become a creator!");
+            alert('You must be logged in to become a creator!');
           }}
           onSuccess={handleLoginSuccess}
           redirectUrl={`${window.location.origin}${window.location.pathname}`}

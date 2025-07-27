@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { PlanCard } from "@/components/PlanCard";
+import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { PlanCard } from '@/components/PlanCard';
 import {
   DollarSign,
   ShoppingCart,
@@ -11,12 +11,12 @@ import {
   Eye,
   BarChart3,
   Camera,
-  Loader2
-} from "lucide-react";
-import type { PlanWithRevenue } from "@shared/types/plan";
-import { useAuth } from "@frontend/context/AuthContext";
-import type { CreatorFullDTO } from "@shared/types/creator";
-import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
+  Loader2,
+} from 'lucide-react';
+import type { PlanWithRevenue } from '@trainwithx/shared';
+import { useAuth } from '@frontend/context/AuthContext';
+import type { CreatorFullDTO } from '@trainwithx/shared';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 const CreatorDashboard = () => {
   const { user, loading } = useAuth();
@@ -27,7 +27,6 @@ const CreatorDashboard = () => {
   const [creator, setCreator] = useState<CreatorFullDTO | undefined>(undefined);
   const [plansLoading, setPlansLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
 
   const [uploadingPlanId, setUploadingPlanId] = useState<number | null>(null);
 
@@ -47,7 +46,7 @@ const CreatorDashboard = () => {
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') return;
         console.error(err);
-        setError("You are not a creator.");
+        setError('You are not a creator.');
       }
     };
 
@@ -64,7 +63,7 @@ const CreatorDashboard = () => {
       setPlans(data);
     } catch (err) {
       console.error(err);
-      setError("Failed to fetch plans.");
+      setError('Failed to fetch plans.');
     } finally {
       setPlansLoading(false);
     }
@@ -75,7 +74,7 @@ const CreatorDashboard = () => {
   }, [creator, fetchPlans]);
 
   const handlePlanClick = (planId: number) => {
-    console.log("Plan clicked:", planId);
+    console.log('Plan clicked:', planId);
   };
 
   // UI rendering
@@ -101,7 +100,6 @@ const CreatorDashboard = () => {
       </div>
     );
   }
-
 
   if (error) {
     return (
@@ -150,11 +148,8 @@ const CreatorDashboard = () => {
     }
   };
 
-
-
   const activePlansNum = plans.length;
   const totalRevenue = plans.reduce((prev, curr) => prev + curr.revenue, 0);
-
 
   return (
     <div className="min-h-screen-navbar bg-background">
@@ -163,11 +158,17 @@ const CreatorDashboard = () => {
         <div className="flex items-center flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div className="md:flex md:flex-col items-start text-center">
             <h1 className="text-3xl font-bold mb-2">Creator Dashboard</h1>
-            <p className="text-muted-foreground">Manage your plans and track your performance</p>
+            <p className="text-muted-foreground">
+              Manage your plans and track your performance
+            </p>
           </div>
           <div className="flex gap-2">
             <Button asChild>
-              <Link to="/me/creator/edit" state={{ creator }} className="flex items-center">
+              <Link
+                to="/me/creator/edit"
+                state={{ creator }}
+                className="flex items-center"
+              >
                 <Edit3 className="h-4 w-4" />
                 Edit Profile
               </Link>
@@ -202,7 +203,9 @@ const CreatorDashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Total Revenue</p>
-                  <p className="text-2xl font-bold">${totalRevenue.toLocaleString()} </p>
+                  <p className="text-2xl font-bold">
+                    ${totalRevenue.toLocaleString()}{' '}
+                  </p>
                 </div>
                 <div className="p-3 bg-green-500/10 rounded-full">
                   <DollarSign className="h-5 w-5 text-green-500" />
@@ -259,7 +262,10 @@ const CreatorDashboard = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {plans.map((plan) => (
-                <div key={plan.id} className="relative group overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                <div
+                  key={plan.id}
+                  className="relative group overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow"
+                >
                   <PlanCard plan={plan} onPlanClick={handlePlanClick} />
 
                   <div className="absolute top-3 left-3 flex items-center gap-2 bg-gradient-to-r from-green-100 to-green-200 border border-green-400 text-green-800 text-sm font-medium px-3 py-1.5 rounded-md shadow-sm">
@@ -269,7 +275,10 @@ const CreatorDashboard = () => {
                     🛒 <span>{plan.sales} sales</span>
                   </div>
                   <div className="absolute top-[153px] left-3">
-                    <label htmlFor={`plan-image-${plan.id}`} className="cursor-pointer">
+                    <label
+                      htmlFor={`plan-image-${plan.id}`}
+                      className="cursor-pointer"
+                    >
                       <div className="bg-primary text-primary-foreground rounded-full p-2 shadow-lg hover:bg-primary/90 transition-colors">
                         {uploadingPlanId === plan.id ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -292,12 +301,10 @@ const CreatorDashboard = () => {
                   >
                     ✏️ Edit
                   </Button>
-
                 </div>
               ))}
             </div>
           )}
-
         </div>
       </div>
     </div>

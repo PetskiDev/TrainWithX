@@ -21,10 +21,10 @@ import {
   Send,
   Pencil,
 } from 'lucide-react';
-import type { PlanPaidPreveiw } from '@shared/types/plan';
+import type { PlanPaidPreveiw } from '@trainwithx/shared';
 import { useParams } from 'react-router-dom';
-import type { CreatorPreviewDTO } from '@shared/types/creator';
-import type { CreateReviewDTO, ReviewPreviewDTO } from '@shared/types/review';
+import type { CreatorPreviewDTO } from '@trainwithx/shared';
+import type { CreateReviewDTO, ReviewPreviewDTO } from '@trainwithx/shared';
 import { Textarea } from '@frontend/components/ui/textarea';
 import { toast } from '@frontend/hooks/use-toast';
 
@@ -36,7 +36,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
   const [planPaid, setPlanPaid] = useState<PlanPaidPreveiw | null>(null);
   const [creator, setCreator] = useState<CreatorPreviewDTO | null>(null);
   const [reviewRating, setReviewRating] = useState(0);
-  const [reviewText, setReviewText] = useState("");
+  const [reviewText, setReviewText] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -69,7 +69,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
           .flatMap((w) => w.days)
           .filter((d) => d.type === 'workout' && d.completed).length;
 
-        setCompleted(completedWorkouts)
+        setCompleted(completedWorkouts);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -81,7 +81,6 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
       fetchPlan();
     }
   }, [subdomain, slug]);
-
 
   useEffect(() => {
     if (!planPaid?.creatorId) return;
@@ -130,7 +129,6 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
         setReviewRating(data.rating);
         setReviewText(data.comment);
         setHasSubmittedReview(true);
-
       } catch (err) {
         console.error('Error fetching review:', err);
       }
@@ -138,7 +136,6 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
 
     fetchReview();
   }, [planPaid?.id]);
-
 
   if (!planPaid) {
     return <div className="text-center py-10">Canno't load plan</div>;
@@ -152,22 +149,21 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
     return <div className="text-center text-red-500 py-10">Error: {error}</div>;
   }
 
-
-
   const planContent = planPaid!;
 
   const currentWeek = planContent.weeks.find((w) => w.id === selectedWeek);
 
-
-  const progress = planPaid.totalWorkouts > 0 ? Math.round((completed / planPaid.totalWorkouts) * 100) : 0;
-
+  const progress =
+    planPaid.totalWorkouts > 0
+      ? Math.round((completed / planPaid.totalWorkouts) * 100)
+      : 0;
 
   const markWorkoutComplete = async (weekId: number, dayId: number) => {
     try {
       const res = await fetch('/api/v1/completions', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ planId: planPaid.id, weekId, dayId }),
         credentials: 'include',
@@ -185,17 +181,18 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
       setCompleted((prev) => prev + 1);
 
       toast({
-        title: "Workout Completed",
+        title: 'Workout Completed',
         description: `You’ve completed Day ${dayId} of Week ${weekId}! 💪`,
-        variant: "default",
+        variant: 'default',
       });
 
       console.log('Workout marked complete:', data);
     } catch (err: any) {
       toast({
-        title: "Error",
-        description: err.message || "Something went wrong while marking the workout.",
-        variant: "destructive",
+        title: 'Error',
+        description:
+          err.message || 'Something went wrong while marking the workout.',
+        variant: 'destructive',
       });
     }
   };
@@ -206,7 +203,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
 
   const handleCancelEdit = () => {
     setReviewRating(0);
-    setReviewText("");
+    setReviewText('');
     setIsEditingReview(false);
   };
 
@@ -239,7 +236,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
       planId: planPaid.id,
       comment: reviewText.trim(),
       rating: reviewRating,
-    }
+    };
     const method = isEditingReview ? 'PUT' : 'POST';
 
     try {
@@ -250,12 +247,14 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
         },
         body: JSON.stringify(payload),
         credentials: 'include', // to send cookies for auth, if required
-
       });
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || `Failed to ${isEditingReview ? 'update' : 'submit'} review`);
+        throw new Error(
+          error.message ||
+            `Failed to ${isEditingReview ? 'update' : 'submit'} review`
+        );
       }
       toast({
         title: 'Review Submitted',
@@ -264,7 +263,6 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
 
       setReviewRating(0);
       setReviewText('');
-
 
       setExistingReview({
         id: -1,
@@ -343,7 +341,9 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                 </p>
                 <div className="flex items-center gap-2 mt-1">
                   <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                  <span className="text-sm">{planContent.avgRating} ({planContent.noReviews} reviews) </span>
+                  <span className="text-sm">
+                    {planContent.avgRating} ({planContent.noReviews} reviews){' '}
+                  </span>
                 </div>
               </div>
             </div>
@@ -354,7 +354,9 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                 onClick={() => {
                   setActiveTab('add-review');
                   setTimeout(() => {
-                    reviewSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+                    reviewSectionRef.current?.scrollIntoView({
+                      behavior: 'smooth',
+                    });
                   }, 0); // Delay ensures the section is rendered before scroll
                 }}
               >
@@ -375,13 +377,13 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                 planContent.difficulty === 'beginner'
                   ? 'secondary'
                   : planContent.difficulty === 'intermediate'
-                    ? 'default'
-                    : 'destructive'
+                  ? 'default'
+                  : 'destructive'
               }
             >
               {planContent.difficulty &&
                 planContent.difficulty.charAt(0).toUpperCase() +
-                planContent.difficulty.slice(1)}
+                  planContent.difficulty.slice(1)}
             </Badge>
           </div>
           <p className="text-muted-foreground mb-6">
@@ -431,14 +433,19 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
         </div>
 
         {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} ref={reviewSectionRef}>
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          ref={reviewSectionRef}
+        >
           <TabsList className="mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="workouts">Workouts</TabsTrigger>
             <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
             <TabsTrigger value="community">Community</TabsTrigger>
-            <TabsTrigger value="add-review">{hasSubmittedReview ? 'View Review' : 'Add Review'}</TabsTrigger>
-
+            <TabsTrigger value="add-review">
+              {hasSubmittedReview ? 'View Review' : 'Add Review'}
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -585,12 +592,13 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                             <div className="flex items-center justify-between mb-3">
                               <div className="flex items-center gap-3">
                                 <div
-                                  className={`p-2 rounded-full ${day.type === 'workout'
-                                    ? 'bg-primary/10'
-                                    : day.type === 'rest'
+                                  className={`p-2 rounded-full ${
+                                    day.type === 'workout'
+                                      ? 'bg-primary/10'
+                                      : day.type === 'rest'
                                       ? 'bg-orange-500/10'
                                       : 'bg-green-500/10'
-                                    }`}
+                                  }`}
                                 >
                                   {day.type === 'workout' ? (
                                     <Target className="h-5 w-5 text-primary" />
@@ -622,7 +630,12 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                                 ) : (
                                   <Button
                                     variant={true ? 'outline' : 'default'}
-                                    onClick={() => markWorkoutComplete(currentWeek.id, day.id)}
+                                    onClick={() =>
+                                      markWorkoutComplete(
+                                        currentWeek.id,
+                                        day.id
+                                      )
+                                    }
                                   >
                                     {day.completed ? 'Completed' : 'Start'}
                                   </Button>
@@ -732,8 +745,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                         </span>
                       </div>
                       <Progress
-                        value={
-                          (completed / planContent.totalWorkouts) * 100}
+                        value={(completed / planContent.totalWorkouts) * 100}
                       />
                     </div>
                   </div>
@@ -772,7 +784,10 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                   <CardHeader>
                     <CardTitle>Your Review</CardTitle>
                     <p className="text-muted-foreground">
-                      Submitted on {new Date(existingReview?.createdAt)?.toLocaleDateString()}
+                      Submitted on{' '}
+                      {new Date(
+                        existingReview?.createdAt
+                      )?.toLocaleDateString()}
                     </p>
                   </CardHeader>
                   <CardContent>
@@ -784,10 +799,11 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                           {[1, 2, 3, 4, 5].map((star) => (
                             <Star
                               key={star}
-                              className={`h-5 w-5 ${star <= existingReview.rating
-                                ? 'fill-yellow-500 text-yellow-500'
-                                : 'text-muted-foreground'
-                                }`}
+                              className={`h-5 w-5 ${
+                                star <= existingReview.rating
+                                  ? 'fill-yellow-500 text-yellow-500'
+                                  : 'text-muted-foreground'
+                              }`}
                             />
                           ))}
                         </div>
@@ -805,10 +821,18 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                       </div>
 
                       <div className="flex justify-end gap-2">
-                        <Button onClick={handleRemoveReview} variant="outline" className="gap-2 text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                        <Button
+                          onClick={handleRemoveReview}
+                          variant="outline"
+                          className="gap-2 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        >
                           Remove Review
                         </Button>
-                        <Button onClick={handleEditReview} variant="outline" className="gap-2">
+                        <Button
+                          onClick={handleEditReview}
+                          variant="outline"
+                          className="gap-2"
+                        >
                           <Pencil className="h-4 w-4" />
                           Edit Review
                         </Button>
@@ -828,8 +852,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                     <p className="text-muted-foreground">
                       {isEditingReview
                         ? 'Update your experience with this program'
-                        : 'Share your experience with this program to help others'
-                      }
+                        : 'Share your experience with this program to help others'}
                     </p>
                   </CardHeader>
                   <CardContent>
@@ -845,10 +868,11 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                               className="p-1 hover:scale-110 transition-transform"
                             >
                               <Star
-                                className={`h-6 w-6 ${star <= reviewRating
-                                  ? 'fill-yellow-500 text-yellow-500'
-                                  : 'text-muted-foreground'
-                                  }`}
+                                className={`h-6 w-6 ${
+                                  star <= reviewRating
+                                    ? 'fill-yellow-500 text-yellow-500'
+                                    : 'text-muted-foreground'
+                                }`}
                               />
                             </button>
                           ))}
@@ -877,10 +901,7 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                       {/* Action Buttons */}
                       <div className="flex justify-end gap-2">
                         {isEditingReview && (
-                          <Button
-                            onClick={handleCancelEdit}
-                            variant="outline"
-                          >
+                          <Button onClick={handleCancelEdit} variant="outline">
                             Cancel
                           </Button>
                         )}
@@ -907,9 +928,14 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
                   <ul className="text-sm text-muted-foreground space-y-2">
                     <li>• Be honest and constructive in your feedback</li>
                     <li>• Focus on your experience with the program</li>
-                    <li>• Mention specific results or improvements you noticed</li>
+                    <li>
+                      • Mention specific results or improvements you noticed
+                    </li>
                     <li>• Keep your review respectful and appropriate</li>
-                    <li>• Reviews are public and help other users make informed decisions</li>
+                    <li>
+                      • Reviews are public and help other users make informed
+                      decisions
+                    </li>
                   </ul>
                 </CardContent>
               </Card>

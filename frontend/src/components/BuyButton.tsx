@@ -5,19 +5,24 @@ import { useAuth } from '@frontend/context/AuthContext';
 import { usePaddle } from '@frontend/context/PaddleContext';
 
 import { Button } from '@/components/ui/button';
-import type { UserDto } from '@shared/types/user';
+import type { UserDto } from '@trainwithx/shared';
 import { AuthModal } from '@frontend/components/AuthModal';
 
 interface BuyButtonProps {
   planId: number;
   text?: string;
-  autoOpen?: boolean; 
+  autoOpen?: boolean;
 
   /** Optional – extra Tailwind classes */
   className?: string;
 }
 
-export const BuyButton = ({ planId, text, className, autoOpen }: BuyButtonProps) => {
+export const BuyButton = ({
+  planId,
+  text,
+  className,
+  autoOpen,
+}: BuyButtonProps) => {
   const { paddle, loading: paddleLoading } = usePaddle();
   const { user, refreshUser } = useAuth();
   const [busy, setBusy] = useState(false);
@@ -79,7 +84,9 @@ export const BuyButton = ({ planId, text, className, autoOpen }: BuyButtonProps)
         onClick={handleClick}
         disabled={isDisabled}
         aria-busy={isDisabled}
-        className={`w-full gradient-bg text-white hover:opacity-90 ${className ?? ''}`}
+        className={`w-full gradient-bg text-white hover:opacity-90 ${
+          className ?? ''
+        }`}
       >
         {isDisabled ? (
           <>

@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
-import { CreateReviewDTO, ReviewPreviewDTO, type UpdateReviewDTO } from '@shared/types/review';
+import {
+  CreateReviewDTO,
+  ReviewPreviewDTO,
+  type UpdateReviewDTO,
+} from '@trainwithx/shared';
 import {
   createReview,
   deleteReview,
@@ -10,7 +14,10 @@ import {
 } from '@src/features/reviews/review.service';
 import { AppError } from '@src/utils/AppError';
 
-export async function getMyReviewForPlanController(req: Request, res: Response) {
+export async function getMyReviewForPlanController(
+  req: Request,
+  res: Response
+) {
   const user = req.user!;
   const planId = Number(req.params.planId);
 
@@ -22,7 +29,6 @@ export async function getMyReviewForPlanController(req: Request, res: Response) 
 
   res.json(review);
 }
-
 
 export async function createReviewController(req: Request, res: Response) {
   const user = req.user!;
@@ -51,7 +57,10 @@ export async function deleteReviewController(req: Request, res: Response) {
   res.status(200).json({ success: true });
 }
 
-export async function getReviewsOfCreatorController(req: Request, res: Response) {
+export async function getReviewsOfCreatorController(
+  req: Request,
+  res: Response
+) {
   const creatorId = Number(req.params.creatorId);
 
   if (!creatorId) {
@@ -72,5 +81,4 @@ export async function getReviewsOfPlanController(req: Request, res: Response) {
   const reviews = await getReviewsOfPlan(planId);
 
   res.json(reviews);
-
 }

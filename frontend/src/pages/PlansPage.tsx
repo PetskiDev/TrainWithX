@@ -1,59 +1,59 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from 'react';
 
-import { Input } from "@/components/ui/input";
-import { Filter, Search, SortAsc } from "lucide-react";
+import { Input } from '@/components/ui/input';
+import { Filter, Search, SortAsc } from 'lucide-react';
 
-import type { PlanPreview } from "@shared/types/plan";
-import PlansGrid from "@frontend/components/PlansGrid";
+import type { PlanPreview } from '@trainwithx/shared';
+import PlansGrid from '@frontend/components/PlansGrid';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
+} from '@/components/ui/select';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 //TODO: fetch this
 const availableTags = [
-  "All",
-  "Strength",
-  "Hypertrophy",
-  "HIIT",
-  "Fat Loss",
-  "Endurance",
-  "Power",
-  "CrossFit",
-  "Home",
-  "Calisthenics",
-  "Pilates",
-  "Yoga",
-  "Running",
-  "Bodyweight",
-  "Recovery",
-  "Women",
-  "Beginner",
-  "Mobility",
-  "Martial Arts",
+  'All',
+  'Strength',
+  'Hypertrophy',
+  'HIIT',
+  'Fat Loss',
+  'Endurance',
+  'Power',
+  'CrossFit',
+  'Home',
+  'Calisthenics',
+  'Pilates',
+  'Yoga',
+  'Running',
+  'Bodyweight',
+  'Recovery',
+  'Women',
+  'Beginner',
+  'Mobility',
+  'Martial Arts',
 ];
 
 const sortOptions = [
-  { value: "title", label: "Title" },
-  { value: "price-low", label: "Price: Low to High" },
-  { value: "price-high", label: "Price: High to Low" },
-  { value: "duration", label: "Duration" },
-  { value: "difficulty", label: "Difficulty" },
+  { value: 'title', label: 'Title' },
+  { value: 'price-low', label: 'Price: Low to High' },
+  { value: 'price-high', label: 'Price: High to Low' },
+  { value: 'duration', label: 'Duration' },
+  { value: 'difficulty', label: 'Difficulty' },
 ];
 
 const PlansPage = () => {
   const { goPublic } = useSmartNavigate();
 
   const [plans, setPlans] = useState<PlanPreview[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const [sortBy, setSortBy] = useState("title");
-  const [selectedTag, setSelectedTag] = useState("All");
+  const [sortBy, setSortBy] = useState('title');
+  const [selectedTag, setSelectedTag] = useState('All');
 
   const filteredAndSortedPlans = useMemo(() => {
     const filtered = plans.filter((plan) => {
@@ -66,7 +66,7 @@ const PlansPage = () => {
         ) ||
         plan.creatorUsername.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesTag =
-        selectedTag === "All" ||
+        selectedTag === 'All' ||
         plan.tags?.some(
           (tag) =>
             tag.toLowerCase().includes(selectedTag.toLowerCase()) ||
@@ -76,13 +76,13 @@ const PlansPage = () => {
     });
     filtered.sort((a, b) => {
       switch (sortBy) {
-        case "price-low":
+        case 'price-low':
           return a.price - b.price;
-        case "price-high":
+        case 'price-high':
           return b.price - a.price;
-        case "duration":
+        case 'duration':
           return a.duration - b.duration;
-        case "difficulty":
+        case 'difficulty':
           const difficultyOrder = { beginner: 1, intermediate: 2, advanced: 3 };
           return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
         default:
@@ -96,11 +96,11 @@ const PlansPage = () => {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await fetch("/api/v1/plans");
+        const res = await fetch('/api/v1/plans');
         const data = await res.json();
         setPlans(data);
       } catch (err) {
-        console.error("Failed to fetch plans:", err);
+        console.error('Failed to fetch plans:', err);
       } finally {
         setLoading(false);
       }
@@ -172,7 +172,7 @@ const PlansPage = () => {
             {/* Results Count */}
             <div className="flex items-center text-sm text-gray-600">
               {filteredAndSortedPlans.length} plan
-              {filteredAndSortedPlans.length !== 1 ? "s" : ""} found
+              {filteredAndSortedPlans.length !== 1 ? 's' : ''} found
             </div>
           </div>
         </div>

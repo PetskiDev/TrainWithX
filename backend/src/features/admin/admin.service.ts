@@ -1,7 +1,7 @@
 import { prisma } from '@src/utils/prisma';
 import { subMonths, startOfMonth } from 'date-fns';
-import { AdminInfoDTO } from '@shared/types/admin';
-import { UserDto } from '@shared/types/user';
+import { AdminInfoDTO } from '@trainwithx/shared';
+import { UserDto } from '@trainwithx/shared';
 import { toUsersDTO } from '@src/features/users/user.transformer';
 
 export async function getDashboardStats(): Promise<AdminInfoDTO> {
@@ -95,6 +95,3 @@ export async function getAllUsersAdmin(): Promise<UserDto[]> {
 //     throw err;
 //   }
 // }
-
-
-

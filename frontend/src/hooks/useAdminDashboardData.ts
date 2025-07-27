@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
-import type { AdminInfoDTO } from '@shared/types/admin';
-import type { UserDto } from '@shared/types/user';
-import type { PlanWithRevenue } from '@shared/types/plan';
-import type {
-  CreatorApplicationDTO,
-  CreatorFullDTO,
-} from '@shared/types/creator';
+import type { AdminInfoDTO } from '@trainwithx/shared';
+import type { UserDto } from '@trainwithx/shared';
+import type { PlanWithRevenue } from '@trainwithx/shared';
+import type { CreatorApplicationDTO, CreatorFullDTO } from '@trainwithx/shared';
 import { toast } from '@frontend/hooks/use-toast';
 
 export const useAdminDashboardData = () => {

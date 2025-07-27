@@ -1,21 +1,32 @@
 import { Request, Response } from 'express';
 
-
 import {
   transformCreatorToPreview,
   transformToCreatorFullDTO,
 } from './creator.transformer';
-import { CreatorPostDTO } from '@shared/types/creator';
+import { CreatorPostDTO } from '@trainwithx/shared';
 import { AppError } from '@src/utils/AppError';
-import { editCreator, getAllCreators, getCreatorById as getCreatorPreveiwById, getCreatorBySub, storeCreatorCover } from './creator.service';
+import {
+  editCreator,
+  getAllCreators,
+  getCreatorById as getCreatorPreveiwById,
+  getCreatorBySub,
+  storeCreatorCover,
+} from './creator.service';
 
-export async function getAllCreatorsPreviewController(req: Request, res: Response) {
+export async function getAllCreatorsPreviewController(
+  req: Request,
+  res: Response
+) {
   const creators = await getAllCreators();
   const previews = await Promise.all(creators.map(transformCreatorToPreview));
   res.json(previews);
 }
 
-export async function getCreatorPreveiwByIdController(req: Request, res: Response) {
+export async function getCreatorPreveiwByIdController(
+  req: Request,
+  res: Response
+) {
   const id = Number(req.params.id);
   if (!id) {
     res.status(404).json({ error: 'Invalid Id' });
@@ -44,7 +55,10 @@ export async function editMyCreatorController(req: Request, res: Response) {
   res.json(preveiw);
 }
 
-export async function uploadCreatorCoverController(req: Request, res: Response) {
+export async function uploadCreatorCoverController(
+  req: Request,
+  res: Response
+) {
   const creatorId = Number(req.user?.id);
   if (!creatorId) throw new AppError('Unauthenticated', 401);
   if (!req.file) throw new AppError('No file uploaded', 400);
@@ -52,7 +66,6 @@ export async function uploadCreatorCoverController(req: Request, res: Response) 
   const coverUrl = await storeCreatorCover(creatorId, req.file);
   res.status(200).json({ coverUrl });
 }
-
 
 export async function getCreatorBySubController(req: Request, res: Response) {
   let { subdomain } = req.params;
@@ -74,5 +87,4 @@ export async function getMyCreatorController(req: Request, res: Response) {
   }
   const dto = await transformToCreatorFullDTO(creator);
   res.json(dto);
-};
-
+}

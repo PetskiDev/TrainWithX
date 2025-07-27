@@ -1,15 +1,26 @@
 // src/pages/Creator.tsx
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
-import { Star, Eye, TrendingUp, BookOpen, Calendar, Award, Users, MessageCircle, ArrowLeft, Dumbbell } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
+import {
+  Star,
+  Eye,
+  TrendingUp,
+  BookOpen,
+  Calendar,
+  Award,
+  Users,
+  MessageCircle,
+  ArrowLeft,
+  Dumbbell,
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 const PlanCardNew = lazy(() => import('@frontend/components/PlanCardNew'));
-import type { PlanPreview } from '@shared/types/plan';
-import type { CreatorPreviewDTO } from '@shared/types/creator';
-import type { CreatorPageReviewDTO } from '@shared/types/review';
+import type { PlanPreview } from '@trainwithx/shared';
+import type { CreatorPreviewDTO } from '@trainwithx/shared';
+import type { CreatorPageReviewDTO } from '@trainwithx/shared';
 import { SiInstagram } from 'react-icons/si';
 import { RatingBreakdownCard } from '@frontend/components/RatingBreakdownCard';
 
@@ -42,9 +53,12 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
         setCreator(c);
 
         // Fetch plans for this creator
-        const planRes = await fetch(`/api/v1/creators/by-subdomain/${subdomain}/plans`, {
-          signal: abort.signal,
-        });
+        const planRes = await fetch(
+          `/api/v1/creators/by-subdomain/${subdomain}/plans`,
+          {
+            signal: abort.signal,
+          }
+        );
         if (!planRes.ok)
           throw new Error(`Plans fetch failed: ${planRes.status}`);
         const plansData: PlanPreview[] = await planRes.json();
@@ -57,7 +71,6 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
           throw new Error(`Reviews fetch failed: ${reviewRes.status}`);
         const reviewData: CreatorPageReviewDTO[] = await reviewRes.json();
         setReviews(reviewData);
-
       } catch (err: any) {
         if (err.name !== 'AbortError') {
           setError(err.message ?? 'Unknown error');
@@ -69,8 +82,6 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
 
     return () => abort.abort();
   }, [subdomain]);
-
-
 
   // ───────────── Render logic ─────────────
   if (loading)
@@ -91,7 +102,6 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
       </div>
     );
 
-
   if (error || !reviews)
     return (
       <div className="min-h-screen-navbar flex items-center justify-center bg-background">
@@ -101,16 +111,17 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
 
   const getRatingBreakdown = () => {
     const breakdown = [5, 4, 3, 2, 1].map((stars) => {
-      const count = reviews.filter((r) => r.rating === stars).length
-      const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0
-      return { stars, count, percentage }
-    })
-    return breakdown
-  }
+      const count = reviews.filter((r) => r.rating === stars).length;
+      const percentage =
+        reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+      return { stars, count, percentage };
+    });
+    return breakdown;
+  };
 
   const handleBack = () => {
-    window.history.back()
-  }
+    window.history.back();
+  };
 
   const scrollToRefWithOffset = (
     ref: React.RefObject<HTMLElement | null>,
@@ -119,7 +130,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
     const element = ref.current;
     if (!element) return;
     const top = element.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: "smooth" });
+    window.scrollTo({ top, behavior: 'smooth' });
   };
 
   const scrollToPlans = () => {
@@ -132,20 +143,20 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
 
   const handleInstagramClick = () => {
     if (creator.instagram) {
-      window.open(`https://instagram.com/${creator.instagram}`, "_blank")
+      window.open(`https://instagram.com/${creator.instagram}`, '_blank');
     }
-  }
+  };
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + "M"
+      return (num / 1000000).toFixed(1) + 'M';
     }
     if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "K"
+      return (num / 1000).toFixed(1) + 'K';
     }
-    return num.toString()
-  }
-  //TODO: PUT INSTAGRAM ICON. 
+    return num.toString();
+  };
+  //TODO: PUT INSTAGRAM ICON.
 
   // ───────────── UI ─────────────
   return (
@@ -155,9 +166,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
         {/* Cover Image */}
         <div className="relative h-52 md:h-80 lg:h-88 [@media(min-width:1600px)]:h-[25rem] overflow-hidden">
           <img
-            src={
-              creator.coverUrl || '/default.jpg' 
-            }
+            src={creator.coverUrl || '/default.jpg'}
             alt={`${creator.username} cover`}
             width={1200}
             height={400}
@@ -166,7 +175,11 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
 
           {/* Back Button */}
-          <Button variant="ghost" className="absolute top-6 left-6 text-white hover:bg-white/20" onClick={handleBack}>
+          <Button
+            variant="ghost"
+            className="absolute top-6 left-6 text-white hover:bg-white/20"
+            onClick={handleBack}
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
@@ -191,8 +204,10 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 pt-12">
-                  <div className='flex gap-3'>
-                    <h1 className="text-2xl font-bold mb-1">{creator.username}</h1>
+                  <div className="flex gap-3">
+                    <h1 className="text-2xl font-bold mb-1">
+                      {creator.username}
+                    </h1>
                     {creator.instagram && (
                       <button
                         onClick={handleInstagramClick}
@@ -204,7 +219,9 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                     )}
                   </div>
 
-                  <p className="text-sm text-muted-foreground mb-2">{creator.subdomain}.trainwithx.com</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {creator.subdomain}.trainwithx.com
+                  </p>
                 </div>
               </div>
 
@@ -215,11 +232,15 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                 </div>
                 <div className="flex items-center gap-1">
                   <Users className="h-3 w-3" />
-                  <span>Joined {(new Date(creator.joinedAt)).toLocaleDateString()}</span>
+                  <span>
+                    Joined {new Date(creator.joinedAt).toLocaleDateString()}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                  <span className="font-medium text-foreground">{Number(creator.avgRating).toFixed(1)}</span>
+                  <span className="font-medium text-foreground">
+                    {Number(creator.avgRating).toFixed(1)}
+                  </span>
                   <span>({creator.noReviews} reviews)</span>
                 </div>
               </div>
@@ -232,12 +253,21 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                   </Button>
                 )} */}
 
-                <Button onClick={scrollToPlans} className="bg-primary hover:bg-primary/90 flex-1" size="sm">
+                <Button
+                  onClick={scrollToPlans}
+                  className="bg-primary hover:bg-primary/90 flex-1"
+                  size="sm"
+                >
                   <Dumbbell className="h-4 w-4 mr-2" />
                   View Plans
                 </Button>
 
-                <Button onClick={scrollToReviews} variant="outline" size="sm" className="flex-1">
+                <Button
+                  onClick={scrollToReviews}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                >
                   <Star className="h-4 w-4 mr-2 fill-yellow-400 text-yellow-400" />
                   View Reviews
                 </Button>
@@ -256,7 +286,9 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
 
                 <div className="flex-1 pt-16">
                   <div className="flex gap-3">
-                    <h1 className="text-4xl font-bold mb-2">{creator.username}</h1>
+                    <h1 className="text-4xl font-bold mb-2">
+                      {creator.username}
+                    </h1>
                     {creator.instagram && (
                       <button
                         onClick={handleInstagramClick}
@@ -267,7 +299,9 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                       </button>
                     )}
                   </div>
-                  <p className="text-xl text-muted-foreground mb-3">{creator.subdomain}.trainwithx.com</p>
+                  <p className="text-xl text-muted-foreground mb-3">
+                    {creator.subdomain}.trainwithx.com
+                  </p>
                   <div className="flex items-center gap-6 text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
@@ -275,11 +309,15 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                     </div>
                     <div className="flex items-center gap-1">
                       <Users className="h-4 w-4" />
-                      <span>Joined {(new Date(creator.joinedAt)).toLocaleDateString()}</span>
+                      <span>
+                        Joined {new Date(creator.joinedAt).toLocaleDateString()}
+                      </span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium text-foreground">{Number(creator.avgRating).toFixed(1)}</span>
+                      <span className="font-medium text-foreground">
+                        {Number(creator.avgRating).toFixed(1)}
+                      </span>
                       <span>({creator.noReviews} reviews)</span>
                     </div>
                   </div>
@@ -287,12 +325,21 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
               </div>
 
               <div className="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-3">
-                <Button onClick={scrollToPlans} className="min-h-10 bg-primary hover:bg-primary/90 flex-1" size="sm">
+                <Button
+                  onClick={scrollToPlans}
+                  className="min-h-10 bg-primary hover:bg-primary/90 flex-1"
+                  size="sm"
+                >
                   <Dumbbell className="h-4 w-4 mr-2" />
                   View Plans
                 </Button>
 
-                <Button onClick={scrollToReviews} variant="outline" size="sm" className="min-h-10 flex-1">
+                <Button
+                  onClick={scrollToReviews}
+                  variant="outline"
+                  size="sm"
+                  className="min-h-10 flex-1"
+                >
                   <Star className="h-4 w-4 mr-2 fill-yellow-400 text-yellow-400" />
                   View Reviews
                 </Button>
@@ -316,14 +363,20 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <p className="text-muted-foreground leading-relaxed text-lg">{creator.bio}</p>
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  {creator.bio}
+                </p>
 
                 {/* Specialties */}
                 <div>
                   <h4 className="font-semibold mb-3">Specialties</h4>
                   <div className="flex flex-wrap gap-2">
                     {creator.specialties.map((specialty, index) => (
-                      <Badge key={index} variant="secondary" className="px-3 py-1">
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="px-3 py-1"
+                      >
                         {specialty}
                       </Badge>
                     ))}
@@ -374,20 +427,32 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="text-center p-4 bg-muted/50 rounded-lg">
                     <TrendingUp className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <div className="font-bold text-2xl">{formatNumber(creator.totalSales)}</div>
-                    <div className="text-sm text-muted-foreground">Total Sales</div>
+                    <div className="font-bold text-2xl">
+                      {formatNumber(creator.totalSales)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Total Sales
+                    </div>
                   </div>
                   <div className="text-center p-4 bg-muted/50 rounded-lg">
                     <BookOpen className="h-6 w-6 mx-auto mb-2 text-primary" />
-                    <div className="font-bold text-2xl">{creator.plansCount}</div>
-                    <div className="text-sm text-muted-foreground">Plans Created</div>
+                    <div className="font-bold text-2xl">
+                      {creator.plansCount}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Plans Created
+                    </div>
                   </div>
                 </div>
 
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
                   <Star className="h-6 w-6 mx-auto mb-2 text-yellow-500" />
-                  <div className="font-bold text-2xl">{Number(creator.avgRating).toFixed(1)}</div>
-                  <div className="text-sm text-muted-foreground">Average Rating</div>
+                  <div className="font-bold text-2xl">
+                    {Number(creator.avgRating).toFixed(1)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Average Rating
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -410,7 +475,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
               <div className="flex justify-center gap-6 flex-wrap">
                 {plans.map((plan) => (
                   <Suspense fallback={<div>Loading...</div>}>
-                   <PlanCardNew key={plan.id} plan={plan} />
+                    <PlanCardNew key={plan.id} plan={plan} />
                   </Suspense>
                 ))}
               </div>
@@ -435,20 +500,30 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
                   <TrendingUp className="h-6 w-6 mx-auto mb-2 text-primary" />
-                  <div className="font-bold text-2xl">{formatNumber(creator.totalSales)}</div>
-                  <div className="text-sm text-muted-foreground">Total Sales</div>
+                  <div className="font-bold text-2xl">
+                    {formatNumber(creator.totalSales)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    Total Sales
+                  </div>
                 </div>
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
                   <BookOpen className="h-6 w-6 mx-auto mb-2 text-primary" />
                   <div className="font-bold text-2xl">{creator.plansCount}</div>
-                  <div className="text-sm text-muted-foreground">Plans Created</div>
+                  <div className="text-sm text-muted-foreground">
+                    Plans Created
+                  </div>
                 </div>
               </div>
 
               <div className="text-center p-4 bg-muted/50 rounded-lg">
                 <Star className="h-6 w-6 mx-auto mb-2 text-yellow-500" />
-                <div className="font-bold text-2xl">{Number(creator.avgRating).toFixed(1)}</div>
-                <div className="text-sm text-muted-foreground">Average Rating</div>
+                <div className="font-bold text-2xl">
+                  {Number(creator.avgRating).toFixed(1)}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  Average Rating
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -462,9 +537,13 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
               <div className="space-y-3">
                 {getRatingBreakdown().map(({ stars, count, percentage }) => (
                   <div key={stars} className="flex items-center gap-3">
-                    <span className="text-sm font-medium w-12">{stars} Stars</span>
+                    <span className="text-sm font-medium w-12">
+                      {stars} Stars
+                    </span>
                     <Progress value={percentage} className="flex-1 h-2" />
-                    <span className="text-sm text-muted-foreground w-8">({count})</span>
+                    <span className="text-sm text-muted-foreground w-8">
+                      ({count})
+                    </span>
                   </div>
                 ))}
               </div>
@@ -486,36 +565,49 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
                 <div key={review.id} className="border-b pb-6 last:border-b-0">
                   <div className="flex items-start gap-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={review.userAvatar} alt={review.userUsername} />
+                      <AvatarImage
+                        src={review.userAvatar}
+                        alt={review.userUsername}
+                      />
                       <AvatarFallback>
                         {review.userUsername
-                          .split(" ")
+                          .split(' ')
                           .map((n) => n[0])
-                          .join("")}
+                          .join('')}
                       </AvatarFallback>
                     </Avatar>
 
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <h4 className="font-semibold">{review.userUsername}</h4>
+                          <h4 className="font-semibold">
+                            {review.userUsername}
+                          </h4>
                           <p className="text-xs md:text-sm text-muted-foreground">
                             Reviewed "{review.planTitle}"
                             <span className="hidden sm:inline"> · </span>
-                            <span className="block sm:inline">  {new Date(review.createdAt).toLocaleDateString()}</span>
+                            <span className="block sm:inline">
+                              {' '}
+                              {new Date(review.createdAt).toLocaleDateString()}
+                            </span>
                           </p>
                         </div>
                         <div className="flex items-center gap-1">
                           {[...Array(5)].map((_, i) => (
                             <Star
                               key={i}
-                              className={`h-4 w-4 ${i < review.rating ? "text-yellow-500 fill-current" : "text-muted-foreground"
-                                }`}
+                              className={`h-4 w-4 ${
+                                i < review.rating
+                                  ? 'text-yellow-500 fill-current'
+                                  : 'text-muted-foreground'
+                              }`}
                             />
                           ))}
                         </div>
                       </div>
-                      <p className="text-muted-foreground leading-relaxed">{review.comment}</p>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {review.comment}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -532,8 +624,7 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
         </Card>
       </div>
     </div>
-  )
+  );
 };
-
 
 export default Creator;

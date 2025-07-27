@@ -1,7 +1,7 @@
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
 
-import { UserDto } from '@shared/types/user';
+import { UserDto } from '@trainwithx/shared';
 import { toUserDTO } from '@src/features/users/user.transformer';
 import { storeInUploads } from '@src/utils/imageUploader';
 
@@ -21,12 +21,10 @@ export async function editUsername(userId: number, newUsername: string) {
   }
 }
 
-
 export const storeAvatar = async (
   userId: number,
   file: Express.Multer.File
 ): Promise<string> => {
-
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { avatarUrl: true },
@@ -40,7 +38,6 @@ export const storeAvatar = async (
     height: 400,
     oldFileUrl: user?.avatarUrl ?? undefined,
   });
-
 
   await prisma.user.update({
     where: { id: userId },
@@ -57,4 +54,3 @@ export async function getUserById(id: number): Promise<UserDto | null> {
   if (!user) return null;
   return toUserDTO(user);
 }
-

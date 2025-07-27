@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { TrainWithXLogo } from "@/components/TrainWithXLogo";
-import { useAuth } from "@frontend/context/AuthContext";
-import type { UserDto } from "@shared/types/user";
-import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { TrainWithXLogo } from '@/components/TrainWithXLogo';
+import { useAuth } from '@frontend/context/AuthContext';
+import type { UserDto } from '@trainwithx/shared';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
 interface AuthModalProps {
   open: boolean;
@@ -28,11 +28,11 @@ export const AuthModal = ({
 }: AuthModalProps) => {
   const { goPublic } = useSmartNavigate();
 
-  const [mode, setMode] = useState<"login" | "register">("register");
-  const [form, setForm] = useState({ email: "", password: "", username: "" });
-  const [error, setError] = useState("");
+  const [mode, setMode] = useState<'login' | 'register'>('register');
+  const [form, setForm] = useState({ email: '', password: '', username: '' });
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [infoMessage, setInfoMessage] = useState("");
+  const [infoMessage, setInfoMessage] = useState('');
 
   const { login, register } = useAuth();
 
@@ -42,12 +42,12 @@ export const AuthModal = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setInfoMessage("");
+    setError('');
+    setInfoMessage('');
     setLoading(true);
 
     try {
-      if (mode === "login") {
+      if (mode === 'login') {
         const user = await login(form.email, form.password);
         onSuccess(user);
       } else {
@@ -58,9 +58,9 @@ export const AuthModal = ({
         );
         if (!newUser.isVerified) {
           // Switch back to login mode and inform user
-          setMode("login");
+          setMode('login');
           setInfoMessage(
-            "Check your email to verify your account before logging in."
+            'Check your email to verify your account before logging in.'
           );
         } else {
           onSuccess(newUser);
@@ -80,7 +80,7 @@ export const AuthModal = ({
       )}; path=/; domain=.${import.meta.env.VITE_BASE_DOMAIN}; SameSite=Lax`;
       console.log(document.cookie);
     }
-    window.location.href = "/api/v1/auth/google";
+    window.location.href = '/api/v1/auth/google';
   };
 
   return (
@@ -91,7 +91,7 @@ export const AuthModal = ({
             <TrainWithXLogo size="md" />
           </div>
           <DialogTitle className="text-2xl font-bold">
-            {mode === "login" ? "Welcome Back" : "Create Account"}
+            {mode === 'login' ? 'Welcome Back' : 'Create Account'}
           </DialogTitle>
         </DialogHeader>
 
@@ -101,7 +101,7 @@ export const AuthModal = ({
               {infoMessage}
             </div>
           )}
-          {mode === "register" && (
+          {mode === 'register' && (
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input
@@ -136,7 +136,7 @@ export const AuthModal = ({
               name="password"
               type="password"
               placeholder={
-                mode === "login" ? "Enter your password" : "Create a password"
+                mode === 'login' ? 'Enter your password' : 'Create a password'
               }
               value={form.password}
               onChange={handleChange}
@@ -154,29 +154,29 @@ export const AuthModal = ({
             disabled={loading}
           >
             {loading
-              ? mode === "login"
-                ? "Signing In..."
-                : "Creating Account..."
-              : mode === "login"
-              ? "Sign In"
-              : "Create Account"}
+              ? mode === 'login'
+                ? 'Signing In...'
+                : 'Creating Account...'
+              : mode === 'login'
+              ? 'Sign In'
+              : 'Create Account'}
           </Button>
         </form>
 
-        {mode === "register" && (
+        {mode === 'register' && (
           <p className="text-xs text-muted-foreground text-center mt-2">
-            By signing up, you agree to our{" "}
+            By signing up, you agree to our{' '}
             <button
               type="button"
-              onClick={() => goPublic("/terms-of-service", true)}
+              onClick={() => goPublic('/terms-of-service', true)}
               className="underline text-foreground px-0 bg-transparent border-none cursor-pointer"
             >
               Terms of Service
-            </button>{" "}
-            and{" "}
+            </button>{' '}
+            and{' '}
             <button
               type="button"
-              onClick={() => goPublic("/privacy-policy", true)}
+              onClick={() => goPublic('/privacy-policy', true)}
               className="underline text-foreground px-0 bg-transparent border-none cursor-pointer"
             >
               Privacy Policy
@@ -220,15 +220,15 @@ export const AuthModal = ({
               fill="#EA4335"
             />
           </svg>
-          {mode === "login" ? "Sign in with Google" : "Sign up with Google"}
+          {mode === 'login' ? 'Sign in with Google' : 'Sign up with Google'}
         </Button>
 
         <div className="text-center text-sm mt-4">
-          {mode === "login" ? (
+          {mode === 'login' ? (
             <>
-              Don’t have an account?{" "}
+              Don’t have an account?{' '}
               <button
-                onClick={() => setMode("register")}
+                onClick={() => setMode('register')}
                 className="text-primary hover:underline"
               >
                 Create account
@@ -236,9 +236,9 @@ export const AuthModal = ({
             </>
           ) : (
             <>
-              Already have an account?{" "}
+              Already have an account?{' '}
               <button
-                onClick={() => setMode("login")}
+                onClick={() => setMode('login')}
                 className="text-primary hover:underline"
               >
                 Sign in

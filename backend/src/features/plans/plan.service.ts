@@ -1,9 +1,19 @@
 // backend/src/features/plans/plan.service.ts
 import { prisma } from '@src/utils/prisma';
 import { AppError } from '@src/utils/AppError';
-import { CreatePlanDto, PlanContentJSON, PlanWithRevenue, PlanPreview, PlanWeek, PlanPreviewWithProgress } from '@shared/types/plan';
+import {
+  CreatePlanDto,
+  PlanContentJSON,
+  PlanWithRevenue,
+  PlanPreview,
+  PlanWeek,
+  PlanPreviewWithProgress,
+} from '@trainwithx/shared';
 import { paddle, syncPaddleForPlan } from '@src/utils/paddle';
-import { toPlanCreatorData, toPlanPreview } from '@src/features/plans/plan.transformer';
+import {
+  toPlanCreatorData,
+  toPlanPreview,
+} from '@src/features/plans/plan.transformer';
 import { Plan, Prisma } from '@prisma/client';
 import { storeInUploads } from '@src/utils/imageUploader';
 
@@ -51,7 +61,8 @@ export async function fetchCreatorPlans(subdomain: string) {
 export async function createPlanService(newPlan: CreatePlanDto) {
   const { slug, goals, weeks, ...previewData } = newPlan;
 
-  const { paddleProductId, paddlePriceId, paddleDiscountId } = await syncPaddleForPlan(newPlan);
+  const { paddleProductId, paddlePriceId, paddleDiscountId } =
+    await syncPaddleForPlan(newPlan);
 
   const newContent: PlanContentJSON = {
     goals,
@@ -86,7 +97,6 @@ export async function createPlanService(newPlan: CreatePlanDto) {
   }
 }
 
-
 export async function updatePlanService(
   planId: number,
   updatedPlan: CreatePlanDto
@@ -113,16 +123,17 @@ export async function updatePlanService(
         paddleProductId: existingPlan.paddleProductId,
         paddlePriceId: existingPlan.paddlePriceId,
         price: Number(existingPlan.price),
-        originalPrice: existingPlan.originalPrice !== undefined
-          ? Number(existingPlan.originalPrice)
-          : undefined,
+        originalPrice:
+          existingPlan.originalPrice !== undefined
+            ? Number(existingPlan.originalPrice)
+            : undefined,
       });
 
     const updated = await prisma.plan.update({
       where: { id: planId },
       data: {
         slug: slug.toLowerCase(),
-        originalPrice: originalPrice ?? null,//forcefully remove it, undefineds are ingnored
+        originalPrice: originalPrice ?? null, //forcefully remove it, undefineds are ingnored
         ...rest,
         paddleProductId,
         paddlePriceId,
@@ -190,10 +201,11 @@ export async function countSalesByCreatorId(creatorId: number) {
   return sales;
 }
 
-
 //TODO: OPTIMIZE THIS SHIT. BUT IT IS ONLY USED IF SOMEONE BUYS. AHHAHAH TAKE THIS. I WILL HAVE MORE ENERGY THEN
 //SQL via JOIN + GROUP BY.
-export async function getPlansOwnedByUser(userId: number): Promise<PlanPreviewWithProgress[]> {
+export async function getPlansOwnedByUser(
+  userId: number
+): Promise<PlanPreviewWithProgress[]> {
   const purchases = await prisma.purchase.findMany({
     where: { userId },
     include: {
@@ -276,8 +288,6 @@ export async function getCreatorIdForPlan(
   return plan.creatorId;
 }
 
-
-
 function calculateProgress(plan: Plan): number {
   try {
     const content = plan.content as PlanContentJSON | null;
@@ -293,12 +303,10 @@ function calculateProgress(plan: Plan): number {
   }
 }
 
-
 export const storePlanImage = async (
   planId: number,
   file: Express.Multer.File
 ): Promise<string> => {
-
   const plan = await prisma.plan.findUnique({
     where: { id: planId },
     select: { image: true },
@@ -312,7 +320,6 @@ export const storePlanImage = async (
     height: 400,
     oldFileUrl: plan?.image ?? undefined,
   });
-
 
   await prisma.plan.update({
     where: { id: planId },

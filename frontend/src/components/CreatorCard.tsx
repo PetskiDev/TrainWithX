@@ -1,38 +1,46 @@
-import { Star, Eye, TrendingUp, BookOpen, Calendar, MapPin } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import type { CreatorPreviewDTO } from "@shared/types/creator"
-import { SiInstagram } from "react-icons/si"
-import { useSmartNavigate } from "@frontend/hooks/useSmartNavigate"
+import {
+  Star,
+  Eye,
+  TrendingUp,
+  BookOpen,
+  Calendar,
+  MapPin,
+} from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import type { CreatorPreviewDTO } from '@trainwithx/shared';
+import { SiInstagram } from 'react-icons/si';
+import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 
-
-export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO }) {
+export default function CreatorCard({
+  creator,
+}: {
+  creator: CreatorPreviewDTO;
+}) {
   const { goToCreator } = useSmartNavigate();
 
   const handleViewProfile = () => {
     goToCreator({ subdomain: creator.subdomain });
-  }
+  };
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + "M"
+      return (num / 1000000).toFixed(1) + 'M';
     }
     if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "K"
+      return (num / 1000).toFixed(1) + 'K';
     }
-    return num.toString()
-  }
+    return num.toString();
+  };
 
   return (
     <Card className="group overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer border-0 shadow-md flex flex-col h-full">
       {/* Cover Image Header */}
       <div className="relative h-32 overflow-hidden">
         <img
-          src={
-            creator.coverUrl || `/default.jpg`
-          }
+          src={creator.coverUrl || `/default.jpg`}
           alt={`${creator.username} cover`}
           width={400}
           height={128}
@@ -49,16 +57,18 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
 
       {/* Avatar positioned over cover */}
       <div className="relative flex items-end gap-3 px-5 -mt-8">
-
         {/* Instagram logo */}
-        {creator.instagram && (<a
-          href={`https://instagram.com/${creator.instagram}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          className="flex items-center justify-center w-10 h-10 absolute top-11 right-5 z-[1000] text-muted-foreground hover:text-foreground transition [@media(max-width:370px)]:-top-3 [@media(max-width:370px)]:text-white">
-          <SiInstagram className="w-5 h-5" />
-        </a>)}
+        {creator.instagram && (
+          <a
+            href={`https://instagram.com/${creator.instagram}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center justify-center w-10 h-10 absolute top-11 right-5 z-[1000] text-muted-foreground hover:text-foreground transition [@media(max-width:370px)]:-top-3 [@media(max-width:370px)]:text-white"
+          >
+            <SiInstagram className="w-5 h-5" />
+          </a>
+        )}
 
         <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
           <AvatarImage src={creator.avatarUrl} alt={creator.username} />
@@ -72,26 +82,34 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
           <h3 className="font-bold text-2xl leading-tight group-hover:text-primary transition-colors">
             {creator.username}
           </h3>
-          <p className="text-sm text-muted-foreground">{creator.subdomain}.trainwithx.com</p>
+          <p className="text-sm text-muted-foreground">
+            {creator.subdomain}.trainwithx.com
+          </p>
         </div>
-
-
       </div>
 
       <CardContent className="p-5 pt-3 flex-grow flex flex-col justify-between">
         <div className="space-y-4">
-
           {/* Bio */}
-          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{creator.bio}</p>
+          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
+            {creator.bio}
+          </p>
 
           {/* Specialties */}
           {creator.specialties.length > 0 && (
             <div className="px-1 flex items-center gap-2 overflow-hidden">
               <div className="flex gap-2 overflow-hidden max-w-full">
                 {(() => {
-                  const maxSpecialtiesToShow = Math.min(3, creator.specialties.length)
-                  const specialtiesToShow = creator.specialties.slice(0, maxSpecialtiesToShow)
-                  const remainingCount = creator.specialties.length - maxSpecialtiesToShow
+                  const maxSpecialtiesToShow = Math.min(
+                    3,
+                    creator.specialties.length
+                  );
+                  const specialtiesToShow = creator.specialties.slice(
+                    0,
+                    maxSpecialtiesToShow
+                  );
+                  const remainingCount =
+                    creator.specialties.length - maxSpecialtiesToShow;
 
                   return (
                     <>
@@ -113,12 +131,11 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
                         </Badge>
                       )}
                     </>
-                  )
+                  );
                 })()}
               </div>
             </div>
           )}
-
         </div>
         <div className="mt-4 space-y-4">
           {/* Stats Grid */}
@@ -128,7 +145,9 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
                 <TrendingUp className="h-4 w-4" />
                 <span className="text-xs">Sales</span>
               </div>
-              <div className="font-bold text-lg">{formatNumber(creator.totalSales)}</div>
+              <div className="font-bold text-lg">
+                {formatNumber(creator.totalSales)}
+              </div>
             </div>
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
@@ -147,8 +166,12 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
             </div>
             <div className="flex items-center gap-1">
               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-medium text-foreground">{Number(creator.avgRating).toFixed(1)}</span>
-              <span className="text-muted-foreground">({creator.noReviews})</span>
+              <span className="font-medium text-foreground">
+                {Number(creator.avgRating).toFixed(1)}
+              </span>
+              <span className="text-muted-foreground">
+                ({creator.noReviews})
+              </span>
             </div>
           </div>
 
@@ -161,8 +184,18 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
               <span>View Profile</span>
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
                 </svg>
               </div>
             </div>
@@ -170,10 +203,12 @@ export default function CreatorCard({ creator }: { creator: CreatorPreviewDTO })
 
           {/* Trust Signal */}
           <div className="!mt-2 text-center">
-            <span className="text-xs text-muted-foreground">✓ Verified Creator</span>
+            <span className="text-xs text-muted-foreground">
+              ✓ Verified Creator
+            </span>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

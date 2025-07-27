@@ -1,13 +1,13 @@
-import { SendApplicationDTO } from "@shared/types/creator";
+import { SendApplicationDTO } from '@trainwithx/shared';
 import {
   approveCreatorApplication,
   getCreatorApplication,
   rejectCreatorApplication,
   submitCreatorApplication,
-} from "./creatorApplication.service";
-import { Request, Response } from "express";
-import { AppError } from "@src/utils/AppError";
-import { transformCreatorToPreview } from "@src/features/creators/creator.transformer";
+} from './creatorApplication.service';
+import { Request, Response } from 'express';
+import { AppError } from '@src/utils/AppError';
+import { transformCreatorToPreview } from '@src/features/creators/creator.transformer';
 
 export async function addCreatorApplicationController(
   req: Request,
@@ -49,7 +49,7 @@ export async function approveCreatorApplicationController(
   res: Response
 ) {
   const id = Number(req.params.id);
-  if (!id) throw new AppError("Invalid application ID", 400);
+  if (!id) throw new AppError('Invalid application ID', 400);
 
   const creator = await approveCreatorApplication(id);
 
@@ -59,7 +59,7 @@ export async function approveCreatorApplicationController(
 
 export async function rejectApplicationController(req: Request, res: Response) {
   const id = Number(req.params.id);
-  if (!id) throw new AppError("Invalid application ID", 400);
+  if (!id) throw new AppError('Invalid application ID', 400);
 
   await rejectCreatorApplication(id);
 

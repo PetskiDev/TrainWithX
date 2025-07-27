@@ -5,7 +5,7 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import type { PlanPreview } from '@shared/types/plan';
+import type { PlanPreview } from '@trainwithx/shared';
 import { Button } from '@frontend/components/ui/button';
 import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 

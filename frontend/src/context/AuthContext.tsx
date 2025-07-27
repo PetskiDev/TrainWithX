@@ -6,7 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import type { UserDto } from '@shared/types/user';
+import type { UserDto } from '@trainwithx/shared';
 
 interface AuthState {
   user: UserDto | null;
