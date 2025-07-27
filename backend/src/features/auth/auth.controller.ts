@@ -55,7 +55,7 @@ export async function loginController(req: Request, res: Response) {
       username: result.user.username,
     });
     res.status(401).json({
-      error: "Email not verified.",
+      message: "Email not verified.",
       reason: "not_verified",
     });
     return;

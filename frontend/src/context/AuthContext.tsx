@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import type { UserDto } from '@trainwithx/shared';
+import { handleThrowAppError } from '@frontend/lib/AppErrorUtils.ts';
 
 interface AuthState {
   user: UserDto | null;
@@ -53,7 +54,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!res.ok) {
       const errorData = await res.json();
       if (errorData.reason === 'not_verified') {
-        // Optional: trigger resend email here if you want automatic behavior
         throw new Error('Email not verified. Verification email is resent.');
       }
       throw new Error(errorData.message || 'Login failed');
@@ -75,8 +75,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(errorData.message || 'Registration failed');
+      await handleThrowAppError(res);
     }
 
     const user: UserDto = await res.json();

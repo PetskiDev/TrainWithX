@@ -1,7 +1,8 @@
 import { env } from '@src/utils/env.js';
 import fs from 'node:fs/promises';
 import nodemailer from 'nodemailer';
-import path from 'node:path';
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /** Create transporter only once (singleton) */
 const mailer = nodemailer.createTransport({
@@ -47,6 +48,8 @@ export async function sendMailFromFile(
   filename: string,
   replacements: Record<string, string> = {}
 ) {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
   const templatePath = path.join(
     __dirname,
     '..',
