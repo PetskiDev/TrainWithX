@@ -185,10 +185,10 @@ const Creator = ({ subdomain }: { subdomain: string | null }) => {
           </Button>
 
           {/* Profile Views Badge */}
-          <Badge className="absolute top-6 right-6 bg-black/50 text-white border-0">
+          {/* <Badge className="absolute top-6 right-6 bg-black/50 text-white border-0">
             <Eye className="h-4 w-4 mr-2" />
             {formatNumber(creator.profileViews)} views
-          </Badge>
+          </Badge> */}
         </div>
 
         {/* Creator Info Section - Below Image */}

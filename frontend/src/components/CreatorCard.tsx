@@ -49,10 +49,10 @@ export default function CreatorCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
         {/* Profile Views Badge */}
-        <Badge className="absolute top-3 right-3 bg-black/50 text-white border-0">
+        {/* <Badge className="absolute top-3 right-3 bg-black/50 text-white border-0">
           <Eye className="h-3 w-3 mr-1" />
           {formatNumber(creator.profileViews)}
-        </Badge>
+        </Badge> */}
       </div>
 
       {/* Avatar positioned over cover */}

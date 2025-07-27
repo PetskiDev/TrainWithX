@@ -27,7 +27,7 @@ export async function transformCreatorToPreview(
     specialties: creator.specialties,
     avgRating: creator.avgRating,
     noReviews: creator.noReviews,
-    profileViews: Math.floor(Math.random() * 1000000),
+    //profileViews: Math.floor(Math.random() * 1000000),
     instagram: creator.instagram ?? undefined,
     joinedAt: creator.becomeCreator,
     achievements: creator.achievements,

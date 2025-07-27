@@ -230,7 +230,7 @@ const CreatorDashboard = () => {
 
           <Card>
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+              {/* <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Profile Views</p>
                   <p className="text-2xl font-bold">{creator.profileViews}</p>
@@ -238,7 +238,7 @@ const CreatorDashboard = () => {
                 <div className="p-3 bg-purple-500/10 rounded-full">
                   <Eye className="h-5 w-5 text-purple-500" />
                 </div>
-              </div>
+              </div> */}
             </CardContent>
           </Card>
         </div>

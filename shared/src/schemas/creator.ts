@@ -11,7 +11,7 @@ export interface CreatorPreviewDTO {
   bio: string;
   coverUrl?: string;
   avatarUrl?: string;
-  profileViews: number;
+  //profileViews: number;
   certifications: string[];
   achievements: string[];
   instagram?: string;
