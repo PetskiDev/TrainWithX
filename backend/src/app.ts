@@ -3,11 +3,14 @@ import 'express-async-errors';
 import express from 'express';
 import { Request, Response } from 'express';
 import { errorHandler } from '@src/middleware/errorHandler';
-import cors from 'cors';
 import morgan from 'morgan';
 import apiRouter from './api.router';
-import path from 'node:path';
+import path, { dirname } from 'node:path';
 import cookieParser from 'cookie-parser';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 app.use(cookieParser());
