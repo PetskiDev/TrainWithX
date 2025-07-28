@@ -1,11 +1,9 @@
 import { Request, Response } from 'express';
 import { AppError } from '@src/utils/AppError.js';
-import {
-  editUsername,
-  storeAvatar,
-} from '@src/features/users/user.service.js';
+import { editUsername, storeAvatar } from '@src/features/users/user.service.js';
 import { getUserById } from './user.service.js';
-
+import { usernameSchema } from '@trainwithx/shared';
+import z from 'zod';
 
 export async function getMyUserController(req: Request, res: Response) {
   const id = Number(req.user?.id);
@@ -13,14 +11,14 @@ export async function getMyUserController(req: Request, res: Response) {
   res.json(user);
 }
 
-
 export async function editMyUsernameController(req: Request, res: Response) {
   const id = Number(req.user?.id);
-  const newUsername = req.body.newUsername;
-  if (!newUsername) {
-    throw new AppError('You must supply a username', 400);
+  const result = usernameSchema.safeParse(req.body.newUsername);
+
+  if (!result.success) {
+    throw new AppError('Invalid username', 400, z.treeifyError(result.error));
   }
-  await editUsername(id, newUsername);
+  await editUsername(id, result.data);
   res.sendStatus(200);
 }
 

@@ -15,7 +15,7 @@ import {
   Settings,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext'; // 👉 adjust the import path if different
-import type { PlanPreviewWithProgress } from '@trainwithx/shared';
+import { usernameSchema, type PlanPreviewWithProgress } from '@trainwithx/shared';
 import { Link } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import BecomeCreatorSection from '@frontend/components/BecomeCreatorSection';
@@ -78,6 +78,12 @@ const Me = () => {
 
   const handleSaveName = async () => {
     const newUsername = editedName;
+
+    const parsed = usernameSchema.safeParse(newUsername);
+    if (!parsed.success) {
+      alert(parsed.error.issues[0]?.message || 'Invalid username');
+      return;
+    }
     try {
       const res = await fetch('/api/v1/users/me/username', {
         method: 'PATCH',

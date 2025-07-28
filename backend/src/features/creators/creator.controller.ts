@@ -4,7 +4,7 @@ import {
   transformCreatorToPreview,
   transformToCreatorFullDTO,
 } from './creator.transformer.js';
-import { CreatorPostDTO } from '@trainwithx/shared';
+import { CreatorPostDTO, partialCreatorPostSchema } from '@trainwithx/shared';
 import { AppError } from '@src/utils/AppError.js';
 import {
   editCreator,
@@ -13,6 +13,7 @@ import {
   getCreatorBySub,
   storeCreatorCover,
 } from './creator.service.js';
+import z from 'zod';
 
 export async function getAllCreatorsPreviewController(
   req: Request,
@@ -43,14 +44,18 @@ export async function getCreatorPreveiwByIdController(
 
 export async function editMyCreatorController(req: Request, res: Response) {
   const creatorId = Number(req.user?.id);
-  const data = req.body as Partial<CreatorPostDTO>;
   if (!creatorId) {
     throw new AppError('Invalid Creator Id', 404);
   }
   if (creatorId !== req.user?.id && !req.user?.isAdmin) {
     throw new AppError('Unauthorized', 401);
   }
-  const creator = await editCreator(creatorId, data);
+  const parsed = partialCreatorPostSchema.safeParse(req.body);
+  if (!parsed.success) {
+    throw new AppError('Invalid input', 400, z.treeifyError(parsed.error) );
+  }
+
+  const creator = await editCreator(creatorId, parsed.data);
   const preveiw = await transformCreatorToPreview(creator);
   res.json(preveiw);
 }

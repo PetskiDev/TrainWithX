@@ -51,27 +51,43 @@ export const createPlanSchema = z
   .object({
     title: z
       .string()
-      .min(5, { message: 'Title must be at least 5 characters long' }),
+      .min(5, { message: 'Title must be at least 5 characters long' })
+      .max(75, { message: 'Title must be less than 75 characters long' }),
     slug: z
       .string()
       .min(1, { message: 'Slug is required' })
+      .max(14, { message: 'Slug must be less than 15 charaacters' })
       .regex(/^[a-z]+$/, {
         message: 'Slug must be lowercase and contain only letters',
       }),
-    price: z.number('Price must be a number'),
-    originalPrice: z.number('Original price must be a number').optional(),
-    description: z.string().min(1, { message: 'Description is required' }),
+    price: z
+      .number('Price must be a number')
+      .max(1000, 'Price must be less than 1000$'),
+    originalPrice: z
+      .number('Original price must be a number')
+      .max(1000, 'Original price must be less than 1000$')
+      .optional(),
+    description: z
+      .string()
+      .min(1, { message: 'Description is required' })
+      .max(1000, 'Description too long (max 1000 characters)'),
     creatorId: z
       .number('Creator ID must be a number')
       .int({ message: 'Creator ID must be an integer' })
       .positive({ message: 'Creator ID must be positive' }),
-    tags: z.array(z.string(), { message: 'Tags must be a list of strings' }),
-    features: z.array(z.string(), {
-      message: 'Features must be a list of strings',
-    }),
-    goals: z.array(z.string(), {
-      message: 'Goals must be a list of strings',
-    }),
+    tags: z
+      .array(z.string(), { message: 'Tags must be a list of strings' })
+      .max(10, 'Too many tags'),
+    features: z
+      .array(z.string(), {
+        message: 'Features must be a list of strings',
+      })
+      .max(5, 'Too many features (<=5)'),
+    goals: z
+      .array(z.string(), {
+        message: 'Goals must be a list of strings',
+      })
+      .max(8, 'Too many goals (<=8)'),
     difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
 
     weeks: z.any(), // not validated

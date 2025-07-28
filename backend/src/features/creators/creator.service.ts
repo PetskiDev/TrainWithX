@@ -1,9 +1,8 @@
 import { prisma } from '@src/utils/prisma.js';
-import { CreatorPostDTO, SendApplicationDTO } from '@trainwithx/shared';
+import { CreatorPostDTO } from '@trainwithx/shared';
 import { CreatorApplication, Prisma, PrismaClient } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AppError } from '@src/utils/AppError.js';
-import app from '@src/app.js';
 import { storeInUploads } from '@src/utils/imageUploader.js';
 
 export async function getAllCreators() {

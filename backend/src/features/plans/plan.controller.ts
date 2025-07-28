@@ -19,6 +19,7 @@ import { createPlanSchema } from '@trainwithx/shared';
 import { getCreatorById } from '@src/features/creators/creator.service.js';
 import { getCompletedSet } from '@src/features/completions/completions.service.js';
 import { checkUserPurchasedPlan } from '@src/features/checkout/checkout.service.js';
+import z from 'zod';
 
 export async function getAllPlansPreview(req: Request, res: Response) {
   const plans = await getAllPlans();
@@ -40,7 +41,7 @@ export async function createPlanController(req: Request, res: Response) {
 
   const parsed = createPlanSchema.safeParse(req.body);
   if (!parsed.success) {
-    throw new AppError('Invalid plan data', 400, parsed.error.flatten());
+    throw new AppError('Invalid plan data', 400, z.treeifyError(parsed.error));
   }
 
   const payload = parsed.data;
@@ -74,7 +75,7 @@ export async function editPlanController(req: Request, res: Response) {
 
   const parsed = createPlanSchema.safeParse(req.body);
   if (!parsed.success) {
-    throw new AppError('Invalid plan data', 400, parsed.error.flatten());
+    throw new AppError('Invalid plan data', 400,  z.treeifyError(parsed.error));
   }
 
   const payload = parsed.data;

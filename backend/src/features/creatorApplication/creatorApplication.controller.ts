@@ -1,4 +1,4 @@
-import { SendApplicationDTO } from '@trainwithx/shared';
+import { SendApplicationDTO, sendApplicationSchema } from '@trainwithx/shared';
 import {
   approveCreatorApplication,
   getCreatorApplication,
@@ -13,7 +13,14 @@ export async function addCreatorApplicationController(
   req: Request,
   res: Response
 ) {
-  const data = req.body as SendApplicationDTO;
+  const parsed = sendApplicationSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    const firstIssue = parsed.error.issues[0];
+    throw new AppError(firstIssue?.message || 'Invalid data', 400);
+  }
+
+  const data = parsed.data;
   const userId = req.user!.id;
   const application = await submitCreatorApplication(userId, data);
 
@@ -30,7 +37,7 @@ export async function getCreatorApplicationController(
   const application = await getCreatorApplication(user.id);
 
   const preview: SendApplicationDTO = {
-    agreeToTerms: application.agreeToTerms,
+    agreeToTerms: application.agreeToTerms as true,
     bio: application.bio,
     email: application.email,
     experience: application.experience,

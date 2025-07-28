@@ -55,7 +55,7 @@ export async function getCreatorApplications(): Promise<
     experience: app.experience,
     bio: app.bio,
     socialMedia: app.socialMedia || '',
-    agreeToTerms: app.agreeToTerms,
+    agreeToTerms: true,
     email: app.email,
     createdAt: app.createdAt,
     id: app.id,
