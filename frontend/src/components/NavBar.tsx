@@ -43,7 +43,6 @@ const Navbar = () => {
       console.error('Logout function is undefined!');
       return;
     }
-    console.log('LOGGING OUT');
     await logout();
     window.location.reload();
   };

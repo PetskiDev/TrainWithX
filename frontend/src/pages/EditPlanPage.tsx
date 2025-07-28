@@ -27,7 +27,6 @@ export default function EditPlanPage() {
         }
 
         const data: PlanPaidPreveiw = await res.json();
-        console.log(data);
         setInitData({
           title: data.title,
           slug: data.slug,

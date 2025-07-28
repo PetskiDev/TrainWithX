@@ -63,7 +63,6 @@ export const storeInUploads = async ({
   }
 
   const relative = `/uploads/${folder}/${filename}`;
-  console.log(oldFileUrl, relative);
 
   return relative;
 };

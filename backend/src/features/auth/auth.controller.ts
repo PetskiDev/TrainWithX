@@ -94,11 +94,9 @@ export async function redirectToGoogleController(req: Request, res: Response) {
 
 function isSafeRedirect(urlStr: string | undefined): boolean {
   if (!urlStr) return false;
-  console.log("URL STR:" + urlStr);
   try {
     const url = new URL(urlStr);
     const hostname = url.hostname;
-    console.log("HOSTNAME:" + hostname);
 
     // Allow main domain and any subdomain of it
     return hostname === env.DOMAIN || hostname.endsWith(`.${env.DOMAIN}`);

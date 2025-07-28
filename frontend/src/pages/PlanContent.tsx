@@ -186,7 +186,6 @@ const PlanContent = ({ subdomain }: { subdomain: string | null }) => {
         variant: 'default',
       });
 
-      console.log('Workout marked complete:', data);
     } catch (err: any) {
       toast({
         title: 'Error',

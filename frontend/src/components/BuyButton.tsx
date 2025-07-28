@@ -29,7 +29,6 @@ export const BuyButton = ({
   const [showLogin, setShowLogin] = useState(false); // 👈 Track modal state
 
   useEffect(() => {
-    console.log(user);
     if (autoOpen && user) {
       openCheckout(user);
     }

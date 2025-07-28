@@ -72,10 +72,6 @@ const CreatorDashboard = () => {
     fetchPlans();
   }, [creator, fetchPlans]);
 
-  const handlePlanClick = (planId: number) => {
-    console.log('Plan clicked:', planId);
-  };
-
   // UI rendering
   if (loading) {
     return (
@@ -265,7 +261,7 @@ const CreatorDashboard = () => {
                   key={plan.id}
                   className="relative group overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow"
                 >
-                  <PlanCard plan={plan} onPlanClick={handlePlanClick} />
+                  <PlanCard plan={plan} onPlanClick={()=>{}} />
 
                   <div className="absolute top-3 left-3 flex items-center gap-2 bg-gradient-to-r from-green-100 to-green-200 border border-green-400 text-green-800 text-sm font-medium px-3 py-1.5 rounded-md shadow-sm">
                     💰 <span>${plan.revenue.toLocaleString()}</span>

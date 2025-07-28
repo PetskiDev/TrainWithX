@@ -73,7 +73,7 @@ export async function register(
   if (existing) throw new AppError('Username already in use.', 409);
 
   // 2. Hash password
-  const hashed = await bcrypt.hash(password, 10);
+  const hashed = await bcrypt.hash(password, env.BCRYPT_ROUNDS);
 
   // 3. Create user
   const user = await prisma.user.create({
@@ -167,7 +167,6 @@ export async function getUserInfoFromGoogle(code: string) {
     picture?: string;
   };
   if (!email) throw new AppError('Google did not return e-mail', 400);
-  console.log('EVERYTHING FINE');
   return { googleId, email, name, picture };
 }
 
@@ -210,7 +209,6 @@ export async function getOrCreateGoogleUser({
   googleId: string;
   picture?: string;
 }): Promise<AuthResult> {
-  console.log('PIC ' + picture);
   let user = await prisma.user.findUnique({
     where: { email },
   });

@@ -2,8 +2,6 @@ const RESERVED = new Set(['www', 'api', 'static', 'admin']);
 
 export function getCreatorSubdomain(): string | null {
   const host = window.location.host; // port is never included here
-  console.log(host);
-
   // Example: host = "pet.trainwithx.com", BASE_DOMAIN = "trainwithx.com"
   const suffix = `.${import.meta.env.VITE_BASE_DOMAIN}`; // ".trainwithx.com"
 

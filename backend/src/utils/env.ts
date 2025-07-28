@@ -21,6 +21,7 @@ export const env = {
   API_URL: getEnvVariable('API_URL'),
   DATABASE_URL: getEnvVariable('DATABASE_URL'),
   JWT_SECRET: getEnvVariable('JWT_SECRET'),
+  BCRYPT_ROUNDS: getEnvVariable('BCRYPT_ROUNDS'),
   PORT: parseInt(getEnvVariable('PORT', false) || '4000', 10),
   ZOHO_USER: getEnvVariable('ZOHO_USER'),
   ZOHO_PASS: getEnvVariable('ZOHO_PASS'),

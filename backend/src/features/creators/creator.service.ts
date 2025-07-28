@@ -48,7 +48,6 @@ export async function editCreator(
       err.code === 'P2002'
     ) {
       const target = err.meta?.target as string[] | undefined;
-      console.log(target);
       if (target?.includes('username')) {
         throw new AppError('Username is already taken.', 409);
       }

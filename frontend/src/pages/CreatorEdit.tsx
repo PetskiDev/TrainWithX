@@ -396,7 +396,6 @@ const CreatorEdit = () => {
       }
 
       const data = await res.json();
-      console.log('Avatar uploaded:', data.avatarUrl);
       setCreator((prev) =>
         prev ? { ...prev, avatarUrl: data.avatarUrl } : prev
       );
@@ -429,7 +428,6 @@ const CreatorEdit = () => {
       }
 
       const data = await res.json();
-      console.log('Cover uploaded:', data.coverUrl);
       setCreator((prev) =>
         prev ? { ...prev, coverUrl: data.coverUrl } : prev
       );

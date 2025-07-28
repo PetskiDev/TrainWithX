@@ -38,8 +38,6 @@ export function zodErrorToFieldErrors<T extends Record<string, any>>(
 ): Partial<Record<keyof T, string>> {
   const fieldErrors: Partial<Record<keyof T, string>> = {};
 
-  console.log('ZOD ERROR: ');
-  console.log(error.issues);
   error.issues.forEach((err) => {
     if (err.path.length > 0) {
       const key = err.path[0] as keyof T;
