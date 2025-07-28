@@ -13,17 +13,22 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Plus, Trash2, Save, Eye, X } from 'lucide-react';
-import type {
-  CreatePlanDto,
-  Exercise,
-  PlanDay,
-  PlanWeek,
+import {
+  createPlanSchema,
+  type CreatePlanDto,
+  type Exercise,
+  type PlanDay,
+  type PlanWeek,
 } from '@trainwithx/shared';
 import type { CreatorPreviewDTO } from '@trainwithx/shared';
 import { useAuth } from '@frontend/context/AuthContext';
 import { Badge } from '@frontend/components/ui/badge';
 import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 import { toast } from '@frontend/hooks/use-toast';
+import {
+  handleThrowAppError,
+  zodErrorToFieldErrors,
+} from '@frontend/lib/AppErrorUtils.ts';
 
 const availableTags = [
   'Strength',
@@ -46,6 +51,10 @@ const availableTags = [
   'Martial Arts',
 ];
 
+type CreatePlanFormState = Omit<CreatePlanDto, 'price'> & {
+  price?: number;
+};
+
 const CreateOrEditPlan = ({
   init,
   planId,
@@ -65,12 +74,12 @@ const CreateOrEditPlan = ({
   );
   const [customTag, setCustomTag] = useState('');
 
-  const [planData, setPlanData] = useState<CreatePlanDto>({
+  const [planData, setPlanData] = useState<CreatePlanFormState>({
     creatorId: -1, //fetched below
     title: '',
     description: '',
     difficulty: 'beginner',
-    price: 25,
+    price: undefined,
     originalPrice: undefined,
     slug: '',
     goals: [],
@@ -88,12 +97,14 @@ const CreateOrEditPlan = ({
         const res = await fetch('/api/v1/creators', {
           credentials: 'include',
         });
-        if (!res.ok) throw new Error('Failed to fetch creators');
+        if (!res.ok) {
+          await handleThrowAppError(res);
+        }
         const creators = await res.json();
         setAllCreators(creators);
-      } catch (err) {
-        console.error('Error loading all creators:', err);
-        setError('Failed to load creators. Please try again later.');
+      } catch (err: any) {
+        console.error(err);
+        setError(`Error loading all creators: ${err.message}`);
       }
     };
     fetchAllCreators();
@@ -101,13 +112,15 @@ const CreateOrEditPlan = ({
   useEffect(() => {
     const fetchCreator = async () => {
       if (!user) return;
+
       try {
-        //TODO: Change to me?
-        const res = await fetch(`/api/v1/creators/${user.id}`, {
+        // ✅ Use the "me" endpoint if the user is fetching their own creator data
+        const res = await fetch(`/api/v1/creators/me`, {
           credentials: 'include',
         });
+
         if (!res.ok) {
-          throw new Error('User is not creator');
+          await handleThrowAppError(res); // centralized error handling
         }
 
         const c = await res.json();
@@ -119,15 +132,14 @@ const CreateOrEditPlan = ({
             creatorId: c.id,
           }));
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('Failed to load creator:', err);
-        setError('Failed to load creator.');
+        setError(`Failed to load creator: ${err.message}`);
       }
     };
 
     fetchCreator();
-  }, [user, init]);
-
+  }, [user]);
   //hydrate form
   useEffect(() => {
     if (init) {
@@ -137,12 +149,12 @@ const CreateOrEditPlan = ({
 
   if (!user) {
     return (
-      <div className="p-4 text-center">
-        <p className="text-red-600 font-semibold mb-2">
+      <div className='p-4 text-center'>
+        <p className='text-red-600 font-semibold mb-2'>
           You must be logged in to create or edit a plan.
         </p>
         <button
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className='bg-blue-600 text-white px-4 py-2 rounded'
           onClick={() => goPublic('/login')}
         >
           Go to Login
@@ -152,8 +164,8 @@ const CreateOrEditPlan = ({
   }
   if (!user.isAdmin && !creator) {
     return (
-      <div className="p-4 text-center">
-        <p className="text-red-600 font-semibold mb-2">
+      <div className='p-4 text-center'>
+        <p className='text-red-600 font-semibold mb-2'>
           You must be a creator to create a plan.
         </p>
       </div>
@@ -350,8 +362,19 @@ const CreateOrEditPlan = ({
 
   const handleSave = async () => {
     try {
-      const endpoint = isEditing ? `/api/v1/plans/${planId}` : `/api/v1/plans`;
+      const parsed = createPlanSchema.safeParse(planData);
+      if (!parsed.success) {
+        const fieldErrors = zodErrorToFieldErrors<typeof planData>(
+          parsed.error
+        );
+        const firstError = Object.values(fieldErrors)[0];
+        if (firstError) {
+          setError(firstError);
+        }
+        return; 
+      }
 
+      const endpoint = isEditing ? `/api/v1/plans/${planId}` : `/api/v1/plans`;
       const method = isEditing ? 'PUT' : 'POST';
 
       const res = await fetch(endpoint, {
@@ -360,23 +383,20 @@ const CreateOrEditPlan = ({
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify(planData),
+        body: JSON.stringify(parsed.data),
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
-        // Use backend-sent error message if available
-        throw new Error(
-          errorData?.message ||
-            `Failed to ${isEditing ? 'update' : 'create'} plan`
-        );
+        await handleThrowAppError(res);
       }
 
       const saved = await res.json();
+
       toast({
         title: `Plan ${isEditing ? 'updated' : 'created'} successfully`,
         description: `"${saved.title}" has been saved.`,
       });
+
       if (user.isAdmin) {
         const c = allCreators?.find((a) => a.id == planData.creatorId);
         goToCreator({ subdomain: c!.subdomain, path: `/${planData.slug}` });
@@ -390,78 +410,81 @@ const CreateOrEditPlan = ({
       }
     } catch (err: any) {
       console.error('Error saving plan:', err);
+
       toast({
         title: 'Error',
-        description:
-          err.message || 'Something went wrong while saving the plan.',
+        description: 'Something went wrong while saving the plan.',
         variant: 'destructive',
       });
-      setError(err instanceof Error ? err.message : 'Something went wrong.');
+
+      setError(`Error saving plan: ${err.message}`);
     }
   };
 
   return (
-    <div className="min-h-screen-navbar bg-background">
-      <div className="container mx-auto px-4 py-8">
+    <div className='min-h-screen-navbar bg-background'>
+      <div className='container mx-auto px-4 py-8'>
         {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded">
+          <div className='mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded'>
             {error}
           </div>
         )}
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className='flex items-center justify-between mb-8'>
           <div>
-            <h1 className="text-3xl font-bold mb-2">
-              {`Create New Plan ${user.isAdmin ? '(admin)' : ''}`}
+            <h1 className='text-3xl font-bold mb-2'>
+              {`${isEditing ? 'Edit Plan' : 'Create New Plan'} ${
+                user.isAdmin ? '(admin)' : ''
+              }`}
             </h1>
-            <p className="text-muted-foreground">
+            <p className='text-muted-foreground'>
               Build your training plan step by step
             </p>
           </div>
-          <div className="flex flex-col lg:flex-row gap-3">
-            <Button variant="outline" onClick={handlePreview}>
-              <Eye className="h-4 w-4 mr-2" />
+          <div className='flex flex-col lg:flex-row gap-3'>
+            <Button variant='outline' onClick={handlePreview}>
+              <Eye className='h-4 w-4 mr-2' />
               Preview
             </Button>
             <Button onClick={handleSave}>
-              <Save className="h-4 w-4 mr-2" />
+              <Save className='h-4 w-4 mr-2' />
               Save Plan
             </Button>
           </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6">
-            <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="content">Plan Content</TabsTrigger>
+          <TabsList className='mb-6'>
+            <TabsTrigger value='basic'>Basic Info</TabsTrigger>
+            <TabsTrigger value='content'>Plan Content</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="basic">
+          <TabsContent value='basic'>
             <Card>
               <CardHeader>
                 <CardTitle>Plan Information</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="title">Plan Title</Label>
+              <CardContent className='space-y-6'>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='title'>Plan Title</Label>
                     <Input
-                      id="title"
+                      id='title'
                       value={planData.title}
                       onChange={(e) => updateBasicInfo('title', e.target.value)}
-                      placeholder="e.g., 30-Day Muscle Building Program"
+                      placeholder='e.g., 30-Day Muscle Building Program'
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="slug">Plan Slug</Label>
+                  <div className='space-y-2'>
+                    <Label htmlFor='slug'>Plan Slug</Label>
                     <Input
-                      id="slug"
+                      id='slug'
                       value={planData.slug}
                       onChange={(e) => updateBasicInfo('slug', e.target.value)}
-                      placeholder="e.g., 30-day-muscle-building"
+                      placeholder='e.g., 30-day-muscle-building'
                     />
-                    <p className="text-xs text-muted-foreground">
+                    <p className='text-xs text-muted-foreground'>
                       {user.isAdmin ? 'admin' : creator?.subdomain}
                       .trainwithx.com/
                       {planData.slug || 'your-slug'}
@@ -469,8 +492,8 @@ const CreateOrEditPlan = ({
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="difficulty">Difficulty Level</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='difficulty'>Difficulty Level</Label>
                   <Select
                     value={planData.difficulty}
                     onValueChange={(value) =>
@@ -478,37 +501,41 @@ const CreateOrEditPlan = ({
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select difficulty" />
+                      <SelectValue placeholder='Select difficulty' />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="beginner">Beginner</SelectItem>
-                      <SelectItem value="intermediate">Intermediate</SelectItem>
-                      <SelectItem value="advanced">Advanced</SelectItem>
+                      <SelectItem value='beginner'>Beginner</SelectItem>
+                      <SelectItem value='intermediate'>Intermediate</SelectItem>
+                      <SelectItem value='advanced'>Advanced</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="price">Price ($)</Label>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                  <div className='space-y-2'>
+                    <Label htmlFor='price'>Price ($)</Label>
                     <Input
-                      id="price"
-                      type="number"
-                      value={planData.price}
-                      onChange={(e) =>
-                        updateBasicInfo('price', Number(e.target.value))
-                      }
-                      placeholder="79"
+                      id='price'
+                      type='number'
+                      value={planData.price ?? ''}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        updateBasicInfo(
+                          'price',
+                          val === '' ? undefined : Number(val)
+                        );
+                      }}
+                      placeholder='79'
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="originalPrice">
+                  <div className='space-y-2'>
+                    <Label htmlFor='originalPrice'>
                       Original Price ($) - Optional
                     </Label>
                     <Input
-                      id="originalPrice"
-                      type="number"
+                      id='originalPrice'
+                      type='number'
                       value={planData.originalPrice || undefined}
                       onChange={(e) =>
                         updateBasicInfo(
@@ -516,15 +543,15 @@ const CreateOrEditPlan = ({
                           e.target.value ? Number(e.target.value) : undefined
                         )
                       }
-                      placeholder="99"
+                      placeholder='99'
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='description'>Description</Label>
                   <Textarea
-                    id="description"
+                    id='description'
                     value={planData.description}
                     onChange={(e) =>
                       updateBasicInfo('description', e.target.value)
@@ -537,8 +564,8 @@ const CreateOrEditPlan = ({
                 {/* Creator Selection - Admin Only */}
 
                 {!isEditing && user.isAdmin && (
-                  <div className="space-y-2 pt-6 border-t">
-                    <Label htmlFor="selectedCreator">
+                  <div className='space-y-2 pt-6 border-t'>
+                    <Label htmlFor='selectedCreator'>
                       Assign to Creator (Admin Only)
                     </Label>
                     <Select
@@ -551,7 +578,7 @@ const CreateOrEditPlan = ({
                       disabled={!allCreators}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a creator" />
+                        <SelectValue placeholder='Select a creator' />
                       </SelectTrigger>
                       <SelectContent>
                         {allCreators && allCreators.length > 0 ? (
@@ -561,13 +588,13 @@ const CreateOrEditPlan = ({
                             </SelectItem>
                           ))
                         ) : (
-                          <div className="p-2 text-sm text-muted-foreground">
+                          <div className='p-2 text-sm text-muted-foreground'>
                             No creators available.
                           </div>
                         )}
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-muted-foreground">
+                    <p className='text-xs text-muted-foreground'>
                       This field is only visible to admin users. Leave empty to
                       assign to yourself.
                     </p>
@@ -577,45 +604,45 @@ const CreateOrEditPlan = ({
             </Card>
           </TabsContent>
 
-          <TabsContent value="content">
-            <div className="space-y-6">
+          <TabsContent value='content'>
+            <div className='space-y-6'>
               {/* Goals Section */}
               <Card>
                 <CardHeader>
                   <CardTitle>Plan Goals</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm text-muted-foreground">
+                <CardContent className='space-y-4'>
+                  <div className='flex justify-between items-center'>
+                    <p className='text-sm text-muted-foreground'>
                       What will users achieve with this plan? (this section is
                       available when the user purchases the plan)
                     </p>
-                    <Button size="sm" onClick={addGoal}>
-                      <Plus className="h-4 w-4 mr-2" />
+                    <Button size='sm' onClick={addGoal}>
+                      <Plus className='h-4 w-4 mr-2' />
                       Add Goal
                     </Button>
                   </div>
 
                   {planData.goals.map((goal, index) => (
-                    <div key={index} className="flex gap-2">
+                    <div key={index} className='flex gap-2'>
                       <Input
                         value={goal}
                         onChange={(e) => updateGoal(index, e.target.value)}
-                        placeholder="e.g., Build lean muscle mass"
-                        className="flex-1"
+                        placeholder='e.g., Build lean muscle mass'
+                        className='flex-1'
                       />
                       <Button
-                        variant="ghost"
-                        size="sm"
+                        variant='ghost'
+                        size='sm'
                         onClick={() => removeGoal(index)}
                       >
-                        <X className="h-4 w-4" />
+                        <X className='h-4 w-4' />
                       </Button>
                     </div>
                   ))}
 
                   {planData.goals.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">
+                    <p className='text-sm text-muted-foreground text-center py-4'>
                       No goals added yet. Click "Add Goal" to get started.
                     </p>
                   )}
@@ -626,38 +653,38 @@ const CreateOrEditPlan = ({
                 <CardHeader>
                   <CardTitle>Plan Features</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm text-muted-foreground">
+                <CardContent className='space-y-4'>
+                  <div className='flex justify-between items-center'>
+                    <p className='text-sm text-muted-foreground'>
                       Selling point of this plan. (This is listed on the plan
                       purchase card)
                     </p>
-                    <Button size="sm" onClick={addFeature}>
-                      <Plus className="h-4 w-4 mr-2" />
+                    <Button size='sm' onClick={addFeature}>
+                      <Plus className='h-4 w-4 mr-2' />
                       Add Feature
                     </Button>
                   </div>
 
                   {planData.features.map((feature, index) => (
-                    <div key={index} className="flex gap-2">
+                    <div key={index} className='flex gap-2'>
                       <Input
                         value={feature}
                         onChange={(e) => updateFeature(index, e.target.value)}
-                        placeholder="e.g., 4-week progressive overload program"
-                        className="flex-1"
+                        placeholder='e.g., 4-week progressive overload program'
+                        className='flex-1'
                       />
                       <Button
-                        variant="ghost"
-                        size="sm"
+                        variant='ghost'
+                        size='sm'
                         onClick={() => removeFeature(index)}
                       >
-                        <X className="h-4 w-4" />
+                        <X className='h-4 w-4' />
                       </Button>
                     </div>
                   ))}
 
                   {planData.features.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">
+                    <p className='text-sm text-muted-foreground text-center py-4'>
                       No features added yet. Click "Add Feature" to get started.
                     </p>
                   )}
@@ -669,21 +696,21 @@ const CreateOrEditPlan = ({
                 <CardHeader>
                   <CardTitle>Plan Tags</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className='space-y-4'>
                   <Label>Tags help users discover your plan</Label>
 
                   {/* Selected tags as badges */}
                   {planData.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
+                    <div className='flex flex-wrap gap-2'>
                       {planData.tags.map((tag, index) => (
                         <Badge
                           key={tag}
-                          variant="secondary"
-                          className="flex items-center gap-1"
+                          variant='secondary'
+                          className='flex items-center gap-1'
                         >
                           {tag}
                           <X
-                            className="h-3 w-3 cursor-pointer hover:text-destructive"
+                            className='h-3 w-3 cursor-pointer hover:text-destructive'
                             onClick={() => removeTag(index)}
                           />
                         </Badge>
@@ -692,52 +719,52 @@ const CreateOrEditPlan = ({
                   )}
 
                   {/* Suggested tags */}
-                  <div className="flex flex-wrap gap-2">
+                  <div className='flex flex-wrap gap-2'>
                     {availableTags
                       .filter((tag) => !planData.tags.includes(tag))
                       .map((tag) => (
                         <Badge
                           key={tag}
-                          variant="outline"
-                          className="cursor-pointer hover:bg-primary hover:text-primary-foreground"
+                          variant='outline'
+                          className='cursor-pointer hover:bg-primary hover:text-primary-foreground'
                           onClick={() => addTag(tag)}
                         >
-                          <Plus className="h-3 w-3 mr-1" />
+                          <Plus className='h-3 w-3 mr-1' />
                           {tag}
                         </Badge>
                       ))}
                   </div>
 
                   {/* Add custom tag input */}
-                  <div className="flex gap-2">
+                  <div className='flex gap-2'>
                     <Input
-                      placeholder="Add custom tag..."
+                      placeholder='Add custom tag...'
                       value={customTag}
                       onChange={(e) => setCustomTag(e.target.value)}
                       onKeyPress={(e) =>
                         e.key === 'Enter' &&
                         (e.preventDefault(), addTag(customTag))
                       }
-                      className="flex-1"
+                      className='flex-1'
                     />
                     <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
+                      type='button'
+                      variant='outline'
+                      size='sm'
                       onClick={() => addTag(customTag)}
                       disabled={!customTag.trim()}
                     >
-                      <Plus className="h-4 w-4" />
+                      <Plus className='h-4 w-4' />
                     </Button>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Plan Structure */}
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold">Plan Structure</h2>
+              <div className='flex justify-between items-center'>
+                <h2 className='text-2xl font-semibold'>Plan Structure</h2>
                 <Button onClick={addWeek}>
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className='h-4 w-4 mr-2' />
                   Add Week
                 </Button>
               </div>
@@ -746,21 +773,21 @@ const CreateOrEditPlan = ({
               {planData.weeks.map((week) => (
                 <Card key={week.id}>
                   <CardHeader>
-                    <div className="flex items-center justify-between">
+                    <div className='flex items-center justify-between'>
                       <Input
                         value={week.title}
                         onChange={(e) =>
                           updateWeek(week.id, 'title', e.target.value)
                         }
-                        className="text-lg font-semibold border-none p-0 h-auto max-w-md"
-                        placeholder="Week title"
+                        className='text-lg font-semibold border-none p-0 h-auto max-w-md'
+                        placeholder='Week title'
                       />
                       <Button
-                        variant="ghost"
-                        size="sm"
+                        variant='ghost'
+                        size='sm'
                         onClick={() => deleteWeek(week.id)}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className='h-4 w-4' />
                       </Button>
                     </div>
                     <Textarea
@@ -768,27 +795,27 @@ const CreateOrEditPlan = ({
                       onChange={(e) =>
                         updateWeek(week.id, 'description', e.target.value)
                       }
-                      placeholder="What will users focus on this week?"
+                      placeholder='What will users focus on this week?'
                       rows={2}
-                      className="mt-2"
+                      className='mt-2'
                     />
                   </CardHeader>
 
-                  <CardContent className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <h4 className="font-semibold">Days</h4>
-                      <Button size="sm" onClick={() => addDay(week.id)}>
-                        <Plus className="h-4 w-4 mr-2" />
+                  <CardContent className='space-y-4'>
+                    <div className='flex justify-between items-center'>
+                      <h4 className='font-semibold'>Days</h4>
+                      <Button size='sm' onClick={() => addDay(week.id)}>
+                        <Plus className='h-4 w-4 mr-2' />
                         Add Day
                       </Button>
                     </div>
 
                     {/* Days */}
                     {week.days.map((day) => (
-                      <Card key={day.id} className="ml-4">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3 flex-1">
+                      <Card key={day.id} className='ml-4'>
+                        <CardHeader className='pb-3'>
+                          <div className='flex items-center justify-between'>
+                            <div className='flex items-center gap-3 flex-1'>
                               <Input
                                 value={day.title}
                                 onChange={(e) =>
@@ -799,8 +826,8 @@ const CreateOrEditPlan = ({
                                     e.target.value
                                   )
                                 }
-                                className="font-medium border-none p-0 h-auto max-w-sm"
-                                placeholder="Day name"
+                                className='font-medium border-none p-0 h-auto max-w-sm'
+                                placeholder='Day name'
                               />
                               <Select
                                 value={day.type}
@@ -808,38 +835,38 @@ const CreateOrEditPlan = ({
                                   updateDay(week.id, day.id, 'type', value)
                                 }
                               >
-                                <SelectTrigger className="w-auto h-8">
+                                <SelectTrigger className='w-auto h-8'>
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="workout">
+                                  <SelectItem value='workout'>
                                     Workout
                                   </SelectItem>
-                                  <SelectItem value="rest">Rest Day</SelectItem>
+                                  <SelectItem value='rest'>Rest Day</SelectItem>
                                 </SelectContent>
                               </Select>
                             </div>
                             <Button
-                              variant="ghost"
-                              size="sm"
+                              variant='ghost'
+                              size='sm'
                               onClick={() => deleteDay(week.id, day.id)}
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className='h-4 w-4' />
                             </Button>
                           </div>
                         </CardHeader>
 
-                        <CardContent className="space-y-4">
+                        <CardContent className='space-y-4'>
                           {/* Workout Section */}
                           {day.type === 'workout' && (
-                            <div className="space-y-3">
-                              <div className="flex justify-between items-center">
+                            <div className='space-y-3'>
+                              <div className='flex justify-between items-center'>
                                 <Label>Exercises</Label>
                                 <Button
-                                  size="sm"
+                                  size='sm'
                                   onClick={() => addExercise(week.id, day.id)}
                                 >
-                                  <Plus className="h-4 w-4 mr-2" />
+                                  <Plus className='h-4 w-4 mr-2' />
                                   Add Exercise
                                 </Button>
                               </div>
@@ -847,7 +874,7 @@ const CreateOrEditPlan = ({
                               {day.exercises?.map((exercise, index) => (
                                 <div
                                   key={index}
-                                  className="grid grid-cols-12 gap-2 items-center p-3 border rounded-lg"
+                                  className='grid grid-cols-12 gap-2 items-center p-3 border rounded-lg'
                                 >
                                   <Input
                                     value={exercise.name}
@@ -860,11 +887,11 @@ const CreateOrEditPlan = ({
                                         e.target.value
                                       )
                                     }
-                                    placeholder="Exercise name"
-                                    className="col-span-4"
+                                    placeholder='Exercise name'
+                                    className='col-span-4'
                                   />
                                   <Input
-                                    type="number"
+                                    type='number'
                                     value={exercise.sets}
                                     onChange={(e) =>
                                       updateExercise(
@@ -875,8 +902,8 @@ const CreateOrEditPlan = ({
                                         Number(e.target.value)
                                       )
                                     }
-                                    placeholder="Sets"
-                                    className="col-span-2"
+                                    placeholder='Sets'
+                                    className='col-span-2'
                                   />
                                   <Input
                                     value={exercise.reps}
@@ -889,8 +916,8 @@ const CreateOrEditPlan = ({
                                         e.target.value
                                       )
                                     }
-                                    placeholder="Reps"
-                                    className="col-span-2"
+                                    placeholder='Reps'
+                                    className='col-span-2'
                                   />
                                   <Input
                                     value={exercise.weight}
@@ -903,18 +930,18 @@ const CreateOrEditPlan = ({
                                         e.target.value
                                       )
                                     }
-                                    placeholder="Weight"
-                                    className="col-span-2"
+                                    placeholder='Weight'
+                                    className='col-span-2'
                                   />
                                   <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="col-span-2"
+                                    variant='ghost'
+                                    size='sm'
+                                    className='col-span-2'
                                     onClick={() =>
                                       deleteExercise(week.id, day.id, index)
                                     }
                                   >
-                                    <Trash2 className="h-4 w-4" />
+                                    <Trash2 className='h-4 w-4' />
                                   </Button>
                                 </div>
                               ))}
@@ -923,9 +950,9 @@ const CreateOrEditPlan = ({
 
                           {/* Rest Day Content */}
                           {day.type === 'rest' && (
-                            <div className="p-4 bg-muted/50 rounded-lg text-center">
-                              <h3 className="font-medium mb-1">Rest Day</h3>
-                              <p className="text-sm text-muted-foreground">
+                            <div className='p-4 bg-muted/50 rounded-lg text-center'>
+                              <h3 className='font-medium mb-1'>Rest Day</h3>
+                              <p className='text-sm text-muted-foreground'>
                                 Recovery is essential for muscle growth and
                                 preventing injury
                               </p>
@@ -936,7 +963,7 @@ const CreateOrEditPlan = ({
                     ))}
 
                     {week.days.length === 0 && (
-                      <p className="text-sm text-muted-foreground text-center py-4">
+                      <p className='text-sm text-muted-foreground text-center py-4'>
                         No days added yet. Click "Add Day" to get started.
                       </p>
                     )}
@@ -946,12 +973,12 @@ const CreateOrEditPlan = ({
 
               {planData.weeks.length === 0 && (
                 <Card>
-                  <CardContent className="text-center py-12">
-                    <p className="text-muted-foreground mb-4">
+                  <CardContent className='text-center py-12'>
+                    <p className='text-muted-foreground mb-4'>
                       No weeks added yet
                     </p>
                     <Button onClick={addWeek}>
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className='h-4 w-4 mr-2' />
                       Add Your First Week
                     </Button>
                   </CardContent>

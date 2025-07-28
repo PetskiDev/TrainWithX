@@ -7,22 +7,26 @@ export async function handleThrowAppError(res: Response): Promise<never> {
   try {
     data = await res.json();
   } catch {
-    data = {
+    // fallback if response is not JSON
+    throw {
       status: res.status,
       message:
         res.status === 404 ? 'Endpoint not found' : 'Something went wrong',
     };
   }
 
-  const parsed = appErrorResponseSchema.safeParse({
-    ...(typeof data === 'object' && data ? data : {}),
+  // Ensure the required fields exist in the parsed object
+  const base = {
     status: res.status,
-  });
+    ...(typeof data === 'object' && data !== null ? data : {}),
+  };
+
+  const parsed = appErrorResponseSchema.safeParse(base);
 
   if (!parsed.success) {
     throw {
       status: res.status,
-      message: 'Unexpected error',
+      message: res.status === 404 ? 'Endpoint not found' : 'Unexpected error',
     };
   }
 

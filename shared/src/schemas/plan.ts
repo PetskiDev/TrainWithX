@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 //public info, preveiw
 export interface PlanPreview {
   id: number;
@@ -45,17 +47,45 @@ export interface PlanWithRevenue extends PlanPreview {
   revenue: number;
 }
 
-export type CreatePlanDto = {
-  title: string;
-  slug: string;
-  price: number;
-  description: string;
-  originalPrice?: number;
-  creatorId: number;
-  tags: string[];
-  features: string[];
-  goals: string[];
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+export const createPlanSchema = z
+  .object({
+    title: z
+      .string()
+      .min(5, { message: 'Title must be at least 5 characters long' }),
+    slug: z
+      .string()
+      .min(1, { message: 'Slug is required' })
+      .regex(/^[a-z]+$/, {
+        message: 'Slug must be lowercase and contain only letters',
+      }),
+    price: z.number('Price must be a number'),
+    originalPrice: z.number('Original price must be a number').optional(),
+    description: z.string().min(1, { message: 'Description is required' }),
+    creatorId: z
+      .number('Creator ID must be a number')
+      .int({ message: 'Creator ID must be an integer' })
+      .positive({ message: 'Creator ID must be positive' }),
+    tags: z.array(z.string(), { message: 'Tags must be a list of strings' }),
+    features: z.array(z.string(), {
+      message: 'Features must be a list of strings',
+    }),
+    goals: z.array(z.string(), {
+      message: 'Goals must be a list of strings',
+    }),
+    difficulty: z.enum(['beginner', 'intermediate', 'advanced']),
+
+    weeks: z.any(), // not validated
+  })
+  .superRefine((data, ctx) => {
+    if (data.originalPrice !== undefined && data.originalPrice <= data.price) {
+      ctx.addIssue({
+        path: ['originalPrice'],
+        message: 'Original price must be greater than price if provided',
+      });
+    }
+  });
+
+export type CreatePlanDto = Omit<z.infer<typeof createPlanSchema>, 'weeks'> & {
   weeks: PlanWeek[];
 };
 

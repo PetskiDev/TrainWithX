@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import BecomeCreatorSection from '@frontend/components/BecomeCreatorSection';
 import { PlanOwnedCard } from '@frontend/components/PlanOwnedCard';
+import { handleThrowAppError } from '@frontend/lib/AppErrorUtils.ts';
 
 // ────────────────────────────────────────────────────────────────────────────────
 // Component
@@ -130,8 +131,7 @@ const Me = () => {
       });
 
       if (!res.ok) {
-        const { error } = await res.json();
-        throw new Error(error ?? 'Upload failed');
+        await handleThrowAppError(res);
       }
 
       await refreshUser();
@@ -140,7 +140,7 @@ const Me = () => {
       setUploadError(err.message);
     } finally {
       setUploading(false);
-      e.target.value = ''; // reset file input
+      e.target.value = '';
     }
   };
   // ──────────────────────────────────────────────────────────────────────────────
@@ -148,7 +148,7 @@ const Me = () => {
   // ──────────────────────────────────────────────────────────────────────────────
   if (authLoading) {
     return (
-      <div className="min-h-screen-navbar flex items-center justify-center">
+      <div className='min-h-screen-navbar flex items-center justify-center'>
         Loading...
       </div>
     );
@@ -156,7 +156,7 @@ const Me = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen-navbar flex items-center justify-center">
+      <div className='min-h-screen-navbar flex items-center justify-center'>
         You are not logged in.
       </div>
     );
@@ -179,28 +179,28 @@ const Me = () => {
   // Render
   // ──────────────────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen-navbar bg-background">
-      <div className="container mx-auto px-4 py-8">
+    <div className='min-h-screen-navbar bg-background'>
+      <div className='container mx-auto px-4 py-8'>
         {/* If user is creator, remind him to go to the dashboard */}
         {user.isCreator && (
-          <Card className="mt-1 mb-8">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
+          <Card className='mt-1 mb-8'>
+            <CardContent className='p-6'>
+              <div className='flex items-center justify-between'>
+                <div className='space-y-1'>
                   <Label
-                    htmlFor="creator-mode"
-                    className="text-base font-medium"
+                    htmlFor='creator-mode'
+                    className='text-base font-medium'
                   >
                     Creator Dashboard
                   </Label>
-                  <p className="text-sm text-muted-foreground">
+                  <p className='text-sm text-muted-foreground'>
                     Access your creator tools and analytics
                   </p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <Button asChild variant="outline">
-                    <Link to="/me/creator">
-                      <Settings className="h-4 w-4 mr-2" />
+                <div className='flex items-center gap-4'>
+                  <Button asChild variant='outline'>
+                    <Link to='/me/creator'>
+                      <Settings className='h-4 w-4 mr-2' />
                       Creator Dashboard
                     </Link>
                   </Button>
@@ -212,19 +212,19 @@ const Me = () => {
 
         {/* ──────────────── Welcome Header ──────────────── */}
         {uploading && (
-          <p className="text-xs text-gray-500 mt-1 pb-3">Uploading…</p>
+          <p className='text-xs text-gray-500 mt-1 pb-3'>Uploading…</p>
         )}
         {uploadError && (
-          <p className="text-xs text-red-600 mt-1 pb-3">{uploadError}</p>
+          <p className='text-xs text-red-600 mt-1 pb-3'>{uploadError}</p>
         )}
-        <div className="mb-8">
-          <div className="flex items-center gap-6 mb-6">
-            <div className="relative">
-              <Avatar className="w-20 h-20">
+        <div className='mb-8'>
+          <div className='flex items-center gap-6 mb-6'>
+            <div className='relative'>
+              <Avatar className='w-20 h-20'>
                 <AvatarImage
                   src={user.avatarUrl}
                   alt={displayName}
-                  referrerPolicy="no-referrer" // blocks referer header
+                  referrerPolicy='no-referrer' // blocks referer header
                   onError={(e) => (e.currentTarget.style.display = 'none')}
                 />
                 <AvatarFallback>
@@ -234,27 +234,27 @@ const Me = () => {
                     .join('')}
                 </AvatarFallback>
               </Avatar>{' '}
-              <div className="absolute -top-2 -right-2">
-                <label htmlFor="avatar-upload" className="cursor-pointer">
-                  <div className="bg-primary text-primary-foreground rounded-full p-2 shadow-lg hover:bg-primary/90 transition-colors">
-                    <Camera className="h-4 w-4" />
+              <div className='absolute -top-2 -right-2'>
+                <label htmlFor='avatar-upload' className='cursor-pointer'>
+                  <div className='bg-primary text-primary-foreground rounded-full p-2 shadow-lg hover:bg-primary/90 transition-colors'>
+                    <Camera className='h-4 w-4' />
                   </div>
                 </label>
                 <input
-                  id="avatar-upload"
-                  type="file"
-                  accept=".jpg,.jpeg,.png,.webp"
+                  id='avatar-upload'
+                  type='file'
+                  accept='.jpg,.jpeg,.png,.webp'
                   onChange={uploading ? undefined : handleAvatarUpload}
-                  className="hidden"
+                  className='hidden'
                   disabled={uploading}
                 />
               </div>
             </div>
 
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
+            <div className='flex-1'>
+              <div className='flex items-center gap-3 mb-2'>
                 {isEditingName ? (
-                  <div className="flex items-center gap-2">
+                  <div className='flex items-center gap-2'>
                     <Input
                       value={editedName}
                       onChange={(e) => setEditedName(e.target.value)}
@@ -262,83 +262,83 @@ const Me = () => {
                         if (e.key === 'Enter') handleSaveName();
                         if (e.key === 'Escape') handleCancelEdit();
                       }}
-                      className="text-2xl font-bold h-10"
+                      className='text-2xl font-bold h-10'
                       autoFocus
                     />
                     <Button
-                      size="sm"
+                      size='sm'
                       onClick={handleSaveName}
                       disabled={
                         !editedName || editedName.trim() === user?.username
                       }
                     >
-                      <Check className="h-4 w-4" />
+                      <Check className='h-4 w-4' />
                     </Button>
                     <Button
-                      size="sm"
-                      variant="outline"
+                      size='sm'
+                      variant='outline'
                       onClick={handleCancelEdit}
                     >
-                      <X className="h-4 w-4" />
+                      <X className='h-4 w-4' />
                     </Button>
                   </div>
                 ) : (
                   <>
-                    <h1 className="text-3xl font-bold">
+                    <h1 className='text-3xl font-bold'>
                       Hello, {displayName}! 👋
                     </h1>
-                    <Button size="sm" variant="ghost" onClick={handleEditName}>
-                      <Edit2 className="h-4 w-4" />
+                    <Button size='sm' variant='ghost' onClick={handleEditName}>
+                      <Edit2 className='h-4 w-4' />
                     </Button>
                   </>
                 )}
               </div>
-              <p className="text-muted-foreground">{joinDateLabel}</p>
-              <p className="text-sm text-muted-foreground">{user.email}</p>
+              <p className='text-muted-foreground'>{joinDateLabel}</p>
+              <p className='text-sm text-muted-foreground'>{user.email}</p>
             </div>
           </div>
 
           {/* ──────────────── Stats Cards ──────────────── */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <TrendingUp className="h-5 w-5 text-primary" />
+              <CardContent className='p-4'>
+                <div className='flex items-center gap-3'>
+                  <div className='p-2 bg-primary/10 rounded-lg'>
+                    <TrendingUp className='h-5 w-5 text-primary' />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Total Plans</p>
-                    <p className="text-2xl font-bold">{totalPlans}</p>
+                    <p className='text-sm text-muted-foreground'>Total Plans</p>
+                    <p className='text-2xl font-bold'>{totalPlans}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-500/10 rounded-lg">
-                    <Award className="h-5 w-5 text-green-500" />
+              <CardContent className='p-4'>
+                <div className='flex items-center gap-3'>
+                  <div className='p-2 bg-green-500/10 rounded-lg'>
+                    <Award className='h-5 w-5 text-green-500' />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Completed</p>
-                    <p className="text-2xl font-bold">{123}</p>
+                    <p className='text-sm text-muted-foreground'>Completed</p>
+                    <p className='text-2xl font-bold'>{123}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-orange-500/10 rounded-lg">
-                    <Calendar className="h-5 w-5 text-orange-500" />
+              <CardContent className='p-4'>
+                <div className='flex items-center gap-3'>
+                  <div className='p-2 bg-orange-500/10 rounded-lg'>
+                    <Calendar className='h-5 w-5 text-orange-500' />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">
+                    <p className='text-sm text-muted-foreground'>
                       Current Streak
                     </p>
-                    <p className="text-2xl font-bold"> Work in Progress...</p>
+                    <p className='text-2xl font-bold'> Work in Progress...</p>
                   </div>
                 </div>
               </CardContent>
@@ -348,14 +348,14 @@ const Me = () => {
 
         {/* ──────────────── Content Tabs ──────────────── */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6">
-            <TabsTrigger value="plans">My Plans</TabsTrigger>
-            <TabsTrigger value="achievements">Achievements</TabsTrigger>
+          <TabsList className='mb-6'>
+            <TabsTrigger value='plans'>My Plans</TabsTrigger>
+            <TabsTrigger value='achievements'>Achievements</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="plans">
-            <div className="space-y-6">
-              <h2 className="text-3xl font-semibold">Jump into training! 👇</h2>
+          <TabsContent value='plans'>
+            <div className='space-y-6'>
+              <h2 className='text-3xl font-semibold'>Jump into training! 👇</h2>
 
               {plansLoading ? (
                 <div>Loading plans...</div>
@@ -365,7 +365,7 @@ const Me = () => {
                   <Button>Buy some! (todo)</Button>
                 </>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                   {plans.map((plan) => (
                     <PlanOwnedCard key={plan.id} plan={plan} />
                   ))}
@@ -374,20 +374,20 @@ const Me = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="achievements">
+          <TabsContent value='achievements'>
             {/* Achievements content – similar structure; replace with dynamic data when available */}
-            <div className="space-y-6">
-              <h2 className="text-2xl font-semibold">Your Achievements</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className='space-y-6'>
+              <h2 className='text-2xl font-semibold'>Your Achievements</h2>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                 <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 bg-yellow-500/10 rounded-full">
-                        <Award className="h-6 w-6 text-yellow-500" />
+                  <CardContent className='p-4'>
+                    <div className='flex items-center gap-3'>
+                      <div className='p-3 bg-yellow-500/10 rounded-full'>
+                        <Award className='h-6 w-6 text-yellow-500' />
                       </div>
                       <div>
-                        <h3 className="font-semibold">First Plan Completed</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className='font-semibold'>First Plan Completed</h3>
+                        <p className='text-sm text-muted-foreground'>
                           Completed your first training plan
                         </p>
                       </div>
@@ -396,14 +396,14 @@ const Me = () => {
                 </Card>
 
                 <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-3 bg-blue-500/10 rounded-full">
-                        <Calendar className="h-6 w-6 text-blue-500" />
+                  <CardContent className='p-4'>
+                    <div className='flex items-center gap-3'>
+                      <div className='p-3 bg-blue-500/10 rounded-full'>
+                        <Calendar className='h-6 w-6 text-blue-500' />
                       </div>
                       <div>
-                        <h3 className="font-semibold">Consistency Champion</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className='font-semibold'>Consistency Champion</h3>
+                        <p className='text-sm text-muted-foreground'>
                           10+ day training streak
                         </p>
                       </div>
@@ -414,7 +414,7 @@ const Me = () => {
             </div>
           </TabsContent>
         </Tabs>
-        {!user.isCreator && <BecomeCreatorSection className="mt-10" />}
+        {!user.isCreator && <BecomeCreatorSection className='mt-10' />}
       </div>
     </div>
   );

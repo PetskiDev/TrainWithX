@@ -15,7 +15,7 @@ import {
 } from './plan.service.js';
 import { AppError } from '@src/utils/AppError.js';
 import { toPaidPlan, toPlanPreview } from './plan.transformer.js';
-import { CreatePlanDto } from '@trainwithx/shared';
+import { createPlanSchema } from '@trainwithx/shared';
 import { getCreatorById } from '@src/features/creators/creator.service.js';
 import { getCompletedSet } from '@src/features/completions/completions.service.js';
 import { checkUserPurchasedPlan } from '@src/features/checkout/checkout.service.js';
@@ -38,7 +38,12 @@ export async function createPlanController(req: Request, res: Response) {
   const user = req.user!;
   const isCreator = await getCreatorById(user.id);
 
-  const payload = req.body as CreatePlanDto;
+  const parsed = createPlanSchema.safeParse(req.body);
+  if (!parsed.success) {
+    throw new AppError('Invalid plan data', 400, parsed.error.flatten());
+  }
+
+  const payload = parsed.data;
 
   if ((!isCreator || payload.creatorId != user.id) && !user.isAdmin) {
     throw new AppError('Unauthorized to create plan', 401);
@@ -67,9 +72,13 @@ export async function editPlanController(req: Request, res: Response) {
     throw new AppError('Unauthorized to edit this plan', 403);
   }
 
-  const payload = req.body as CreatePlanDto;
+  const parsed = createPlanSchema.safeParse(req.body);
+  if (!parsed.success) {
+    throw new AppError('Invalid plan data', 400, parsed.error.flatten());
+  }
 
-  // Update the plan using a proper service
+  const payload = parsed.data;
+
   const updatedPlan = await updatePlanService(planId, payload);
 
   res.status(200).json(updatedPlan);
