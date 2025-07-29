@@ -15,7 +15,18 @@ const __dirname = dirname(__filename);
 
 const app = express();
 app.set('trust proxy', 1);
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        'https://cdn.paddle.com',
+        'https://public.profitwell.com',
+      ],
+    },
+  })
+);
 app.use(cookieParser());
 
 app.use(morgan('dev'));
