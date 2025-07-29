@@ -82,7 +82,7 @@ export const sendApplicationSchema = z.object({
   bio: z
     .string()
     .min(10, 'Bio must be at least 10 characters')
-    .max(500, 'Bio must be less than 500 characters'),
+    .max(1000, 'Bio must be less than 500 characters'),
 
   socialMedia: z.string().max(200).optional(),
 
