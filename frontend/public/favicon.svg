@@ -1,0 +1,28 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect x="0" y="0" width="100" height="100" fill="white" />
+
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="hsl(240, 100%, 27%)" />
+      <stop offset="50%" stop-color="hsl(260, 100%, 35%)" />
+      <stop offset="100%" stop-color="hsl(280, 100%, 40%)" />
+    </linearGradient>
+  </defs>
+
+  <!-- X shape with dumbbell in center (thicker stroke) -->
+  <path
+    d="M20 20 L45 45 M55 55 L80 80 M80 20 L55 45 M45 55 L20 80"
+    stroke="url(#logoGradient)"
+    stroke-width="10"
+    stroke-linecap="round"
+  />
+
+  <!-- Dumbbell bar (thicker) -->
+  <rect x="39" y="45" width="22" height="10" rx="4" fill="url(#logoGradient)" />
+
+  <!-- Dumbbell plates (larger) -->
+  <circle cx="44" cy="50" r="6" fill="url(#logoGradient)" />
+  <circle cx="56" cy="50" r="6" fill="url(#logoGradient)" />
+</svg>

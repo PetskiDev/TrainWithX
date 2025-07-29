@@ -2,9 +2,53 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo/logo_blackX.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Primary Meta -->
     <title>TrainWithX</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Transform your fitness journey with expert-designed training plans from top fitness creators worldwide."
+    />
+
+    <!-- Canonical (only correct in production) -->
+    <link rel="canonical" href="https://trainwithx.com" />
+
+    <!-- Open Graph Meta -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TrainWithX" />
+    <meta property="og:title" content="TrainWithX" />
+    <meta
+      property="og:description"
+      content="Transform your fitness journey with expert-designed training plans from top fitness creators worldwide."
+    />
+    <meta property="og:url" content="https://trainwithx.com" />
+    <meta property="og:image" content="https://trainwithx.com/preview.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "TrainWithX",
+        "url": "https://trainwithx.com",
+        "logo": "https://trainwithx.com/favicon.svg",
+        "sameAs": ["https://www.instagram.com/trainwithx_app"],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "support@trainwithx.com",
+          "contactType": "customer support",
+          "contactOption": "CustomerService",
+          "availableLanguage": ["English"]
+        }
+      }
+    </script>
+
+    <!-- JS-based meta tag injection -->
+    <meta name="robots" content="%VITE_ROBOTS%" />
   </head>
   <body>
     <div id="root"></div>
