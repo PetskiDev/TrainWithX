@@ -25,6 +25,7 @@
   "dependencies": {
     "cloc": "^2.6.0-cloc",
     "cookie-parser": "^1.4.7",
+    "helmet": "^8.1.0",
     "multer": "^2.0.1",
     "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.4",

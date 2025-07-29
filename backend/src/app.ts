@@ -8,11 +8,14 @@ import apiRouter from './api.router.js';
 import path, { dirname } from 'node:path';
 import cookieParser from 'cookie-parser';
 import { fileURLToPath } from 'node:url';
+import helmet from 'helmet';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
+app.set('trust proxy', 1);
+app.use(helmet());
 app.use(cookieParser());
 
 app.use(morgan('dev'));
@@ -25,6 +28,12 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 //in dev vite handles this responses and only proxies /api calls
 if (process.env.NODE_ENV === 'production') {
   const dist = path.join(__dirname, '../../frontend/dist');
+
+  app.use((req, res, next) => {
+    res.setHeader('Accept-Ranges', 'none');
+    next();
+  });
+
   app.use(express.static(dist)); //mounts the static files
   app.get('*', (_, res) => res.sendFile(path.join(dist, 'index.html'))); //mounts indexjs that is the whole react
 } else {
