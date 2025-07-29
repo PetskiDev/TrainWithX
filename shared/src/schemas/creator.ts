@@ -8,7 +8,7 @@ export interface CreatorPreviewDTO {
   avgRating: any;
   noReviews: number;
   specialties: string[];
-  yearsXP: any;
+  yearsXP: number;
   totalSales: number;
   bio: string;
   coverUrl?: string;
@@ -48,8 +48,10 @@ export const creatorPostSchema = z.object({
     .regex(/^@?[\w.]{1,30}$/, 'Instagram handle is invalid')
     .optional(),
 
-  yearsXP: z.number().min(0).max(50),
-
+  yearsXP: z
+    .number('Years of experience is required.')
+    .min(0, { message: 'Experience must be at least 0 years.' })
+    .max(50, { message: 'Experience cannot exceed 50 years.' }),
   specialties: z.array(z.string()),
 
   certifications: z.array(z.string()),
@@ -75,7 +77,7 @@ export const sendApplicationSchema = z.object({
       'Subdomain must start with a letter and contain only lowercase letters and numbers'
     ),
   specialties: z.array(z.string()),
-  experience: z.string().min(1).max(3),
+  experience: z.number().min(1).max(50),
 
   bio: z
     .string()

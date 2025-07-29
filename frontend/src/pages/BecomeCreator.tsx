@@ -67,7 +67,7 @@ const BecomeCreator = () => {
     fullName: '',
     subdomain: '',
     specialties: [],
-    experience: '',
+    experience: 0,
     bio: '',
     socialMedia: '',
     agreeToTerms: false,
@@ -167,7 +167,7 @@ const BecomeCreator = () => {
         fullName: '',
         subdomain: '',
         specialties: [],
-        experience: '',
+        experience: 0,
         bio: '',
         socialMedia: '',
         agreeToTerms: false,
@@ -428,7 +428,7 @@ const BecomeCreator = () => {
                     <Label htmlFor='experience'>Years of Experience *</Label>
                     <Select
                       onValueChange={(value) =>
-                        handleInputChange('experience', value)
+                        handleInputChange('experience', Number(value))
                       }
                       required
                     >

@@ -31,7 +31,7 @@ model Creator {
   id             Int      @id
   bio            String   @default("")
   subdomain      String   @unique @db.VarChar(50)
-  yearsXP        Decimal  @db.Decimal(3, 1)
+  yearsXP        Int
   coverUrl       String?
   instagram      String?
   avgRating      Decimal  @default(0) @db.Decimal(5, 1)
@@ -116,7 +116,7 @@ model CreatorApplication {
   subdomain    String            @unique
   specialties  String[]
   instagram    String?
-  experience   String
+  experience   Int
   bio          String
   socialMedia  String?
   agreeToTerms Boolean

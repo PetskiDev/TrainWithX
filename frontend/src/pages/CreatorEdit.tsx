@@ -32,6 +32,10 @@ import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate';
 import { useAuth } from '@frontend/context/AuthContext';
 import { handleThrowAppError } from '@frontend/lib/AppErrorUtils.ts';
 
+type CreatorFormDTO = Omit<CreatorPostDTO, 'yearsXP'> & {
+  yearsXP?: number;
+};
+
 const CreatorEdit = () => {
   const { refreshUser } = useAuth();
 
@@ -54,13 +58,13 @@ const CreatorEdit = () => {
   const [uploading, setUploading] = useState(false);
 
   // Form states
-  const [formData, setFormData] = useState<CreatorPostDTO>({
+  const [formData, setFormData] = useState<CreatorFormDTO>({
     achievements: [],
     bio: '',
     certifications: [],
     specialties: [],
     username: '',
-    yearsXP: 0,
+    yearsXP: undefined,
     subdomain: '',
   }); //some initial values so it doesn't have to be | null
 
@@ -190,6 +194,7 @@ const CreatorEdit = () => {
       // ✅ Local Zod validation before hitting API
       const parsed = partialCreatorPostSchema.safeParse(payload);
       if (!parsed.success) {
+        console.log(parsed.error);
         const errorMsg =
           parsed.error.issues?.[0]?.message ||
           'Invalid input. Please check your data.';
@@ -992,16 +997,14 @@ const CreatorEdit = () => {
                 <Input
                   id='yearsXP'
                   type='number'
-                  value={formData.yearsXP}
-                  min={0}
-                  max={100}
-                  onChange={(e) =>
+                  value={formData.yearsXP ?? ''} // fallback to empty string
+                  onChange={(e) => {
+                    const value = e.target.value;
                     setFormData((prev) => ({
                       ...prev,
-                      yearsXP: Number(e.target.value),
-                    }))
-                  }
-                  step={1}
+                      yearsXP: value === '' ? undefined : Number(value),
+                    }));
+                  }}
                 />
               </div>
               <div>
