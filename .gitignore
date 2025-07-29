@@ -32,3 +32,5 @@ dist-ssr
 *.sw?
 # Local storage, will move to S3 later
 backend/uploads
+
+**/robots.txt
