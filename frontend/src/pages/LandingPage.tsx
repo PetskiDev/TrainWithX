@@ -29,7 +29,7 @@ const LandingPage = () => {
             </h1>
             <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8 leading-relaxed">
               Transform your fitness journey with expert-designed training plans
-              from top fitness creators worldwide
+              from top fitness creators — all sold and supported by TrainWithX
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button

@@ -8,7 +8,6 @@ import {
   ArrowLeft,
   Play,
   Clock,
-  Users,
   Star,
   CheckCircle,
   Shield,

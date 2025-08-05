@@ -15,7 +15,7 @@ export const BecomeCreatorSection: FC<BecomeCreatorProps> = ({ className = "" })
         Are You a Fitness Professional?
       </h2>
       <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-        Share your expertise and earn money by creating training plans for our community
+      License your training plans to TrainWithX and earn by helping our community — we handle all sales and support.
       </p>
       <Button
         size="lg"
