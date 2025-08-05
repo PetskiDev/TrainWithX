@@ -54,25 +54,25 @@ const LandingPage = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center mb-16">
             <div>
               <div className="text-2xl sm:text-3xl font-bold text-gradient mb-2">
-                500+
+                x+
               </div>
               <div className="text-muted-foreground">Training Plans</div>
             </div>
             <div>
               <div className="text-2xl sm:text-3xl font-bold text-gradient mb-2">
-                50+
+                x+
               </div>
               <div className="text-muted-foreground">Expert Creators</div>
             </div>
             <div>
               <div className="text-2xl sm:text-3xl font-bold text-gradient mb-2">
-                10K+
+                x+
               </div>
               <div className="text-muted-foreground">Active Users</div>
             </div>
             <div>
               <div className="text-2xl sm:text-3xl font-bold text-gradient mb-2">
-                4.9★
+                x★
               </div>
               <div className="text-muted-foreground">Average Rating</div>
             </div>
