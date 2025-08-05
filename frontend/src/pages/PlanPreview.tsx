@@ -172,6 +172,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                 </div>
                 <Badge variant="secondary">{plan.difficulty}</Badge>
               </div>
+            
             </div>
           </div>
         </div>
@@ -194,8 +195,6 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <Users className="mr-1 h-4 w-4" />
-                    <span>Intermediate level</span>
                   </div>
                 </div>
               </CardContent>
@@ -273,43 +272,49 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    One-time purchase
+                    One-time purchase • Sold by TrainWithX
                   </p>
                 </div>
-                <BuyButton autoOpen={openCheckout} planId={plan.id}></BuyButton>
-                {/* TODO<Button variant="outline" className="w-full">
-                  Add to Wishlist
-                </Button> */}
+                <BuyButton autoOpen={openCheckout} planId={plan.id} text="Get This Plan" />
+                <div className="mt-2 text-xs text-muted-foreground text-center">
+                  <span className="font-semibold">TrainWithX handles all checkout, support, and delivery.</span>
+                </div>
               </CardContent>
             </Card>
-
             {/* Creator Info */}
             <Card>
               <CardHeader>
-                <CardTitle>Your Instructor</CardTitle>
+                <CardTitle>About the Creator</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-start gap-4">
-                  <Avatar className="w-12 h-12">
+                  <Avatar className="w-14 h-14 shadow-md ring-2 ring-primary/20">
                     <AvatarImage
                       src={creator?.avatarUrl}
                       alt={creator?.username}
                     />
                     <AvatarFallback>
                       {creator?.username
-                        .split(' ')
+                        ?.split(' ')
                         .map((n) => n[0])
                         .join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
-                    <h4 className="font-semibold mb-1">{creator?.username}</h4>
-                    <p className="text-sm text-muted-foreground mb-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-semibold text-lg">{creator?.username}</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-2 line-clamp-3">
                       {creator?.bio}
                     </p>
+                  
+                    <p className="text-xs text-muted-foreground mb-3">
+                      <span className="font-semibold">{creator?.username}</span> is a licensed creator on <span className="text-primary font-semibold">TrainWithX</span>. All plans are sold and supported by TrainWithX.
+                    </p>
                     <Button
-                      variant="outline"
+                      variant="default"
                       size="sm"
+                      className="w-full"
                       onClick={() =>
                         goToCreator({ subdomain: creator!.subdomain })
                       }
@@ -417,7 +422,7 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
             <BuyButton
               planId={plan.id}
               text="Start Your Transformation"
-              className="w-full gradient-bg from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl text-lg mb-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+  className="w-full gradient-bg from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-sm sm:text-base md:text-lg text-white font-bold py-4 px-6 rounded-xl mb-4 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
             ></BuyButton>
             {/* Trust Signals */}
             <div className="space-y-3 text-center text-sm text-muted-foreground">
@@ -435,6 +440,10 @@ const PlanPreview = ({ subdomain }: { subdomain: string | null }) => {
             </div>
           </CardContent>
         </Card>
+        {/* Disclaimer at bottom */}
+        <div className="mt-8 text-xs text-muted-foreground text-center">
+          <span className="font-semibold">TrainWithX is the sole vendor. Creators license their content to TrainWithX, and all sales, payments, and support are handled by us.</span>
+        </div>
       </div>
     </div>
   );
