@@ -58,27 +58,28 @@ const TermsOfService = () => {
 
   const tableOfContents = [
     {
-      id: "eligibility",
-      title: "Eligibility and Age Requirements",
-      icon: UserCheck,
-    },
-    { id: "registration", title: "Account Registration", icon: Users },
-    { id: "account-types", title: "Account Types", icon: Shield },
-    { id: "purchases", title: "Purchases and Payment", icon: CreditCard },
-    { id: "content", title: "Content Ownership and Licensing", icon: FileText },
-    { id: "conduct", title: "User Conduct", icon: AlertCircle },
-    { id: "health", title: "Health Disclaimer", icon: AlertCircle },
-    {
-      id: "availability",
-      title: "Availability and Modifications",
+      id: "platform-overview",
+      title: "Platform Overview",
       icon: Globe,
     },
+    { id: "eligibility", title: "Eligibility", icon: UserCheck },
+    { id: "account-types", title: "Account Types", icon: Users },
+    { id: "purchases", title: "Purchases and Payments", icon: CreditCard },
+    { id: "content", title: "Content Ownership and Licensing", icon: FileText },
+    { id: "support", title: "Support and Customer Service", icon: Shield },
+    { id: "conduct", title: "User Conduct", icon: AlertCircle },
+    { id: "health", title: "Health Disclaimer", icon: AlertCircle },
+    { id: "taxes", title: "Taxes and Compliance", icon: Scale },
     { id: "privacy", title: "Privacy and Data", icon: Shield },
-    { id: "third-party", title: "Third-Party Services", icon: Globe },
-    { id: "termination", title: "Termination", icon: AlertCircle },
+    { id: "termination", title: "Content Removal and Termination", icon: AlertCircle },
+    {
+      id: "platform-status",
+      title: "Platform Status Notice",
+      icon: Globe,
+    },
     {
       id: "disclaimers",
-      title: "Disclaimers and Limitation of Liability",
+      title: "Liability and Disclaimers",
       icon: Scale,
     },
     { id: "disputes", title: "Dispute Resolution", icon: Scale },
@@ -98,12 +99,10 @@ const TermsOfService = () => {
             <div className="flex items-center justify-center gap-4 text-muted-foreground mb-6">
               <span className="font-semibold">Effective Date: 25/07/2025</span>
               <Separator orientation="vertical" className="h-4" />
-              <span className="font-semibold">Last Updated: 25/07/2025</span>
+              <span className="font-semibold">Last Updated: 05/08/2025</span>
             </div>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              These Terms of Service govern your access to and use of the
-              TrainWithX platform. By using the Platform, you agree to these
-              Terms.
+              These Terms of Service ("Terms") govern your use of the TrainWithX platform ("TrainWithX", "Platform", "we", "us", or "our"), operated by <strong>Petar Kovachovski</strong>, an individual based in the Republic of North Macedonia.
             </p>
           </div>
         </div>
@@ -148,55 +147,34 @@ const TermsOfService = () => {
             <Card className="border-primary/20">
               <CardContent className="p-8 md:p-12">
                 <div className="prose prose-lg max-w-none">
-                  <section id="eligibility" className="mb-12">
+                  <section id="platform-overview" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      1. Eligibility and Age Requirements
+                      1. Platform Overview
                     </h2>
-                    <p className="text-muted-foreground leading-relaxed">
-                      You may use TrainWithX if you are at least{" "}
-                      <strong>13 years old</strong>. If you are under 18, you
-                      may only make purchases or access paid content with the{" "}
-                      <strong>
-                        involvement and consent of a parent or legal guardian
-                      </strong>
-                      . By using the Platform, you confirm that you meet these
-                      requirements.
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      TrainWithX provides access to premium fitness content in the form of training plans created by certified fitness professionals ("Creators"). All training plans are sold and fulfilled by TrainWithX.
                     </p>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      We are the <strong>sole vendor and Merchant of Record</strong> for all purchases made through the Platform. Customers interact <strong>only with TrainWithX</strong> when purchasing content.
+                    </p>
+                    <div className="bg-accent/50 p-4 rounded-lg">
+                      <p className="text-muted-foreground">
+                        <strong>TrainWithX is not a marketplace.</strong> Creators do not sell directly to users or receive payments from users. Instead, they license their content to TrainWithX, which handles all sales, fulfillment, and customer service.
+                      </p>
+                    </div>
                   </section>
 
                   <Separator className="my-8" />
 
-                  <section id="registration" className="mb-12">
+                  <section id="eligibility" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      2. Account Registration
+                      2. Eligibility
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      To access certain features, you must create an account.
-                      You agree to:
+                      You may use TrainWithX if you are at least <strong>13 years old</strong>. If you are under 18, you must use the Platform only with the involvement and consent of a parent or legal guardian.
                     </p>
-                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-                      <li>
-                        Provide accurate and complete information during
-                        registration
-                      </li>
-                      <li>Keep your login credentials secure</li>
-                      <li>
-                        Be responsible for all activity under your account
-                      </li>
-                    </ul>
-                    <p className="text-muted-foreground leading-relaxed mt-4">
-                      You may delete your account at any time by contacting us
-                      at{" "}
-                      <strong>
-                        <a
-                          href="mailto:legal@trainwithx.com"
-                          className="text-primary hover:underline"
-                        >
-                          legal@trainwithx.com
-                        </a>
-                      </strong>
-                      . Upon deletion, all personal data will be removed except
-                      purchase history, which we retain for accounting purposes.
+                    <p className="text-muted-foreground leading-relaxed">
+                      By using the Platform, you confirm that you meet these requirements.
                     </p>
                   </section>
 
@@ -207,16 +185,15 @@ const TermsOfService = () => {
                       3. Account Types
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      There are two types of users on TrainWithX:
+                      There are two types of accounts on TrainWithX:
                     </p>
                     <div className="space-y-4">
                       <div className="bg-accent/50 p-4 rounded-lg">
                         <h3 className="font-semibold text-foreground mb-2">
-                          Regular Users:
+                          Users:
                         </h3>
                         <p className="text-muted-foreground">
-                          Can browse training plans, make purchases, leave
-                          reviews, and upload an avatar.
+                          Can browse, purchase, and access training plans, leave reviews, and upload an avatar.
                         </p>
                       </div>
                       <div className="bg-accent/50 p-4 rounded-lg">
@@ -224,11 +201,7 @@ const TermsOfService = () => {
                           Creators:
                         </h3>
                         <p className="text-muted-foreground">
-                          Verified users with elevated privileges. Creators can
-                          create and upload training plans, manage their own
-                          public profile, and are subject to a separate{" "}
-                          <strong>Creator Agreement</strong>, which governs
-                          compensation, rights, and responsibilities.
+                          Verified professionals who license their content to TrainWithX under a separate <strong>Creator Agreement</strong>. Creators do not sell to users directly and are not vendors on the Platform.
                         </p>
                       </div>
                     </div>
@@ -238,31 +211,35 @@ const TermsOfService = () => {
 
                   <section id="purchases" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      4. Purchases and Payment
+                      4. Purchases and Payments
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      All purchases made on TrainWithX are{" "}
-                      <strong>one-time payments</strong>. Users retain access to
-                      purchased content{" "}
-                      <strong>
-                        for as long as the Platform remains operational
-                      </strong>
-                      .
+                      All training plans on TrainWithX are sold by <strong>TrainWithX</strong> as the <strong>sole vendor</strong>.
                     </p>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      Payments are securely processed by <strong>Paddle</strong>
-                      , a third-party payment provider. TrainWithX{" "}
-                      <strong>
-                        does not store or process any payment information
-                        directly
-                      </strong>
-                      .
+                      Purchases are processed securely by <strong>Paddle</strong>, our authorized payment processor and Merchant of Record. Paddle handles billing, invoicing, and tax collection on our behalf.
                     </p>
-                    <p className="text-muted-foreground leading-relaxed">
-                      <strong>
-                        All sales are final. No refunds are offered.
-                      </strong>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      By purchasing through our Platform, you also agree to Paddle's <a
+                        href="https://www.paddle.com/legal/checkout-buyer-terms"
+                        className="text-primary hover:underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Checkout Buyer Terms
+                      </a>.
                     </p>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      You will receive access to your purchased plan immediately after successful payment.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      All payments are <strong>one-time</strong>, and access is retained <strong>for as long as the Platform is operational</strong>.
+                    </p>
+                    <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-lg">
+                      <p className="text-muted-foreground">
+                        <strong>All sales are final. We do not offer refunds.</strong>
+                      </p>
+                    </div>
                   </section>
 
                   <Separator className="my-8" />
@@ -273,51 +250,65 @@ const TermsOfService = () => {
                     </h2>
                     <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                       <li>
-                        <strong>Creators retain full ownership</strong> of their
-                        training plans and uploaded content. TrainWithX acts as
-                        a distribution platform only.
+                        <strong>Creators retain full ownership</strong> of their original training content (e.g., videos, plans, instructions).
                       </li>
                       <li>
-                        <strong>Users retain ownership</strong> of their profile
-                        and uploaded avatar.
+                        <strong>Creators grant TrainWithX a commercial license</strong> to sell and distribute their content under our brand.
                       </li>
                       <li>
-                        By submitting content (e.g. reviews), you grant
-                        TrainWithX a non-exclusive, worldwide, royalty-free
-                        license to use, display, and reproduce your content for
-                        promotional and operational purposes.
+                        <strong>TrainWithX is solely responsible</strong> for sales, delivery, and support.
+                      </li>
+                      <li>
+                        <strong>Users are granted a non-transferable license</strong> to access purchased plans for personal use only.
                       </li>
                     </ul>
                     <p className="text-muted-foreground leading-relaxed mt-4">
-                      You may remove your content at any time through your
-                      account settings or by request.
+                      You may not reproduce, share, or redistribute any content without permission.
                     </p>
+                  </section>
+
+                  <Separator className="my-8" />
+
+                  <section id="support" className="mb-12">
+                    <h2 className="text-2xl font-bold mb-4 text-foreground">
+                      6. Support and Customer Service
+                    </h2>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      All customer service is handled by <strong>TrainWithX</strong>.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      Creators are not responsible for handling user issues or processing refunds.
+                    </p>
+                    <div className="bg-primary/10 border border-primary/20 p-4 rounded-lg">
+                      <p className="text-muted-foreground">
+                        For support, contact: <a
+                          href="mailto:support@trainwithx.com"
+                          className="text-primary hover:underline"
+                        >
+                          support@trainwithx.com
+                        </a>
+                      </p>
+                    </div>
                   </section>
 
                   <Separator className="my-8" />
 
                   <section id="conduct" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      6. User Conduct
+                      7. User Conduct
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      By using TrainWithX, you agree not to:
+                      You agree not to:
                     </p>
                     <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-                      <li>Violate any laws or regulations</li>
-                      <li>Upload harmful, illegal, or misleading content</li>
-                      <li>Infringe on intellectual property rights</li>
-                      <li>
-                        Use bots, scrapers, or reverse-engineering tools on the
-                        Platform
-                      </li>
-                      <li>
-                        Attempt unauthorized access to other accounts or systems
-                      </li>
+                      <li>Violate any applicable laws</li>
+                      <li>Upload or submit harmful, offensive, or illegal content</li>
+                      <li>Infringe upon intellectual property rights</li>
+                      <li>Attempt to disrupt the Platform or gain unauthorized access</li>
+                      <li>Use bots, scrapers, or automated tools</li>
                     </ul>
                     <p className="text-muted-foreground leading-relaxed mt-4">
-                      We reserve the right to suspend or terminate accounts that
-                      violate these Terms.
+                      We reserve the right to suspend or terminate accounts that violate these Terms.
                     </p>
                   </section>
 
@@ -325,56 +316,33 @@ const TermsOfService = () => {
 
                   <section id="health" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      7. Health Disclaimer
+                      8. Health Disclaimer
                     </h2>
                     <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-lg">
                       <p className="text-muted-foreground leading-relaxed mb-4">
-                        TrainWithX does not provide medical, fitness, or
-                        nutritional advice. All training content is created and
-                        offered by independent Creators. You should consult a
-                        healthcare professional before beginning any exercise or
-                        nutrition plan. Use of the Platform is{" "}
-                        <strong>at your own risk</strong>, and you agree that
-                        TrainWithX is{" "}
-                        <strong>
-                          not liable for any injury, health issue, or adverse
-                          effect
-                        </strong>{" "}
-                        that may result.
+                        TrainWithX does not provide medical, fitness, or dietary advice.
+                        All training plans are designed by independent professionals.
+                      </p>
+                      <p className="text-muted-foreground leading-relaxed mb-4">
+                        <strong>Always consult a qualified health professional before beginning any new fitness program.</strong>
+                      </p>
+                      <p className="text-muted-foreground leading-relaxed">
+                        You use the Platform <strong>at your own risk</strong> and agree that TrainWithX is <strong>not liable for any injuries, health issues, or damages</strong> resulting from use of the content.
                       </p>
                     </div>
                   </section>
 
                   <Separator className="my-8" />
 
-                  <section id="availability" className="mb-12">
+                  <section id="taxes" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      8. Availability and Modifications
+                      9. Taxes and Compliance
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      We may modify or discontinue any aspect of the Platform at
-                      any time, including removing features or restricting
-                      access. We may also update these Terms, and when we do, we
-                      will notify users via email or in-app notice.
+                      All sales are subject to applicable taxes (e.g., VAT), which are collected and processed by <strong>Paddle</strong> as our Merchant of Record.
                     </p>
-                    <p className="text-muted-foreground leading-relaxed mb-4">
-                      Continued use of TrainWithX after changes are made
-                      constitutes your acceptance of the revised Terms.
-                    </p>
-
-                    <h3 className="font-semibold text-foreground mb-2">
-                      Platform Status (MVP Notice)
-                    </h3>
-                    <p className="text-muted-foreground leading-relaxed mb-4">
-                      TrainWithX is currently in its early development phase
-                      (Minimum Viable Product). While we aim to provide a
-                      reliable experience, the Platform may occasionally
-                      experience bugs, incomplete features, or downtime.
-                    </p>
-
                     <p className="text-muted-foreground leading-relaxed">
-                      By using the Platform, you acknowledge and accept these
-                      limitations during this stage.
+                      TrainWithX complies with all relevant tax, consumer, and ecommerce regulations. Users are not responsible for any tax reporting on purchases made through the Platform.
                     </p>
                   </section>
 
@@ -382,39 +350,13 @@ const TermsOfService = () => {
 
                   <section id="privacy" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      9. Privacy and Data
+                      10. Privacy and Data
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      Your use of the Platform is subject to our{" "}
-                      <strong>Privacy Policy</strong> (to be provided), which
-                      explains what personal data we collect, how we use it, and
-                      your rights under applicable law.
+                      Your use of the Platform is governed by our <strong>Privacy Policy</strong> (to be provided), which describes how we collect, store, and use personal data. We also use cookies to improve user experience, as outlined in our <strong>Cookie Policy</strong> (to be provided).
                     </p>
                     <p className="text-muted-foreground leading-relaxed">
-                      We also use cookies to enhance user experience. Our use of
-                      cookies will be detailed in a separate{" "}
-                      <strong>Cookie Policy</strong>.
-                    </p>
-                  </section>
-
-                  <Separator className="my-8" />
-
-                  <section id="third-party" className="mb-12">
-                    <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      10. Third-Party Services
-                    </h2>
-                    <p className="text-muted-foreground leading-relaxed">
-                      We use <strong>Paddle</strong> as our payment processor.
-                      By making a purchase, you also agree to Paddle's{" "}
-                      <a
-                        href="https://www.paddle.com/legal/checkout-buyer-terms"
-                        className="text-primary hover:underline"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Terms and Conditions
-                      </a>{" "}
-                      and privacy practices.
+                      We comply with applicable data protection laws and allow users to request data deletion at any time.
                     </p>
                   </section>
 
@@ -422,55 +364,74 @@ const TermsOfService = () => {
 
                   <section id="termination" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      11. Termination
+                      11. Content Removal and Termination
                     </h2>
-                    <p className="text-muted-foreground leading-relaxed">
-                      We reserve the right to suspend or terminate your access
-                      to the Platform at our sole discretion, with or without
-                      notice, for any violation of these Terms or applicable
-                      laws.
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      TrainWithX reserves the right to:
+                    </p>
+                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                      <li>Remove any content at our sole discretion</li>
+                      <li>Suspend or terminate any account for violations of these Terms</li>
+                      <li>Modify or discontinue the Platform at any time, without liability</li>
+                    </ul>
+                    <p className="text-muted-foreground leading-relaxed mt-4">
+                      You may request deletion of your account and associated data (excluding purchase history) by contacting us at <a
+                        href="mailto:legal@trainwithx.com"
+                        className="text-primary hover:underline"
+                      >
+                        legal@trainwithx.com
+                      </a>.
                     </p>
                   </section>
 
                   <Separator className="my-8" />
 
-                  <section id="disclaimers" className="mb-12">
+                  <section id="platform-status" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      12. Disclaimers and Limitation of Liability
+                      12. Platform Status Notice
                     </h2>
-                    <p className="text-muted-foreground leading-relaxed mb-4">
-                      To the fullest extent permitted by law:
-                    </p>
-                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-                      <li>TrainWithX is provided "as is" and "as available"</li>
-                      <li>
-                        We make no guarantees about accuracy, availability, or
-                        fitness for a particular purpose
-                      </li>
-                      <li>
-                        We disclaim all liability for user or creator content,
-                        and for any harm resulting from reliance on the Platform
-                      </li>
-                    </ul>
-                    <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-lg mt-4">
-                      <p className="text-foreground font-semibold">
-                        You use TrainWithX at your own risk.
+                    <div className="bg-accent/50 p-4 rounded-lg">
+                      <p className="text-muted-foreground leading-relaxed mb-4">
+                        TrainWithX is currently in its <strong>Minimum Viable Product (MVP)</strong> stage.
+                      </p>
+                      <p className="text-muted-foreground leading-relaxed mb-4">
+                        While we aim for reliability, users may encounter occasional bugs or limited functionality.
+                      </p>
+                      <p className="text-muted-foreground leading-relaxed">
+                        By using the Platform, you acknowledge and accept this status.
                       </p>
                     </div>
                   </section>
 
                   <Separator className="my-8" />
 
+                  <section id="disclaimers" className="mb-12">
+                    <h2 className="text-2xl font-bold mb-4 text-foreground">
+                      13. Liability and Disclaimers
+                    </h2>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      To the maximum extent permitted by law:
+                    </p>
+                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                      <li>TrainWithX is provided "as is" and "as available"</li>
+                      <li>
+                        We make no guarantees about the accuracy, availability, or performance of the Platform
+                      </li>
+                      <li>
+                        We are not liable for any damages, losses, or injuries arising from your use of the Platform or content
+                      </li>
+                    </ul>
+                  </section>
+
+                  <Separator className="my-8" />
+
                   <section id="disputes" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      13. Dispute Resolution
+                      14. Dispute Resolution
                     </h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      Any disputes arising from these Terms or your use of the
-                      Platform will be resolved through{" "}
-                      <strong>binding arbitration</strong>, and not in court,
-                      unless otherwise required by law. You waive any right to a
-                      class action or jury trial.
+                      All disputes shall be resolved via <strong>binding arbitration</strong>, unless otherwise required by law.
+                      You waive your right to participate in any class action or jury trial.
                     </p>
                   </section>
 
@@ -478,14 +439,11 @@ const TermsOfService = () => {
 
                   <section id="governing" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      14. Governing Law
+                      15. Governing Law
                     </h2>
                     <p className="text-muted-foreground leading-relaxed">
-                      These Terms are governed by the laws of the{" "}
-                      <strong>Republic of North Macedonia</strong>, without
-                      regard to its conflict of law provisions. Any legal action
-                      must be brought in the courts of North Macedonia, unless
-                      arbitration applies.
+                      These Terms are governed by the laws of the <strong>Republic of North Macedonia</strong>.
+                      All legal proceedings must be brought in North Macedonia unless arbitration applies.
                     </p>
                   </section>
 
@@ -493,12 +451,11 @@ const TermsOfService = () => {
 
                   <section id="contact" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      15. Contact
+                      16. Contact
                     </h2>
                     <div className="bg-primary/10 border border-primary/20 p-6 rounded-lg">
                       <p className="text-muted-foreground leading-relaxed mb-4">
-                        If you have any questions about these Terms, contact us
-                        at:
+                        For questions, support, or legal matters, contact:
                       </p>
                       <a
                         href="mailto:legal@trainwithx.com"

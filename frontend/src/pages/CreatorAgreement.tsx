@@ -61,19 +61,19 @@ const CreatorAgreement = () => {
     { id: "eligibility", title: "Eligibility & Acceptance", icon: UserCheck },
     {
       id: "content-ownership",
-      title: "Content Ownership & License",
+      title: "Content Ownership & Licensing",
       icon: FileText,
     },
     { id: "revenue", title: "Revenue Share & Payouts", icon: DollarSign },
     { id: "taxes", title: "Taxes & Legal Responsibility", icon: CreditCard },
     {
       id: "content-standards",
-      title: "Content Standards & Prohibited Activities",
+      title: "Content Standards & Compliance",
       icon: AlertCircle,
     },
-    { id: "termination", title: "Termination", icon: AlertCircle },
-    { id: "platform-access", title: "Platform Access & Rights", icon: Globe },
-    { id: "liability", title: "Liability & Indemnity", icon: Shield },
+    { id: "platform-use", title: "Platform Use & Creator Pages", icon: Globe },
+    { id: "termination", title: "Termination & Removal", icon: AlertCircle },
+    { id: "liability", title: "Liability & Indemnification", icon: Shield },
     { id: "governing", title: "Governing Law & Disputes", icon: Gavel },
     { id: "contact", title: "Contact", icon: Mail },
   ];
@@ -90,12 +90,10 @@ const CreatorAgreement = () => {
             <div className="flex items-center justify-center gap-4 text-muted-foreground mb-6">
               <span className="font-semibold">Effective Date: 25/07/2025 </span>
               <Separator orientation="vertical" className="h-4" />
-              <span className="font-semibold">Last Updated: 25/07/2025 </span>
+              <span className="font-semibold">Last Updated: 05/08/2025 </span>
             </div>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              This Creator Agreement governs your relationship with TrainWithX
-              as a Creator. By uploading content on the Platform, you agree to
-              these terms.
+              This Creator Agreement ("Agreement") governs your relationship with TrainWithX ("Platform"), operated by <strong>Petar Kovachovski</strong>, an individual based in North Macedonia. By uploading or offering any content on the Platform as a Creator, you ("Creator", "you") agree to the terms outlined below.
             </p>
           </div>
         </div>
@@ -145,11 +143,11 @@ const CreatorAgreement = () => {
                       1. Eligibility & Acceptance
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      By using TrainWithX as a Creator:
+                      By participating as a Creator on TrainWithX, you confirm that:
                     </p>
                     <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                       <li>
-                        You agree to this Creator Agreement, our{" "}
+                        You have read and agree to this Creator Agreement, our{" "}
                         <button
                           type="button"
                           onClick={() => goPublic("/terms-of-service")}
@@ -168,13 +166,13 @@ const CreatorAgreement = () => {
                         .
                       </li>
                       <li>
-                        You confirm that all information on your public profile
-                        is accurate.
+                        You are at least 18 years old and legally able to enter into this agreement.
                       </li>
                       <li>
-                        You acknowledge that TrainWithX is a{" "}
-                        <strong>non-exclusive</strong> platform — you may
-                        publish and sell your content elsewhere.
+                        The information provided in your public profile is accurate and not misleading.
+                      </li>
+                      <li>
+                        You understand that TrainWithX is <strong>not a marketplace</strong>. All training plans are licensed to and sold by <strong>Petar Kovachovski</strong> (the sole Paddle seller), not directly by you.
                       </li>
                     </ul>
                   </section>
@@ -183,37 +181,31 @@ const CreatorAgreement = () => {
 
                   <section id="content-ownership" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      2. Content Ownership & License
+                      2. Content Ownership & Licensing
                     </h2>
                     <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
                       <li>
-                        You retain full ownership of all training plans and
-                        related materials you upload.
+                        You <strong>retain full ownership</strong> of all training plans and media you create and upload.
                       </li>
                       <li>
-                        By submitting content to TrainWithX, you grant Petar
-                        Kovachovski a{" "}
-                        <strong>
-                          non-exclusive, worldwide, royalty-free license
-                        </strong>{" "}
-                        to:
+                        By submitting content to TrainWithX, you grant <strong>Petar Kovachovski</strong> a <strong>non-exclusive, worldwide, royalty-free license</strong> to:
                       </li>
                     </ul>
                     <div className="ml-8 mb-4">
                       <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                         <li>
-                          Display, distribute, market, promote, and deliver the
-                          content through the Platform.
+                          Display, distribute, market, promote, and deliver your content to customers through the Platform.
                         </li>
                         <li>
-                          Edit plan titles, descriptions, or media (e.g.
-                          thumbnails) for formatting or branding purposes.
+                          Modify titles, descriptions, and visual assets (e.g. thumbnails) for branding or formatting purposes.
+                        </li>
+                        <li>
+                          Use your public profile (name, photo, bio) in marketing materials for your plans or the Platform.
                         </li>
                       </ul>
                     </div>
                     <p className="text-muted-foreground leading-relaxed">
-                      You remain fully liable for the accuracy, legality, and
-                      originality of your content.
+                      This is a <strong>content licensing agreement</strong>, not a co-selling or reseller arrangement. You do not use Paddle or process transactions.
                     </p>
                   </section>
 
@@ -225,24 +217,28 @@ const CreatorAgreement = () => {
                     </h2>
                     <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                       <li>
-                        <strong>Standard revenue split:</strong> 70% to Creator,
-                        30% to Platform (unless otherwise agreed in writing).
+                        The <strong>standard revenue split</strong> is <strong>70% to Creator, 30% to Platform</strong>, unless a different written agreement exists.
                       </li>
                       <li>
-                        Payouts are processed <strong>monthly</strong>, on the{" "}
-                        <strong>1st of each month</strong>, if your balance
-                        exceeds <strong>$50 USD</strong>.
+                        Payouts are made <strong>manually by Petar Kovachovski</strong>, not via Paddle.
                       </li>
                       <li>
-                        You may also request an early payout via your dashboard
-                        or by email if your balance exceeds $50.
-                      </li>
-                      <li>
-                        Payments are processed through <strong>Paddle</strong>,
-                        which first sends all funds to Petar Kovachovski, who
-                        then distributes Creator payouts.
+                        <strong>Payment conditions:</strong>
                       </li>
                     </ul>
+                    <div className="ml-8 mb-4">
+                      <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                        <li>
+                          Paid monthly on the <strong>1st of each month</strong> for balances exceeding <strong>$50 USD</strong>.
+                        </li>
+                        <li>
+                          Early payouts can be requested (if balance ≥ $50) via dashboard or email.
+                        </li>
+                      </ul>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed">
+                      <strong>You are not entitled to refunds or chargeback amounts</strong>—all payment processing and refund policies are handled by TrainWithX.
+                    </p>
                   </section>
 
                   <Separator className="my-8" />
@@ -253,13 +249,13 @@ const CreatorAgreement = () => {
                     </h2>
                     <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
                       <li>
-                        You are <strong>fully responsible</strong> for reporting
-                        and paying any taxes related to your income from
-                        TrainWithX.
+                        You are solely responsible for reporting and paying any taxes related to your income from TrainWithX.
                       </li>
                       <li>
-                        You are not considered an employee, agent, or partner of
-                        TrainWithX.
+                        You are not an employee, agent, or partner of TrainWithX.
+                      </li>
+                      <li>
+                        TrainWithX does not withhold or remit taxes on your behalf.
                       </li>
                     </ul>
                   </section>
@@ -268,102 +264,124 @@ const CreatorAgreement = () => {
 
                   <section id="content-standards" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      5. Content Standards & Prohibited Activities
+                      5. Content Standards & Compliance
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      You may not upload content that is:
+                      You agree that your content must:
                     </p>
                     <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
                       <li>
-                        Plagiarized, copied from others, or violates copyright
-                        laws
+                        Be original, safe, and based on your own knowledge or experience
                       </li>
                       <li>
-                        Unsafe, misleading, or makes unverified health claims
+                        Avoid any false, unverified, or misleading health claims
                       </li>
-                      <li>Discriminatory, offensive, or illegal in any form</li>
+                      <li>
+                        Comply with all applicable laws and TrainWithX guidelines
+                      </li>
+                      <li>
+                        Not violate Paddle's <a href="https://www.paddle.com/legal/acceptable-use-policy" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">Acceptable Use Policy</a>
+                      </li>
                     </ul>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      You are solely responsible for all content you upload and
-                      any consequences arising from its use.
+                      <strong>Prohibited content includes:</strong>
                     </p>
+                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
+                      <li>
+                        Copyright-infringing or plagiarized material
+                      </li>
+                      <li>
+                        Content that promotes illegal activity or discriminatory views
+                      </li>
+                      <li>
+                        Dangerous or deceptive health/nutrition advice
+                      </li>
+                    </ul>
                     <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-lg">
                       <p className="text-muted-foreground leading-relaxed">
-                        <strong>
-                          TrainWithX reserves the right to remove any content or
-                          ban creators at its sole discretion
-                        </strong>
-                        , especially for:
+                        <strong>TrainWithX reserves the right to remove your content or terminate your account</strong> if it violates these terms or harms the platform's reputation or compliance status.
                       </p>
-                      <ul className="list-disc pl-6 space-y-1 text-muted-foreground mt-2">
-                        <li>Violating these standards</li>
-                        <li>Receiving multiple complaints</li>
-                        <li>
-                          Uploading low-quality, unsafe, or deceptive materials
-                        </li>
-                      </ul>
                     </div>
+                  </section>
+
+                  <Separator className="my-8" />
+
+                  <section id="platform-use" className="mb-12">
+                    <h2 className="text-2xl font-bold mb-4 text-foreground">
+                      6. Platform Use & Creator Pages
+                    </h2>
+                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                      <li>
+                        You may have a <strong>public Creator page</strong> on TrainWithX (e.g. <code>creator.trainwithx.com</code>) to showcase your profile and plans. These pages are <strong>marketing tools only</strong>.
+                      </li>
+                      <li>
+                        <strong>Customers purchase only from TrainWithX</strong>, not from you. You are not operating a separate storefront.
+                      </li>
+                    </ul>
                   </section>
 
                   <Separator className="my-8" />
 
                   <section id="termination" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      6. Termination
+                      7. Termination & Removal
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      We may suspend or permanently terminate your creator
-                      privileges at any time. If terminated:
+                      We may suspend or permanently terminate your creator privileges at our sole discretion, including for:
                     </p>
-                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
                       <li>
-                        Your training plans will be removed from the platform.
+                        Violating this Agreement, our TOS, or Paddle's policies
                       </li>
                       <li>
-                        Your regular user account (with previously purchased
-                        plans) may remain active unless otherwise stated.
-                      </li>
-                    </ul>
-                  </section>
-
-                  <Separator className="my-8" />
-
-                  <section id="platform-access" className="mb-12">
-                    <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      7. Platform Access & Rights
-                    </h2>
-                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-                      <li>
-                        You understand that the Platform may change, update, or
-                        discontinue features at any time.
+                        Uploading low-quality or harmful content
                       </li>
                       <li>
-                        This agreement does not entitle you to ownership of or
-                        compensation for platform technology or branding.
-                      </li>
-                      <li>
-                        We may feature your profile, plans, or reviews in
-                        marketing materials unless you opt out in writing.
+                        Failing to meet our quality or professionalism standards
                       </li>
                     </ul>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      If terminated:
+                    </p>
+                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
+                      <li>
+                        Your plans will be unpublished or removed
+                      </li>
+                      <li>
+                        Your user account may remain active (if you've purchased other plans)
+                      </li>
+                    </ul>
+                    <p className="text-muted-foreground leading-relaxed">
+                      You may request content removal or full termination at any time by contacting <a href="mailto:legal@trainwithx.com" className="text-primary hover:underline">legal@trainwithx.com</a>.
+                    </p>
                   </section>
 
                   <Separator className="my-8" />
 
                   <section id="liability" className="mb-12">
                     <h2 className="text-2xl font-bold mb-4 text-foreground">
-                      8. Liability & Indemnity
+                      8. Liability & Indemnification
                     </h2>
-                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground mb-4">
                       <li>
-                        TrainWithX is not liable for any harm, loss, or damages
-                        resulting from your content.
+                        You are solely responsible for the content you upload and its impact.
                       </li>
                       <li>
-                        You agree to indemnify and hold harmless Petar
-                        Kovachovski and TrainWithX from any claims, losses, or
-                        liabilities arising out of your content, profile, or
-                        activity on the Platform.
+                        You agree to <strong>indemnify and hold harmless</strong> Petar Kovachovski and TrainWithX from any claims, liabilities, or damages arising out of your content, profile, or conduct on the Platform.
+                      </li>
+                    </ul>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      TrainWithX is not liable for:
+                    </p>
+                    <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
+                      <li>
+                        Inaccuracies in your training advice
+                      </li>
+                      <li>
+                        Any injury or damage resulting from your plans
+                      </li>
+                      <li>
+                        Third-party claims related to your content
                       </li>
                     </ul>
                   </section>
@@ -375,12 +393,10 @@ const CreatorAgreement = () => {
                       9. Governing Law & Disputes
                     </h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      This Agreement is governed by the laws of the{" "}
-                      <strong>Republic of North Macedonia</strong>.
+                      This Agreement is governed by the laws of the <strong>Republic of North Macedonia</strong>.
                     </p>
                     <p className="text-muted-foreground leading-relaxed">
-                      Any disputes will be resolved through{" "}
-                      <strong>binding arbitration</strong>, not in court.
+                      Any disputes will be resolved through <strong>binding arbitration</strong>, not in court.
                     </p>
                   </section>
 
@@ -392,7 +408,10 @@ const CreatorAgreement = () => {
                     </h2>
                     <div className="bg-primary/10 border border-primary/20 p-6 rounded-lg">
                       <p className="text-muted-foreground leading-relaxed mb-4">
-                        For support or legal inquiries, contact:
+                        For questions or legal concerns, contact:
+                      </p>
+                      <p className="text-muted-foreground leading-relaxed mb-2">
+                        <strong>Petar Kovachovski</strong>
                       </p>
                       <a
                         href="mailto:legal@trainwithx.com"
@@ -425,3 +444,4 @@ const CreatorAgreement = () => {
 };
 
 export default CreatorAgreement;
+
