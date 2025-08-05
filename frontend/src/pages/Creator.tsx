@@ -1,5 +1,5 @@
 // src/pages/Creator.tsx
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, useEffect, useRef, useState } from 'react';
 import {
   Star,
   TrendingUp,
