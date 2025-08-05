@@ -32,6 +32,7 @@ const CookiePolicy = lazy(() => import("@frontend/pages/CookiePolicy"));
 const ContactUs = lazy(() => import("@frontend/pages/Contact"));
 const HelpCenter = lazy(() => import("@frontend/pages/HelpCenter"));
 const FAQ = lazy(() => import("@frontend/pages/FAQ"));
+const CheckoutPage = lazy(() => import("@frontend/pages/CheckoutPage"));
 
 function PublicRoutes() {
   return (
@@ -58,6 +59,7 @@ function PublicRoutes() {
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/help-center" element={<HelpCenter />} />
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
