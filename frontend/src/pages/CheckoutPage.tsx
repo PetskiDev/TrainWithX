@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 
 import { useAuth } from '@frontend/context/AuthContext';
@@ -10,7 +10,6 @@ import { useSmartNavigate } from '@frontend/hooks/useSmartNavigate.ts';
 
 export default function CheckoutPage() {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const { goPublic } = useSmartNavigate();
   const { paddle, loading: paddleLoading } = usePaddle();
   const { user, refreshUser } = useAuth();

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Meta, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '@frontend/context/AuthContext';
 
@@ -23,7 +22,7 @@ export const BuyButton = ({
   autoOpen,
 }: BuyButtonProps) => {
   const { goPublic } = useSmartNavigate();
-  const { user, refreshUser } = useAuth();
+  const { user } = useAuth();
   const [showLogin, setShowLogin] = useState(false); // 👈 Track modal state
   const base = import.meta.env.VITE_BASE_DOMAIN!;
 
@@ -47,7 +46,6 @@ export const BuyButton = ({
 
   const handleLoginSuccess = async () => {
     setShowLogin(false);
-    const updatedUser = await refreshUser();
     navigateToCheckout();
   };
 
